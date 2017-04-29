@@ -1,0 +1,31 @@
+server:
+  port: 7171
+  display-name: Microservice Group Notification Management
+
+spring:
+  jpa:
+     database: POSTGRESQL
+     show-sql: true
+     hibernate:
+       ddl-auto: none
+  datasource:
+     platform: postgres
+     driverClassName: org.postgresql.Driver
+     url: jdbc:postgresql://localhost:5432/pitayaa_notification
+     username: postgres
+     password: postgres
+appointment:
+  loadlist: http://localhost:7070/appointments/getAll
+  update: http://localhost:7070/appointments/{Id}
+
+#  datasource:
+#    url: jdbc:mysql://localhost:3306/exam-spring-data
+#    url: jdbc:mysql://localhost:3306/ipos_oauth2
+#    driverClassName: com.mysql.jdbc.Driver
+#    username: root
+#    password: phongthan94
+# jpa:
+#   database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+#    show-sql: true
+#    hibernate:
+#      ddl-auto: create

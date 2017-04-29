@@ -1,0 +1,81 @@
+{
+  "updateItems": [
+    {
+      "loc": "businessInformation/moduleId",
+      "value": null
+    },
+    {
+      "loc": "businessInformation/ownerId",
+      "value": null
+    },
+    {
+      "loc": "businessInformation/documentName",
+      "value": null
+    },
+    {
+      "loc": "businessInformation/documentType",
+      "value": null
+    },
+    {
+      "loc": "businessInformation/attachmentType",
+      "value": null
+    },
+    {
+      "loc": "businessInformation/isRequired",
+      "value": null
+    },
+    {
+      "loc": "businessInformation/isAttachted",
+      "value": null
+    },
+    {
+      "loc": "businessInformation/isSigned",
+      "value": null
+    },
+    {
+      "loc": "businessInformation/isSignRequired",
+      "value": null
+    },
+    {
+      "loc": "businessInformation/isGenBySystem",
+      "value": null
+    },
+    {
+      "loc": "systemInformation/createdDate",
+      "value": null
+    },
+    {
+      "loc": "systemInformation/modifiedDate",
+      "value": null
+    },
+    {
+      "loc": "systemInformation/signedDate",
+      "value": null
+    },
+    {
+      "loc": "systemInformation/attachedDate",
+      "value": null
+    },
+    {
+      "loc": "systemInformation/detachedDate",
+      "value": null
+    },
+    {
+      "loc": "systemInformation/fileName",
+      "value": null
+    },
+    {
+      "loc": "systemInformation/contentSize",
+      "value": null
+    },
+    {
+      "loc": "content",
+      "value": null
+    }
+  ],
+  "_links": {
+    "self": {
+      "href": "http://localhost:7979/attachments/model"
+    }
+  }
+}

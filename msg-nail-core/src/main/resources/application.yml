@@ -1,0 +1,40 @@
+server:
+  port: 7070
+  display-name: Microservice Group Notification Management
+
+spring:
+  jpa:
+     database: POSTGRESQL
+     show-sql: true
+     hibernate:
+      # ddl-auto: none
+      ddl-auto: create-drop
+
+  datasource:
+     platform: postgres
+     url: jdbc:postgresql://localhost:5432/pitayaa_core
+     username: postgres
+     password: Pitayaa@2017
+  http:
+    multipart:
+      maxFileSize: 20MB
+      maxRequestSize: 20MB
+
+security:
+ oauth2:
+   resource:
+     userInfoUri: http://localhost:9999/uaa/user
+   client:
+     clientId: my-trusted-client
+     clientSecret: secret
+#server.port =  6969
+#server.display-name = Microservice Group Document Center
+
+#spring.jpa.database=POSTGRESQL
+#spring.datasource.platform=postgres
+#spring.jpa.show-sql=true
+#spring.jpa.hibernate.ddl-auto=create-drop
+#spring.database.driverClassName=org.postgresql.Driver
+#spring.datasource.url=jdbc:postgresql://localhost:5432/pitayaa1
+#spring.datasource.username=postgres
+#spring.datasource.password=postgres
