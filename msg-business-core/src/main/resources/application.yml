@@ -1,0 +1,29 @@
+server:
+  port: 7070
+  display-name: Microservice Group Notification Management
+
+spring:
+  jpa:
+     database: POSTGRESQL
+     show-sql: true
+     hibernate:
+       ddl-auto: none
+  datasource:
+     platform: postgres
+     url: jdbc:postgresql://localhost:5432/pitayaa1
+     username: postgres
+     password: postgres
+     #A config password postgres vao day di
+     
+#server.port =  6969
+#server.display-name = Microservice Group Document Center
+
+#spring.jpa.database=POSTGRESQL
+#spring.datasource.platform=postgres
+#spring.jpa.show-sql=true
+#spring.jpa.hibernate.ddl-auto=create-drop
+#spring.database.driverClassName=org.postgresql.Driver
+#spring.datasource.url=jdbc:postgresql://localhost:5432/pitayaa1
+#spring.datasource.username=postgres
+#spring.datasource.password=postgres
+     

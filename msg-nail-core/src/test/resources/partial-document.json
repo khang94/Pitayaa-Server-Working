@@ -1,0 +1,85 @@
+{
+  "updateItems": [
+    {
+      "loc": "businessInformation/moduleId",
+      "value": null
+    },
+    {
+      "loc": "businessInformation/ownerId",
+      "value": null
+    },
+    {
+      "loc": "businessInformation/profileId",
+      "value": null
+    },
+    {
+      "loc": "businessInformation/documentName",
+      "value": "docNameExample"
+    },
+    {
+      "loc": "businessInformation/documentType",
+      "value": "docTypeExample"
+    },
+    {
+      "loc": "businessInformation/attachmentType",
+      "value": "attachmentTypeExample"
+    },
+    {
+      "loc": "businessInformation/isRequired",
+      "value": true
+    },
+    {
+      "loc": "businessInformation/isAttachted",
+      "value": false
+    },
+    {
+      "loc": "businessInformation/isSigned",
+      "value": false
+    },
+    {
+      "loc": "businessInformation/isSignRequired",
+      "value": true
+    },
+    {
+      "loc": "businessInformation/isGenBySystem",
+      "value": true
+    },
+    {
+      "loc": "systemInformation/createdDate",
+      "value": null
+    },
+    {
+      "loc": "systemInformation/modifiedDate",
+      "value": null
+    },
+    {
+      "loc": "systemInformation/signedDate",
+      "value": null
+    },
+    {
+      "loc": "systemInformation/attachedDate",
+      "value": null
+    },
+    {
+      "loc": "systemInformation/detachedDate",
+      "value": null
+    },
+    {
+      "loc": "systemInformation/fileName",
+      "value": null
+    },
+    {
+      "loc": "systemInformation/contentSize",
+      "value": null
+    },
+    {
+      "loc": "content",
+      "value": null
+    }
+  ],
+  "_links": {
+    "self": {
+      "href": "http://localhost:2407/attachments/model"
+    }
+  }
+}

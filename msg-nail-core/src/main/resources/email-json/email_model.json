@@ -1,0 +1,560 @@
+{
+  "metadata": {
+    "ownerModuleId": {
+      "value": null,
+      "meta": {
+        "errorCode": null,
+        "errorDesc": null,
+        "captionCode": null,
+        "captionDesc": null,
+        "enable": null,
+        "visible": null,
+        "mandatory": null,
+        "encrypt": null,
+        "encryptAlgo": null,
+        "dataGroup": null,
+        "dataType": null,
+        "dataFormat": null,
+        "dataMinValue": null,
+        "dataMaxValue": null,
+        "dataMinLength": null,
+        "dataMaxLength": null,
+        "dataSeq": null
+      }
+    },
+    "ownerUserId": {
+      "value": null,
+      "meta": {
+        "errorCode": null,
+        "errorDesc": null,
+        "captionCode": null,
+        "captionDesc": null,
+        "enable": null,
+        "visible": null,
+        "mandatory": null,
+        "encrypt": null,
+        "encryptAlgo": null,
+        "dataGroup": null,
+        "dataType": null,
+        "dataFormat": null,
+        "dataMinValue": null,
+        "dataMaxValue": null,
+        "dataMinLength": null,
+        "dataMaxLength": null,
+        "dataSeq": null
+      }
+    },
+    "ownerProfileId": {
+      "value": null,
+      "meta": {
+        "errorCode": null,
+        "errorDesc": null,
+        "captionCode": null,
+        "captionDesc": null,
+        "enable": null,
+        "visible": null,
+        "mandatory": null,
+        "encrypt": null,
+        "encryptAlgo": null,
+        "dataGroup": null,
+        "dataType": null,
+        "dataFormat": null,
+        "dataMinValue": null,
+        "dataMaxValue": null,
+        "dataMinLength": null,
+        "dataMaxLength": null,
+        "dataSeq": null
+      }
+    },
+    "templateId": {
+      "value": null,
+      "meta": {
+        "errorCode": null,
+        "errorDesc": null,
+        "captionCode": null,
+        "captionDesc": null,
+        "enable": null,
+        "visible": null,
+        "mandatory": null,
+        "encrypt": null,
+        "encryptAlgo": null,
+        "dataGroup": null,
+        "dataType": null,
+        "dataFormat": null,
+        "dataMinValue": null,
+        "dataMaxValue": null,
+        "dataMinLength": null,
+        "dataMaxLength": null,
+        "dataSeq": null
+      }
+    },
+    "status": {
+      "value": null,
+      "meta": {
+        "errorCode": null,
+        "errorDesc": null,
+        "captionCode": null,
+        "captionDesc": null,
+        "enable": null,
+        "visible": null,
+        "mandatory": null,
+        "encrypt": null,
+        "encryptAlgo": null,
+        "dataGroup": null,
+        "dataType": null,
+        "dataFormat": null,
+        "dataMinValue": null,
+        "dataMaxValue": null,
+        "dataMinLength": null,
+        "dataMaxLength": null,
+        "dataSeq": null
+      }
+    },
+    "createdDate": {
+      "value": null,
+      "meta": {
+        "errorCode": null,
+        "errorDesc": null,
+        "captionCode": null,
+        "captionDesc": null,
+        "enable": null,
+        "visible": null,
+        "mandatory": null,
+        "encrypt": null,
+        "encryptAlgo": null,
+        "dataGroup": null,
+        "dataType": null,
+        "dataFormat": null,
+        "dataMinValue": null,
+        "dataMaxValue": null,
+        "dataMinLength": null,
+        "dataMaxLength": null,
+        "dataSeq": null
+      }
+    },
+    "updatedDate": {
+      "value": null,
+      "meta": {
+        "errorCode": null,
+        "errorDesc": null,
+        "captionCode": null,
+        "captionDesc": null,
+        "enable": null,
+        "visible": null,
+        "mandatory": null,
+        "encrypt": null,
+        "encryptAlgo": null,
+        "dataGroup": null,
+        "dataType": null,
+        "dataFormat": null,
+        "dataMinValue": null,
+        "dataMaxValue": null,
+        "dataMinLength": null,
+        "dataMaxLength": null,
+        "dataSeq": null
+      }
+    },
+    "deliveredDate": {
+      "value": null,
+      "meta": {
+        "errorCode": null,
+        "errorDesc": null,
+        "captionCode": null,
+        "captionDesc": null,
+        "enable": null,
+        "visible": null,
+        "mandatory": null,
+        "encrypt": null,
+        "encryptAlgo": null,
+        "dataGroup": null,
+        "dataType": null,
+        "dataFormat": null,
+        "dataMinValue": null,
+        "dataMaxValue": null,
+        "dataMinLength": null,
+        "dataMaxLength": null,
+        "dataSeq": null
+      }
+    }
+  },
+  "attachments": [
+    {
+      "name": {
+        "value": null,
+        "meta": {
+          "errorCode": null,
+          "errorDesc": null,
+          "captionCode": null,
+          "captionDesc": null,
+          "enable": null,
+          "visible": null,
+          "mandatory": null,
+          "encrypt": null,
+          "encryptAlgo": null,
+          "dataGroup": null,
+          "dataType": null,
+          "dataFormat": null,
+          "dataMinValue": null,
+          "dataMaxValue": null,
+          "dataMinLength": null,
+          "dataMaxLength": null,
+          "dataSeq": null
+        }
+      },
+      "contentType": {
+        "value": null,
+        "meta": {
+          "errorCode": null,
+          "errorDesc": null,
+          "captionCode": null,
+          "captionDesc": null,
+          "enable": null,
+          "visible": null,
+          "mandatory": null,
+          "encrypt": null,
+          "encryptAlgo": null,
+          "dataGroup": null,
+          "dataType": null,
+          "dataFormat": null,
+          "dataMinValue": null,
+          "dataMaxValue": null,
+          "dataMinLength": null,
+          "dataMaxLength": null,
+          "dataSeq": null
+        }
+      },
+      "content": null
+    }
+  ],
+  "payload": [
+    {
+      "code": {
+        "value": null,
+        "meta": {
+          "errorCode": null,
+          "errorDesc": null,
+          "captionCode": null,
+          "captionDesc": null,
+          "enable": null,
+          "visible": null,
+          "mandatory": null,
+          "encrypt": null,
+          "encryptAlgo": null,
+          "dataGroup": null,
+          "dataType": null,
+          "dataFormat": null,
+          "dataMinValue": null,
+          "dataMaxValue": null,
+          "dataMinLength": null,
+          "dataMaxLength": null,
+          "dataSeq": null
+        }
+      },
+      "value": {
+        "value": null,
+        "meta": {
+          "errorCode": null,
+          "errorDesc": null,
+          "captionCode": null,
+          "captionDesc": null,
+          "enable": null,
+          "visible": null,
+          "mandatory": null,
+          "encrypt": null,
+          "encryptAlgo": null,
+          "dataGroup": null,
+          "dataType": null,
+          "dataFormat": null,
+          "dataMinValue": null,
+          "dataMaxValue": null,
+          "dataMinLength": null,
+          "dataMaxLength": null,
+          "dataSeq": null
+        }
+      }
+    }
+  ],
+  "header": {
+    "fromSender": {
+      "value": "mail_server@local.com",
+      "meta": {
+        "errorCode": null,
+        "errorDesc": null,
+        "captionCode": null,
+        "captionDesc": null,
+        "enable": null,
+        "visible": null,
+        "mandatory": null,
+        "encrypt": null,
+        "encryptAlgo": null,
+        "dataGroup": null,
+        "dataType": null,
+        "dataFormat": null,
+        "dataMinValue": null,
+        "dataMaxValue": null,
+        "dataMinLength": null,
+        "dataMaxLength": null,
+        "dataSeq": null
+      }
+    },
+    "fromName": {
+      "value": "khang 1",
+      "meta": {
+        "errorCode": null,
+        "errorDesc": null,
+        "captionCode": null,
+        "captionDesc": null,
+        "enable": null,
+        "visible": null,
+        "mandatory": null,
+        "encrypt": null,
+        "encryptAlgo": null,
+        "dataGroup": null,
+        "dataType": null,
+        "dataFormat": null,
+        "dataMinValue": null,
+        "dataMaxValue": null,
+        "dataMinLength": null,
+        "dataMaxLength": null,
+        "dataSeq": null
+      }
+    },
+    "toReceiver": [
+      {
+        "code": {
+          "value": "khang 2",
+          "meta": {
+            "errorCode": null,
+            "errorDesc": null,
+            "captionCode": null,
+            "captionDesc": null,
+            "enable": null,
+            "visible": null,
+            "mandatory": null,
+            "encrypt": null,
+            "encryptAlgo": null,
+            "dataGroup": null,
+            "dataType": null,
+            "dataFormat": null,
+            "dataMinValue": null,
+            "dataMaxValue": null,
+            "dataMinLength": null,
+            "dataMaxLength": null,
+            "dataSeq": null
+          }
+        },
+        "value": {
+          "value": "mail_server1@local.com",
+          "meta": {
+            "errorCode": null,
+            "errorDesc": null,
+            "captionCode": null,
+            "captionDesc": null,
+            "enable": null,
+            "visible": null,
+            "mandatory": null,
+            "encrypt": null,
+            "encryptAlgo": null,
+            "dataGroup": null,
+            "dataType": null,
+            "dataFormat": null,
+            "dataMinValue": null,
+            "dataMaxValue": null,
+            "dataMinLength": null,
+            "dataMaxLength": null,
+            "dataSeq": null
+          }
+        }
+      }
+    ],
+    "cc": [
+      {
+        "code": {
+          "value": null,
+          "meta": {
+            "errorCode": null,
+            "errorDesc": null,
+            "captionCode": null,
+            "captionDesc": null,
+            "enable": null,
+            "visible": null,
+            "mandatory": null,
+            "encrypt": null,
+            "encryptAlgo": null,
+            "dataGroup": null,
+            "dataType": null,
+            "dataFormat": null,
+            "dataMinValue": null,
+            "dataMaxValue": null,
+            "dataMinLength": null,
+            "dataMaxLength": null,
+            "dataSeq": null
+          }
+        },
+        "value": {
+          "value": null,
+          "meta": {
+            "errorCode": null,
+            "errorDesc": null,
+            "captionCode": null,
+            "captionDesc": null,
+            "enable": null,
+            "visible": null,
+            "mandatory": null,
+            "encrypt": null,
+            "encryptAlgo": null,
+            "dataGroup": null,
+            "dataType": null,
+            "dataFormat": null,
+            "dataMinValue": null,
+            "dataMaxValue": null,
+            "dataMinLength": null,
+            "dataMaxLength": null,
+            "dataSeq": null
+          }
+        }
+      }
+    ],
+    "bcc": [
+      {
+        "code": {
+          "value": null,
+          "meta": {
+            "errorCode": null,
+            "errorDesc": null,
+            "captionCode": null,
+            "captionDesc": null,
+            "enable": null,
+            "visible": null,
+            "mandatory": null,
+            "encrypt": null,
+            "encryptAlgo": null,
+            "dataGroup": null,
+            "dataType": null,
+            "dataFormat": null,
+            "dataMinValue": null,
+            "dataMaxValue": null,
+            "dataMinLength": null,
+            "dataMaxLength": null,
+            "dataSeq": null
+          }
+        },
+        "value": {
+          "value": null,
+          "meta": {
+            "errorCode": null,
+            "errorDesc": null,
+            "captionCode": null,
+            "captionDesc": null,
+            "enable": null,
+            "visible": null,
+            "mandatory": null,
+            "encrypt": null,
+            "encryptAlgo": null,
+            "dataGroup": null,
+            "dataType": null,
+            "dataFormat": null,
+            "dataMinValue": null,
+            "dataMaxValue": null,
+            "dataMinLength": null,
+            "dataMaxLength": null,
+            "dataSeq": null
+          }
+        }
+      }
+    ],
+    "replyTo": {
+      "value": "mail_server1@local.com",
+      "meta": {
+        "errorCode": null,
+        "errorDesc": null,
+        "captionCode": null,
+        "captionDesc": null,
+        "enable": null,
+        "visible": null,
+        "mandatory": null,
+        "encrypt": null,
+        "encryptAlgo": null,
+        "dataGroup": null,
+        "dataType": null,
+        "dataFormat": null,
+        "dataMinValue": null,
+        "dataMaxValue": null,
+        "dataMinLength": null,
+        "dataMaxLength": null,
+        "dataSeq": null
+      }
+    },
+    "replyToName": {
+      "value": "khang 2",
+      "meta": {
+        "errorCode": null,
+        "errorDesc": null,
+        "captionCode": null,
+        "captionDesc": null,
+        "enable": null,
+        "visible": null,
+        "mandatory": null,
+        "encrypt": null,
+        "encryptAlgo": null,
+        "dataGroup": null,
+        "dataType": null,
+        "dataFormat": null,
+        "dataMinValue": null,
+        "dataMaxValue": null,
+        "dataMinLength": null,
+        "dataMaxLength": null,
+        "dataSeq": null
+      }
+    },
+    "subject": {
+      "value": "test subject",
+      "meta": {
+        "errorCode": null,
+        "errorDesc": null,
+        "captionCode": null,
+        "captionDesc": null,
+        "enable": null,
+        "visible": null,
+        "mandatory": null,
+        "encrypt": null,
+        "encryptAlgo": null,
+        "dataGroup": null,
+        "dataType": null,
+        "dataFormat": null,
+        "dataMinValue": null,
+        "dataMaxValue": null,
+        "dataMinLength": null,
+        "dataMaxLength": null,
+        "dataSeq": null
+      }
+    },
+    "bodyText": {
+      "value": "Hello , this is test email",
+      "meta": {
+        "errorCode": null,
+        "errorDesc": null,
+        "captionCode": null,
+        "captionDesc": null,
+        "enable": null,
+        "visible": null,
+        "mandatory": null,
+        "encrypt": null,
+        "encryptAlgo": null,
+        "dataGroup": null,
+        "dataType": null,
+        "dataFormat": null,
+        "dataMinValue": null,
+        "dataMaxValue": null,
+        "dataMinLength": null,
+        "dataMaxLength": null,
+        "dataSeq": null
+      }
+    }
+  },
+  "_links": {
+    "self": {
+      "href": "http://localhost:55378/messages/email/model"
+    }
+  }
+}

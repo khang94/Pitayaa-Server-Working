@@ -1,0 +1,408 @@
+{
+  "businessInformation": {
+    "moduleId": {
+      "value": null,
+      "meta": {
+        "errorCode": null,
+        "errorDesc": null,
+        "captionCode": "",
+        "captionDesc": "",
+        "enable": null,
+        "visible": true,
+        "mandatory": true,
+        "encrypt": null,
+        "encryptAlgo": "",
+        "dataGroup": "",
+        "dataType": "",
+        "dataFormat": "",
+        "dataMinValue": null,
+        "dataMaxValue": null,
+        "dataMinLength": null,
+        "dataMaxLength": null,
+        "dataSeq": null
+      }
+    },
+    "ownerId": {
+      "value": null,
+      "meta": {
+        "errorCode": null,
+        "errorDesc": null,
+        "captionCode": "",
+        "captionDesc": "",
+        "enable": null,
+        "visible": true,
+        "mandatory": true,
+        "encrypt": null,
+        "encryptAlgo": "",
+        "dataGroup": "",
+        "dataType": "",
+        "dataFormat": "",
+        "dataMinValue": null,
+        "dataMaxValue": null,
+        "dataMinLength": null,
+        "dataMaxLength": null,
+        "dataSeq": null
+      }
+    },
+    "profileId": {
+      "value": null,
+      "meta": {
+        "errorCode": null,
+        "errorDesc": null,
+        "captionCode": null,
+        "captionDesc": null,
+        "enable": null,
+        "visible": null,
+        "mandatory": null,
+        "encrypt": null,
+        "encryptAlgo": null,
+        "dataGroup": null,
+        "dataType": null,
+        "dataFormat": null,
+        "dataMinValue": null,
+        "dataMaxValue": null,
+        "dataMinLength": null,
+        "dataMaxLength": null,
+        "dataSeq": null
+      }
+    },
+    "documentName": {
+      "value": null,
+      "meta": {
+        "errorCode": null,
+        "errorDesc": null,
+        "captionCode": "",
+        "captionDesc": "",
+        "enable": null,
+        "visible": true,
+        "mandatory": true,
+        "encrypt": null,
+        "encryptAlgo": "",
+        "dataGroup": "",
+        "dataType": "",
+        "dataFormat": "",
+        "dataMinValue": null,
+        "dataMaxValue": null,
+        "dataMinLength": null,
+        "dataMaxLength": null,
+        "dataSeq": null
+      }
+    },
+    "documentType": {
+      "value": null,
+      "meta": {
+        "errorCode": null,
+        "errorDesc": null,
+        "captionCode": "",
+        "captionDesc": "",
+        "enable": null,
+        "visible": true,
+        "mandatory": false,
+        "encrypt": null,
+        "encryptAlgo": "",
+        "dataGroup": "",
+        "dataType": "",
+        "dataFormat": "",
+        "dataMinValue": null,
+        "dataMaxValue": null,
+        "dataMinLength": null,
+        "dataMaxLength": null,
+        "dataSeq": null
+      }
+    },
+    "attachmentType": {
+      "value": null,
+      "meta": {
+        "errorCode": null,
+        "errorDesc": null,
+        "captionCode": "",
+        "captionDesc": "",
+        "enable": null,
+        "visible": true,
+        "mandatory": false,
+        "encrypt": null,
+        "encryptAlgo": "",
+        "dataGroup": "",
+        "dataType": "",
+        "dataFormat": "",
+        "dataMinValue": null,
+        "dataMaxValue": null,
+        "dataMinLength": null,
+        "dataMaxLength": null,
+        "dataSeq": null
+      }
+    },
+    "isRequired": {
+      "value": false,
+      "meta": {
+        "errorCode": null,
+        "errorDesc": null,
+        "captionCode": "",
+        "captionDesc": "",
+        "enable": null,
+        "visible": true,
+        "mandatory": true,
+        "encrypt": null,
+        "encryptAlgo": "",
+        "dataGroup": "",
+        "dataType": "",
+        "dataFormat": "",
+        "dataMinValue": null,
+        "dataMaxValue": null,
+        "dataMinLength": null,
+        "dataMaxLength": null,
+        "dataSeq": null
+      }
+    },
+    "isAttachted": {
+      "value": false,
+      "meta": {
+        "errorCode": null,
+        "errorDesc": null,
+        "captionCode": "",
+        "captionDesc": "",
+        "enable": null,
+        "visible": true,
+        "mandatory": true,
+        "encrypt": null,
+        "encryptAlgo": "",
+        "dataGroup": "",
+        "dataType": "",
+        "dataFormat": "",
+        "dataMinValue": null,
+        "dataMaxValue": null,
+        "dataMinLength": null,
+        "dataMaxLength": null,
+        "dataSeq": null
+      }
+    },
+    "isSigned": {
+      "value": false,
+      "meta": {
+        "errorCode": null,
+        "errorDesc": null,
+        "captionCode": "",
+        "captionDesc": "",
+        "enable": null,
+        "visible": true,
+        "mandatory": true,
+        "encrypt": null,
+        "encryptAlgo": "",
+        "dataGroup": "",
+        "dataType": "",
+        "dataFormat": "",
+        "dataMinValue": null,
+        "dataMaxValue": null,
+        "dataMinLength": null,
+        "dataMaxLength": null,
+        "dataSeq": null
+      }
+    },
+    "isSignRequired": {
+      "value": false,
+      "meta": {
+        "errorCode": null,
+        "errorDesc": null,
+        "captionCode": "",
+        "captionDesc": "",
+        "enable": null,
+        "visible": true,
+        "mandatory": false,
+        "encrypt": null,
+        "encryptAlgo": "",
+        "dataGroup": "",
+        "dataType": "",
+        "dataFormat": "",
+        "dataMinValue": null,
+        "dataMaxValue": null,
+        "dataMinLength": null,
+        "dataMaxLength": null,
+        "dataSeq": null
+      }
+    },
+    "isGenBySystem": {
+      "value": false,
+      "meta": {
+        "errorCode": null,
+        "errorDesc": null,
+        "captionCode": "",
+        "captionDesc": "",
+        "enable": null,
+        "visible": true,
+        "mandatory": true,
+        "encrypt": null,
+        "encryptAlgo": "",
+        "dataGroup": "",
+        "dataType": "",
+        "dataFormat": "",
+        "dataMinValue": null,
+        "dataMaxValue": null,
+        "dataMinLength": null,
+        "dataMaxLength": null,
+        "dataSeq": null
+      }
+    }
+  },
+  "systemInformation": {
+    "createdDate": {
+      "value": null,
+      "meta": {
+        "errorCode": null,
+        "errorDesc": null,
+        "captionCode": "",
+        "captionDesc": "",
+        "enable": null,
+        "visible": true,
+        "mandatory": true,
+        "encrypt": null,
+        "encryptAlgo": "",
+        "dataGroup": "",
+        "dataType": "",
+        "dataFormat": "",
+        "dataMinValue": null,
+        "dataMaxValue": null,
+        "dataMinLength": null,
+        "dataMaxLength": null,
+        "dataSeq": null
+      }
+    },
+    "modifiedDate": {
+      "value": null,
+      "meta": {
+        "errorCode": null,
+        "errorDesc": null,
+        "captionCode": "",
+        "captionDesc": "",
+        "enable": null,
+        "visible": true,
+        "mandatory": true,
+        "encrypt": null,
+        "encryptAlgo": "",
+        "dataGroup": "",
+        "dataType": "",
+        "dataFormat": "",
+        "dataMinValue": null,
+        "dataMaxValue": null,
+        "dataMinLength": null,
+        "dataMaxLength": null,
+        "dataSeq": null
+      }
+    },
+    "signedDate": {
+      "value": null,
+      "meta": {
+        "errorCode": null,
+        "errorDesc": null,
+        "captionCode": "",
+        "captionDesc": "",
+        "enable": null,
+        "visible": true,
+        "mandatory": false,
+        "encrypt": null,
+        "encryptAlgo": "",
+        "dataGroup": "",
+        "dataType": "",
+        "dataFormat": "",
+        "dataMinValue": null,
+        "dataMaxValue": null,
+        "dataMinLength": null,
+        "dataMaxLength": null,
+        "dataSeq": null
+      }
+    },
+    "attachedDate": {
+      "value": null,
+      "meta": {
+        "errorCode": null,
+        "errorDesc": null,
+        "captionCode": "",
+        "captionDesc": "",
+        "enable": null,
+        "visible": true,
+        "mandatory": false,
+        "encrypt": null,
+        "encryptAlgo": "",
+        "dataGroup": "",
+        "dataType": "",
+        "dataFormat": "",
+        "dataMinValue": null,
+        "dataMaxValue": null,
+        "dataMinLength": null,
+        "dataMaxLength": null,
+        "dataSeq": null
+      }
+    },
+    "detachedDate": {
+      "value": null,
+      "meta": {
+        "errorCode": null,
+        "errorDesc": null,
+        "captionCode": "",
+        "captionDesc": "",
+        "enable": null,
+        "visible": true,
+        "mandatory": false,
+        "encrypt": null,
+        "encryptAlgo": "",
+        "dataGroup": "",
+        "dataType": "",
+        "dataFormat": "",
+        "dataMinValue": null,
+        "dataMaxValue": null,
+        "dataMinLength": null,
+        "dataMaxLength": null,
+        "dataSeq": null
+      }
+    },
+    "fileName": {
+      "value": null,
+      "meta": {
+        "errorCode": null,
+        "errorDesc": null,
+        "captionCode": "",
+        "captionDesc": "",
+        "enable": null,
+        "visible": true,
+        "mandatory": false,
+        "encrypt": null,
+        "encryptAlgo": "",
+        "dataGroup": "",
+        "dataType": "",
+        "dataFormat": "",
+        "dataMinValue": null,
+        "dataMaxValue": null,
+        "dataMinLength": null,
+        "dataMaxLength": null,
+        "dataSeq": null
+      }
+    },
+    "contentSize": {
+      "value": null,
+      "meta": {
+        "errorCode": null,
+        "errorDesc": null,
+        "captionCode": "",
+        "captionDesc": "",
+        "enable": null,
+        "visible": true,
+        "mandatory": false,
+        "encrypt": null,
+        "encryptAlgo": "",
+        "dataGroup": "",
+        "dataType": "",
+        "dataFormat": "",
+        "dataMinValue": null,
+        "dataMaxValue": null,
+        "dataMinLength": null,
+        "dataMaxLength": null,
+        "dataSeq": null
+      }
+    }
+  },
+  "content": null,
+  "_links": {
+    "self": {
+      "href": "http://localhost:2407/attachments/model"
+    }
+  }
+}
