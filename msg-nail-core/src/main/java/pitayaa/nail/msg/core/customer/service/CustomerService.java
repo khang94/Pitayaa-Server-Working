@@ -20,4 +20,6 @@ public interface CustomerService {
 	List<?> findAllByQuery(QueryCriteria query) throws ClassNotFoundException;
 
 	Customer update(Customer customerSaved, Customer customerUpdated) throws Exception;
+
+	List<Customer> findAllCustomer(String salonId, String type);
 }

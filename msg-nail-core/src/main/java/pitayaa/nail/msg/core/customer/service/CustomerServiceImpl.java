@@ -1,5 +1,6 @@
 package pitayaa.nail.msg.core.customer.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -35,6 +36,17 @@ public class CustomerServiceImpl implements CustomerService {
 	@Override
 	public List<Customer> findAllCustomer(String salonId) {
 		return customerRepo.findAllCustomer(salonId);
+	}
+	
+	@Override
+	public List<Customer> findAllCustomer(String salonId , String type){
+		List<Customer> customers = new ArrayList<Customer>();
+		if (!type.equalsIgnoreCase("")){
+			customers = customerRepo.findAllCustomer(salonId, type);
+		} else {
+			customers = customerRepo.findAllCustomer(salonId);
+		}
+		return customers;
 	}
 
 	@Override

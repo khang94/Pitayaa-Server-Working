@@ -126,7 +126,8 @@ public class CustomerController {
 
 	@RequestMapping(value = "customers/bySalon", method = RequestMethod.GET)
 	public @ResponseBody ResponseEntity<?> findAllCustomerBySalonId(
-			@RequestParam("salonId") String salonId) throws Exception {
+			@RequestParam("salonId") String salonId,
+			@RequestParam(name ="type", required = false , defaultValue = "") String customerType) throws Exception {
 
 		List<Customer> lstCustomer = customerService
 				.findAllCustomer(salonId);
