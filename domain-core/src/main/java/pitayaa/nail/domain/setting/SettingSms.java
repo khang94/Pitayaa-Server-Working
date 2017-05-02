@@ -3,20 +3,19 @@ package pitayaa.nail.domain.setting;
 import java.util.Date;
 import java.util.UUID;
 
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Version;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
 import lombok.Data;
 import pitayaa.nail.domain.hibernate.transaction.ObjectHibernateListener;
-import pitayaa.nail.domain.setting.sms.TemplateDetail;
 
 @Data
 @Entity
@@ -39,10 +38,7 @@ public class SettingSms {
 	private Integer minutesRepeat;
 	private Integer hoursRepeat;
 	private String content;
-	
-	@Embedded
-	private TemplateDetail templateDetail;
-	
+	private String template;
 	private boolean autoSend;
 	private String sendSmsOn;
 	private String sendSmsOnTime;

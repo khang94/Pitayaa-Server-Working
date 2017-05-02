@@ -7,6 +7,6 @@ import pitayaa.nail.domain.setting.SettingSms;
 
 public interface SettingSMSBus {
 	
-	 List<SettingSms>getListSettingSMSDefaul(String salonId) throws Exception;
+	 List<SettingSms>getListSettingSMSDefaul(String salonId);
 
 }
