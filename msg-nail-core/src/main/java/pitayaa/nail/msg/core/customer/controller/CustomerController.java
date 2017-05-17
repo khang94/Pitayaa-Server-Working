@@ -129,10 +129,16 @@ public class CustomerController {
 			@RequestParam("salonId") String salonId,
 			@RequestParam(name ="type", required = false , defaultValue = "") String customerType) throws Exception {
 
-		List<Customer> lstCustomer = customerService
+		List<Customer> lstCustomer = null;
+		if (!customerType.equalsIgnoreCase("") && customerType != null){
+			lstCustomer = customerService
+					.findAllCustomer(salonId , customerType);
+		} else {
+			lstCustomer = customerService
 				.findAllCustomer(salonId);
+		}
 		JsonHttp jsonHttp = new JsonHttp();
-		if (lstCustomer != null && lstCustomer.size() > 0) {
+		if (lstCustomer != null) {
 			jsonHttp.setCode(200);
 			jsonHttp.setObject(lstCustomer);
 			jsonHttp.setStatus("success");

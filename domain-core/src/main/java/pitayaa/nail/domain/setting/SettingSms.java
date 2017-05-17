@@ -3,11 +3,13 @@ package pitayaa.nail.domain.setting;
 import java.util.Date;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -16,6 +18,8 @@ import org.hibernate.annotations.Type;
 
 import lombok.Data;
 import pitayaa.nail.domain.hibernate.transaction.ObjectHibernateListener;
+import pitayaa.nail.domain.setting.sms.CustomerGroupSending;
+import pitayaa.nail.domain.setting.sms.EmployeeGroupSending;
 import pitayaa.nail.domain.setting.sms.TemplateDetail;
 
 @Data
@@ -34,7 +38,7 @@ public class SettingSms {
 
 	private String type;
 	private String key;
-	private String repeatType;
+	private String repeatType; // DAY or HOURS or Time, D
 	private Integer timesRepeat;
 	private Integer minutesRepeat;
 	private Integer hoursRepeat;
@@ -43,14 +47,22 @@ public class SettingSms {
 	@Embedded
 	private TemplateDetail templateDetail;
 	
+	@OneToOne(cascade = {CascadeType.ALL})
+	private CustomerGroupSending customerGroups;
+	
+	@OneToOne(cascade = {CascadeType.ALL})
+	private EmployeeGroupSending employeeGroups;
+	
 	private boolean autoSend;
+	private boolean autoSendEmployee;
+	
 	private String sendSmsOn;
 	private String sendSmsOnTime;
 
 	private String note;
 	private String holidayType;
 
-	private String sendSmsTo;
+	private String sendSmsToGroup;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedDate;

@@ -11,6 +11,7 @@ public class BusinessConstant {
 	public static final String CUSTOMER_APPOINTMENT_REMIND = "APPOINTMENT_REMIND";
 	public static final String CUSTOMER_APPOINTMENT_CANCEL = "APPOINTMENT_CANCEL";
 	public static final String CUSTOMER_PROMOTION = "PROMOTION";
+	public static final String CUSTOMER_APPOINTMENT = "APPOINTMENT";
 	
 	public static final String CUSTOMER = "CUSTOMER";
 	public static final String EMPLOYEE = "EMPLOYEE";
