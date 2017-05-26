@@ -1,6 +1,7 @@
 package pitayaa.nail.domain.setting;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
@@ -9,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -20,6 +22,7 @@ import lombok.Data;
 import pitayaa.nail.domain.hibernate.transaction.ObjectHibernateListener;
 import pitayaa.nail.domain.setting.sms.CustomerGroupSending;
 import pitayaa.nail.domain.setting.sms.EmployeeGroupSending;
+import pitayaa.nail.domain.setting.sms.SmsAppointmentReminder;
 import pitayaa.nail.domain.setting.sms.TemplateDetail;
 
 @Data
@@ -43,15 +46,22 @@ public class SettingSms {
 	private Integer minutesRepeat;
 	private Integer hoursRepeat;
 	private String content;
+	private String contentForEmployees;
 	
-	@Embedded
+	@OneToOne(cascade = {CascadeType.ALL})
 	private TemplateDetail templateDetail;
+	
+	@OneToOne(cascade = {CascadeType.ALL})
+	private TemplateDetail templateDetailForEmployee;
 	
 	@OneToOne(cascade = {CascadeType.ALL})
 	private CustomerGroupSending customerGroups;
 	
 	@OneToOne(cascade = {CascadeType.ALL})
 	private EmployeeGroupSending employeeGroups;
+	
+	@OneToMany(cascade = {CascadeType.ALL})
+	private List<SmsAppointmentReminder> timeReminder;
 	
 	private boolean autoSend;
 	private boolean autoSendEmployee;

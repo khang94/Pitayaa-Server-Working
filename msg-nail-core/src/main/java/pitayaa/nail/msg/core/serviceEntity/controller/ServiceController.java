@@ -47,13 +47,13 @@ public class ServiceController {
 			jsonHttp.setCode(200);
 			jsonHttp.setObject(servicesList);
 			jsonHttp.setStatus("success");
-			jsonHttp.setResponseMessage("get list success");
+			jsonHttp.setMessage("get list success");
 		} 
 		
 		else{
 			jsonHttp.setCode(404);
 			jsonHttp.setStatus("error");
-			jsonHttp.setResponseMessage("get list failed");
+			jsonHttp.setMessage("get list failed");
 		} 
 		return ResponseEntity.ok(jsonHttp);
 	}
@@ -76,5 +76,28 @@ public class ServiceController {
 		
 		ServiceModel service = serviceCore.update(serviceSaved.get(), serviceUpdated);
 		return ResponseEntity.ok(service);
+	}
+	
+	@RequestMapping(value = "services/{ID}", method = RequestMethod.DELETE)
+	public @ResponseBody ResponseEntity<?> delete(@PathVariable("ID") UUID id) throws Exception {
+
+		JsonHttp jsonHttp=new JsonHttp();
+
+		try {
+			Optional<ServiceModel> optionService = serviceCore.findOne(id);
+
+			if (optionService.isPresent()) {
+				serviceCore.delete(optionService.get());
+			}
+			jsonHttp.setCode(200);
+			jsonHttp.setObject(optionService.get());
+			jsonHttp.setStatus("success");
+		} catch (Exception e) {
+			// TODO: handle exception
+			jsonHttp.setMessage(e.getMessage());
+			jsonHttp.setStatus("error");
+		}
+		return new ResponseEntity<>(jsonHttp, HttpStatus.OK);
+
 	}
 }

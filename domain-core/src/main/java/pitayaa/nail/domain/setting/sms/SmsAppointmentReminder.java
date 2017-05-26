@@ -13,7 +13,7 @@ import lombok.Data;
 
 @Data
 @Entity
-public class TemplateDetail {
+public class SmsAppointmentReminder {
 	
 	@Id
 	@GenericGenerator(name = "uuid-gen", strategy = "uuid2")
@@ -21,11 +21,9 @@ public class TemplateDetail {
 	@Type(type = "pg-uuid")
 	private UUID uuid;
 	
-	private String template1;
-	private String template2;
-	private String template3;
-	private String template4;
-	
-	private Integer templateActive;
+	private Integer index;
+	private Boolean isActive;
+	private Integer timer;
+	private String sendOnTime;
 
 }

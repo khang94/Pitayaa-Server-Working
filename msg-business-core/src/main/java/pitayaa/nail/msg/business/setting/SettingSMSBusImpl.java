@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import pitayaa.nail.domain.setting.SettingSms;
 import pitayaa.nail.domain.setting.sms.CustomerSummary;
 import pitayaa.nail.domain.setting.sms.EmployeeSummary;
+import pitayaa.nail.domain.setting.sms.SmsAppointmentReminder;
 import pitayaa.nail.msg.business.constant.BusinessConstant;
 import pitayaa.nail.msg.business.helper.BusinessHelper;
 
@@ -19,7 +20,7 @@ public class SettingSMSBusImpl implements SettingSMSBus {
 	BusinessHelper busHelper;
 
 	@Override
-	public List<SettingSms> getListSettingSMSDefaul(String salonId) throws Exception {
+	public List<SettingSms> getListSettingSMSDefault(String salonId) throws Exception {
 		// TODO Auto-generated method stub
 		List<SettingSms> lstSetting=new ArrayList<>();
 		List<CustomerSummary> summaryCustomers = new ArrayList<CustomerSummary>();
@@ -103,8 +104,12 @@ public class SettingSMSBusImpl implements SettingSMSBus {
 		smsContent.setHoursRepeat(0);
 		smsContent.setContent("");
 		smsContent.getTemplateDetail().setTemplateActive(0);
+		smsContent.getTemplateDetailForEmployee().setTemplateActive(0);
 		smsContent.getCustomerGroups().setCustomers(summaryCustomers);
 		smsContent.getEmployeeGroups().setEmployees(summaryEmployees);
+		
+		List<SmsAppointmentReminder> appointments = this.initTimerAppointment();
+		smsContent.setTimeReminder(appointments);
 		
 		lstSetting.add(smsContent);
 		//---------------
@@ -142,6 +147,46 @@ public class SettingSMSBusImpl implements SettingSMSBus {
 		//---------------
 		
 		return lstSetting;
+	}
+	
+	public List<SmsAppointmentReminder> initTimerAppointment(){
+		
+		List<SmsAppointmentReminder> appointments = new ArrayList<SmsAppointmentReminder>();
+		SmsAppointmentReminder appointmentReminder = new SmsAppointmentReminder();
+		
+		appointmentReminder.setIndex(0);
+		appointmentReminder.setIsActive(false);
+		appointmentReminder.setSendOnTime("NONE");
+		appointmentReminder.setTimer(0);
+		appointments.add(appointmentReminder);
+		//---------------
+		
+		appointmentReminder = new SmsAppointmentReminder();
+		appointmentReminder.setIndex(1);
+		appointmentReminder.setIsActive(false);
+		appointmentReminder.setSendOnTime("NONE");
+		appointmentReminder.setTimer(0);
+		appointments.add(appointmentReminder);
+		//---------------
+		
+		
+		appointmentReminder = new SmsAppointmentReminder();
+		appointmentReminder.setIndex(2);
+		appointmentReminder.setIsActive(false);
+		appointmentReminder.setSendOnTime("NONE");
+		appointmentReminder.setTimer(0);
+		appointments.add(appointmentReminder);
+		//---------------
+		
+		appointmentReminder = new SmsAppointmentReminder();
+		appointmentReminder.setIndex(3);
+		appointmentReminder.setIsActive(false);
+		appointmentReminder.setSendOnTime("NONE");
+		appointmentReminder.setTimer(0);
+		appointments.add(appointmentReminder);
+		//---------------
+		
+		return appointments;
 	}
 
 }

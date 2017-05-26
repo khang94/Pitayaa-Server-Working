@@ -90,7 +90,7 @@ public class AccountServiceImpl implements AccountService {
 		salon= salonService.save(salon);
 		
 		//save setting sms
-		List<SettingSms> lstSettingSMS=settingSMSBus.getListSettingSMSDefaul(salon.getUuid().toString());
+		List<SettingSms> lstSettingSMS=settingSMSBus.getListSettingSMSDefault(salon.getUuid().toString());
 		for(SettingSms settingSms:lstSettingSMS){
 			settingSMSRepo.save(settingSms);
 		}

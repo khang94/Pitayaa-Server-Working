@@ -120,4 +120,16 @@ public class CustomerServiceImpl implements CustomerService {
 		sc.setEntity(query.getObject());
 		return criteriaRepo.searchCriteria(sc);
 	}
+	
+	@Override
+	public Optional<Customer> login(String email, String password,
+			String salonId) {
+		// TODO Auto-generated method stub
+		return Optional.ofNullable(customerRepo.findByEmailAndPassword(email, password, salonId));
+	}
+	
+	@Override
+	public Optional<Customer> findByQrcode(String qrcode,String salonId) {
+		return Optional.ofNullable(customerRepo.findByQrcode(qrcode, salonId));
+	}
 }

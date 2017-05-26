@@ -15,4 +15,6 @@ public interface ServiceEntityInterface {
 	ServiceModel save(ServiceModel serviceBody) throws Exception;
 
 	ServiceModel update(ServiceModel serviceSaved, ServiceModel serviceUpdated) throws Exception;
+
+	void delete(ServiceModel serviceBody);
 }

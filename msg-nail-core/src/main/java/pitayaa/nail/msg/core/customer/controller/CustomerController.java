@@ -3,6 +3,7 @@ package pitayaa.nail.msg.core.customer.controller;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -23,6 +24,7 @@ import pitayaa.nail.domain.appointment.Appointment;
 import pitayaa.nail.domain.customer.Customer;
 import pitayaa.nail.domain.hibernate.transaction.QueryCriteria;
 import pitayaa.nail.json.http.JsonHttp;
+import pitayaa.nail.msg.business.util.security.EncryptionUtils;
 import pitayaa.nail.msg.core.common.CoreHelper;
 import pitayaa.nail.msg.core.customer.repository.CustomerRepository;
 import pitayaa.nail.msg.core.customer.service.CustomerService;
@@ -142,13 +144,13 @@ public class CustomerController {
 			jsonHttp.setCode(200);
 			jsonHttp.setObject(lstCustomer);
 			jsonHttp.setStatus("success");
-			jsonHttp.setResponseMessage("get list success");
+			jsonHttp.setMessage("get list success");
 		}
 
 		else {
 			jsonHttp.setCode(404);
 			jsonHttp.setStatus("error");
-			jsonHttp.setResponseMessage("get list failed");
+			jsonHttp.setMessage("get list failed");
 		}
 
 		return new ResponseEntity<>(jsonHttp, HttpStatus.OK);
@@ -164,16 +166,65 @@ public class CustomerController {
 			jsonHttp.setCode(200);
 			jsonHttp.setObject(lstCustomer);
 			jsonHttp.setStatus("success");
-			jsonHttp.setResponseMessage("get list success");
+			jsonHttp.setMessage("get list success");
 		}
 
 		else {
 			jsonHttp.setCode(404);
 			jsonHttp.setStatus("error");
-			jsonHttp.setResponseMessage("get list failed");
+			jsonHttp.setMessage("get list failed");
 		}
 
 		return new ResponseEntity<>(lstCustomer, HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "customers/findByQrcode", method = RequestMethod.POST)
+	public @ResponseBody ResponseEntity<?> findByQrcode(
+			@RequestBody Customer customerBody) throws Exception {
+		JsonHttp json=new JsonHttp();
+		try{
+			Optional<Customer> opCustomer=customerService.findByQrcode(customerBody.getQrCode(), customerBody.getSalonId());
+			if(opCustomer.isPresent()){
+				json.setObject(opCustomer.get());
+				json.setStatus(JsonHttp.SUCCESS);
+			}else{
+				throw new Exception("Can't find customer with this qrcode");
+			}
+		}catch(Exception e){
+			json.setStatus(JsonHttp.ERROR);
+			json.setMessage(e.getMessage());
+
+		}
+	
+		return ResponseEntity.ok(json);
+	}
+	
+	@RequestMapping(value = "customers/login", method = RequestMethod.POST)
+	public @ResponseBody ResponseEntity<?> customerLogin(
+			@RequestBody HashMap<String , Object>model) throws Exception {
+		JsonHttp json=new JsonHttp();
+		try{
+			String email=(String) model.get("email");
+			email=email.toLowerCase();
+			String password=(String) model.get("password");
+			String salonId=(String) model.get("salonId");
+
+
+			String encPassword=EncryptionUtils.encodeMD5(password, email);
+			Optional<Customer> opCustomer=customerService.login(email, encPassword, salonId);
+			if(opCustomer.isPresent()){
+				json.setObject(opCustomer.get());
+				json.setStatus(JsonHttp.SUCCESS);
+			}else{
+				throw new Exception("Wrong email or password");
+			}
+		}catch(Exception e){
+			json.setStatus(JsonHttp.ERROR);
+			json.setMessage(e.getMessage());
+
+		}
+	
+		return ResponseEntity.ok(json);
 	}
 
 }

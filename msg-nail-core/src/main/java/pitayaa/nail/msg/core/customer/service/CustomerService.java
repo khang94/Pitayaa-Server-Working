@@ -22,4 +22,8 @@ public interface CustomerService {
 	Customer update(Customer customerSaved, Customer customerUpdated) throws Exception;
 
 	List<Customer> findAllCustomer(String salonId, String type);
+
+	Optional<Customer> login(String email, String password, String salonId);
+
+	Optional<Customer> findByQrcode(String qrcode, String salonId);
 }

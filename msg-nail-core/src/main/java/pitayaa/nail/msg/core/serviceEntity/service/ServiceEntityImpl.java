@@ -95,4 +95,10 @@ public class ServiceEntityImpl implements ServiceEntityInterface {
 		
 		return serviceUpdated;
 	}
+	
+	@Override
+	public void delete(ServiceModel serviceBody) {
+		serviceRepo.delete(serviceBody);
+		
+	}
 }

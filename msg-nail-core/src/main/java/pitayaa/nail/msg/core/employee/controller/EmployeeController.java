@@ -72,13 +72,13 @@ public class EmployeeController {
 			jsonHttp.setCode(200);
 			jsonHttp.setObject(lstEmployee);
 			jsonHttp.setStatus("success");
-			jsonHttp.setResponseMessage("get list success");
+			jsonHttp.setMessage("get list success");
 		}
 
 		else {
 			jsonHttp.setCode(404);
 			jsonHttp.setStatus("error");
-			jsonHttp.setResponseMessage("get list failed");
+			jsonHttp.setMessage("get list failed");
 		}
 
 		return new ResponseEntity<>(jsonHttp, HttpStatus.OK);

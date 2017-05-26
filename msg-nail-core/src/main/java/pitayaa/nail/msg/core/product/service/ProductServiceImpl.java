@@ -32,5 +32,11 @@ public class ProductServiceImpl implements ProductService{
 		// TODO Auto-generated method stub
 		return repo.save( model);
 	}
+	
+	@Override
+	public void delete(ProductModel model) {
+		repo.delete(model);
+		
+	}
 
 }

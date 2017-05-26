@@ -12,4 +12,6 @@ public interface ProductService {
 	List<ProductModel> findAll(String salonId);
 
 	ProductModel save(ProductModel  model) throws Exception;
+
+	void delete(ProductModel model);
 }
