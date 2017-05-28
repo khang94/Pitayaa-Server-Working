@@ -136,7 +136,7 @@ public class AccountServiceImpl implements AccountService {
 		//JsonHttp result = new JsonHttp();
 
 		// Map jsonAccountLogin to AccountModel
-		String username = jsonAccountLogin.getUsername();
+		String username = jsonAccountLogin.getEmail();
 		String password = jsonAccountLogin.getPassword();
 
 		// Query

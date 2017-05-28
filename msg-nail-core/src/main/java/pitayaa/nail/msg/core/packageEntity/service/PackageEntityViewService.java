@@ -1,7 +1,6 @@
 package pitayaa.nail.msg.core.packageEntity.service;
 
 import java.util.Date;
-import java.util.Map;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import pitayaa.nail.domain.packages.PackageModel;
 import pitayaa.nail.domain.salon.Salon;
-import pitayaa.nail.domain.service.ServiceModel;
 import pitayaa.nail.domain.view.View;
 import pitayaa.nail.msg.core.common.CoreConstant;
 import pitayaa.nail.msg.core.common.CoreHelper;
@@ -90,39 +88,5 @@ public class PackageEntityViewService {
 		// Return path
 		return path;
 	}
-	
-	public PackageModel buildViewByDate(PackageModel packageModel , byte[] binaryImage) throws Exception {
-		// Get path
-		String pathConfig = settingService
-				.getFolderStoreProperties(CoreConstant.PATH_FOLDER_STORE);
-
-		Map<String,String> mapPath = coreHelper.buildStructureFolderByDate(packageModel.getSalonId().toString() , packageModel.getUpdatedDate(),pathConfig);
-		
-		String staticPath = mapPath.get(CoreConstant.STATIC_PATH);
-		String dynamicPath = mapPath.get(CoreConstant.DYNAMIC_PATH);
-		
-		//Create customer folder
-		staticPath = staticPath + CoreConstant.SLASH + CoreConstant.VIEW_PACKAGE;
-		dynamicPath = dynamicPath + CoreConstant.SLASH + CoreConstant.VIEW_PACKAGE;
-		coreHelper.createFolder(staticPath);
-		
-		// Extract Image to Folder
-		packageModel.getView().setModuleId(packageModel.getUuid().toString());
-		staticPath = coreHelper.buildFileImageFromPath(staticPath,
-				packageModel.getView());
-		dynamicPath = coreHelper.buildFileImageFromPath(dynamicPath,
-				packageModel.getView());
-		
-		// Update
-		packageModel.getView().setPathImage(staticPath);
-		packageModel.getView().setPathImageServer(dynamicPath);
-		packageModelRepo.save(packageModel);
-		if (staticPath != null && binaryImage != null) {
-			coreHelper.writeBytesToFileNio(binaryImage,
-					staticPath);
-		}
-		
-		return packageModel;
-	} 
 
 }

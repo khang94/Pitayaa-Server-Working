@@ -47,7 +47,7 @@ public class CategoryController {
 		return ResponseEntity.ok(account);
 	}
 
-	@RequestMapping(value = "categorys", method = RequestMethod.POST)
+	@RequestMapping(value = "categories", method = RequestMethod.POST)
 	public @ResponseBody ResponseEntity<?> createCustomer(@RequestBody Category categoryBody) throws Exception {
 
 		Category category = cateService.save(categoryBody);
@@ -62,7 +62,7 @@ public class CategoryController {
 		return new ResponseEntity<Resource<Category>>(response, HttpStatus.CREATED);
 	}
 
-	@RequestMapping(value = "categorys/{ID}", method = RequestMethod.GET)
+	@RequestMapping(value = "categories/{ID}", method = RequestMethod.GET)
 	public @ResponseBody ResponseEntity<?> findOne(@PathVariable("ID") UUID id) throws Exception {
 
 		Optional<Category> category = cateService.findOne(id);
@@ -76,7 +76,7 @@ public class CategoryController {
 		return new ResponseEntity<>(category.get(), HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "categorys/{ID}", method = RequestMethod.DELETE)
+	@RequestMapping(value = "categories/{ID}", method = RequestMethod.DELETE)
 	public @ResponseBody ResponseEntity<?> delete(@PathVariable("ID") UUID id) throws Exception {
 
 		Optional<Category> category = cateService.findOne(id);
@@ -87,7 +87,7 @@ public class CategoryController {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "categorys/{ID}", method = RequestMethod.PUT)
+	@RequestMapping(value = "categories/{ID}", method = RequestMethod.PUT)
 	public @ResponseBody ResponseEntity<?> updateCategory(@RequestBody Category categoryBody,
 			@PathVariable("ID") UUID id) throws Exception {
 
@@ -104,9 +104,9 @@ public class CategoryController {
 	}
 
 	@RequestMapping(value = "categories/byType", method = RequestMethod.GET)
-	public @ResponseBody ResponseEntity<?> getCategoriesByType(@RequestParam("type") String type) throws Exception {
+	public @ResponseBody ResponseEntity<?> getCategoriesByType(@RequestParam("salonId") String salonId,@RequestParam("type") String type) throws Exception {
 
-		List<Category> categoryList = cateService.categoriesForGroup(type);
+		List<Category> categoryList = cateService.categoriesForGroup(type,salonId);
 		JsonHttp jsonHttp = new JsonHttp();
 		if (categoryList != null && categoryList.size() > 0) {
 			jsonHttp.setCode(200);

@@ -1,4 +1,4 @@
-package pitayaa.nail.domain.packagedtl;
+package pitayaa.nail.domain.packages.elements;
 
 import java.util.Date;
 import java.util.UUID;

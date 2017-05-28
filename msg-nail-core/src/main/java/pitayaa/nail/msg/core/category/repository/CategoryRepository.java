@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.stereotype.Service;
 
@@ -16,12 +17,12 @@ import pitayaa.nail.domain.category.Category;
 public interface CategoryRepository extends
 		PagingAndSortingRepository<Category, UUID> { 
 	
-	@Query("Select C from Category C where C.cateType = 1") // Services
-	List<Category> categoriesForService();
+	@Query("Select C from Category C where C.cateType = 1 and C.salonId = :salonId") // Services
+	List<Category> categoriesForService(@Param("salonId") String salonId);
 	
-	@Query("Select C from Category C where C.cateType = 2") // Packages
-	List<Category> categoriesForPackages();
+	@Query("Select C from Category C where C.cateType = 2 and C.salonId = :salonId") // Packages
+	List<Category> categoriesForPackages(@Param("salonId") String salonId);
 	
-	@Query("Select C from Category C where C.cateType = 3") // Products
-	List<Category> categoriesForProduct();
+	@Query("Select C from Category C where C.cateType = 3 and C.salonId = :salonId") // Products
+	List<Category> categoriesForProduct( @Param("salonId") String salonId);
 }

@@ -15,7 +15,7 @@ import pitayaa.nail.domain.packages.PackageModel;
 import pitayaa.nail.domain.service.ServiceModel;
 import pitayaa.nail.msg.core.customer.service.CustomerService;
 import pitayaa.nail.msg.core.employee.service.EmployeeService;
-import pitayaa.nail.msg.core.packageEntity.service.PackageEntityInterface;
+import pitayaa.nail.msg.core.packageEntity.service.PackageService;
 import pitayaa.nail.msg.core.serviceEntity.service.ServiceEntityInterface;
 
 @Service
@@ -31,7 +31,7 @@ public class AppointmentBusinessImpl implements AppointmentBusiness {
 	ServiceEntityInterface serviceNail;
 
 	@Autowired
-	PackageEntityInterface packageNail;
+	PackageService packageNail;
 
 	@Override
 	public Appointment executeCreateAppm(Appointment appmBody) throws Exception {

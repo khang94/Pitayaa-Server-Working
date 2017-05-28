@@ -20,8 +20,8 @@ public interface CustomerRepository extends
 	@Query("select c from Customer c where c.salonId = :salonId")
 	List<Customer> findAllCustomer (@Param("salonId") String salonId);
 	
-	@Query("select c from Customer c where c.salonId = :salonId and c.qrcode=:qrcode ")
-	Customer findByQrcode (@Param("qrcode") String qrcode,@Param("salonId") String salonId);
+	@Query("select c from Customer c where c.salonId = :salonId and c.qrCode=:qrCode ")
+	Customer findByQrcode (@Param("qrCode") String qrcode,@Param("salonId") String salonId);
 	
 	@Query("select c from Customer c where c.salonId = :salonId and lower(c.contact.email)=:email and c.password=:password ")
 	Customer findByEmailAndPassword (@Param("email") String email,@Param("password") String password,@Param("salonId") String salonId);

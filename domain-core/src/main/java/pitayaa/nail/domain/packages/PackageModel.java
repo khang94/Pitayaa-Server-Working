@@ -16,16 +16,14 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Version;
 
-import lombok.Data;
-
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
+import lombok.Data;
 import pitayaa.nail.domain.common.Discount;
 import pitayaa.nail.domain.hibernate.transaction.ObjectHibernateListener;
 import pitayaa.nail.domain.license.elements.Price;
-import pitayaa.nail.domain.packagedtl.PackageDtl;
-import pitayaa.nail.domain.service.ServiceModel;
+import pitayaa.nail.domain.packages.elements.PackageDtl;
 import pitayaa.nail.domain.view.View;
 
 @Data

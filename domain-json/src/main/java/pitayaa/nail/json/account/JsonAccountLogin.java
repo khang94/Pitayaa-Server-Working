@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class JsonAccountLogin {
 
-	private String username;
+	private String email;
 	private String password;
 }

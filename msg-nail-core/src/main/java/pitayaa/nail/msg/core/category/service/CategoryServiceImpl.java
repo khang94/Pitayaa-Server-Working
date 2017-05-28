@@ -24,16 +24,16 @@ public class CategoryServiceImpl implements CategoryService {
 	CriteriaRepository criteriaRepo;
 
 	@Override
-	public List<Category> categoriesForGroup(String groupType) {
+	public List<Category> categoriesForGroup(String groupType,String salonId ) {
 		List<Category> result = new ArrayList<Category>();
 		if (CoreConstant.CATEGORY_SERVICE.equalsIgnoreCase(groupType)) {
-			result = cateRepo.categoriesForService();
+			result = cateRepo.categoriesForService(salonId);
 		}
 		if (CoreConstant.CATEGORY_PACKAGE.equalsIgnoreCase(groupType)) {
-			result = cateRepo.categoriesForPackages();
+			result = cateRepo.categoriesForPackages(salonId);
 		}
 		if (CoreConstant.CATEGORY_PRODUCT.equalsIgnoreCase(groupType)) {
-			result = cateRepo.categoriesForProduct();
+			result = cateRepo.categoriesForProduct(salonId);
 		}
 		return result;
 	}
