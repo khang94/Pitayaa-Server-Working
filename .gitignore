@@ -2,3 +2,5 @@
 *.prefs
 
 domain-common/.classpath
+
+domain-core/.project

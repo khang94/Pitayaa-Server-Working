@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import pitayaa.nail.domain.account.Account;
 import pitayaa.nail.json.account.JsonAccount;
 import pitayaa.nail.json.account.JsonAccountLogin;
+import pitayaa.nail.json.http.JsonHttp;
+import pitayaa.nail.msg.business.util.security.EncryptionUtils;
 import pitayaa.nail.msg.core.account.repository.AccountRepository;
 import pitayaa.nail.msg.core.account.service.AccountService;
 import pitayaa.nail.msg.core.common.CoreHelper;
@@ -71,22 +73,44 @@ public class AccountController {
 	public @ResponseBody ResponseEntity<?> registerAccount(
 			@RequestBody Account accountBody) throws Exception {
 
-		JsonAccount account = accountService.registerAccount(accountBody);
-		
-		return ResponseEntity.ok(account);
+		JsonHttp json=new JsonHttp();
+		json.setCode(200);
+		try{
+			JsonAccount account = accountService.registerAccount(accountBody);
+			json.setStatus("success");
+			json.setObject(account);
+		}catch(Exception e){
+			json.setCode(500);
+			json.setStatus("error");
+			json.setMessage(e.getMessage());
+		}
+		return ResponseEntity.ok(json);
 	}
 
 	@RequestMapping(value = "/accounts/login", method = RequestMethod.POST)
 	public @ResponseBody ResponseEntity<?> login(
 			@RequestBody JsonAccountLogin jsonAccountLogin) throws Exception {
 
-		JsonAccount accountLogin = accountService
-				.loginProcess(jsonAccountLogin);
+		JsonHttp json=new JsonHttp();
+		try{
+			String encryptionPassword=EncryptionUtils.encodeMD5(jsonAccountLogin.getPassword(), jsonAccountLogin.getEmail());
+			jsonAccountLogin.setPassword(encryptionPassword);
+			JsonAccount accountLogin = accountService
+					.loginProcess(jsonAccountLogin);
+			
+			if (accountLogin == null) {
+				throw new Exception ("Can't find account with email!");
+			}
+			
+			json.setStatus(JsonHttp.SUCCESS);
+			json.setObject(accountLogin);
 
-		if (accountLogin == null) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}catch(Exception e){
+			json.setMessage(e.getMessage());
+			json.setStatus(JsonHttp.ERROR);
 		}
-		return new ResponseEntity<JsonAccount>(accountLogin, HttpStatus.OK);
+	
+		return ResponseEntity.ok(json);
 
 	}
 

@@ -18,6 +18,7 @@ import pitayaa.nail.msg.business.account.AccountBus;
 import pitayaa.nail.msg.business.category.CategoryBus;
 import pitayaa.nail.msg.business.service.ServiceBus;
 import pitayaa.nail.msg.business.setting.SettingSMSBus;
+import pitayaa.nail.msg.business.util.security.EncryptionUtils;
 import pitayaa.nail.msg.core.account.repository.AccountLicenseRepository;
 import pitayaa.nail.msg.core.account.repository.AccountRepository;
 import pitayaa.nail.msg.core.category.repository.CategoryRepository;
@@ -81,7 +82,7 @@ public class AccountServiceImpl implements AccountService {
 		License licenseTrial = licenseService.getLicenseTrial();
 
 		// Execute business process
-		Account isExistUsername = accountRepository.findAccountByUsername(accountBody.getUsername()); 
+		Account isExistUsername = accountRepository.findAccountByEmail(accountBody.getContact().getEmail()); 
 		accountBody = accountBusiness
 				.registerAccount(accountBody, licenseTrial , isExistUsername);
 
@@ -115,6 +116,7 @@ public class AccountServiceImpl implements AccountService {
 		
 		
 		// Save
+		accountBody.setPassword(EncryptionUtils.encodeMD5(accountBody.getPassword(), accountBody.getContact().getEmail()));
 		accountBody = accountRepository.save(accountBody);
 		
 		// Parse to json
@@ -136,12 +138,12 @@ public class AccountServiceImpl implements AccountService {
 		//JsonHttp result = new JsonHttp();
 
 		// Map jsonAccountLogin to AccountModel
-		String username = jsonAccountLogin.getEmail();
+		String email = jsonAccountLogin.getEmail();
 		String password = jsonAccountLogin.getPassword();
 
 		// Query
 		Account findAccount = accountRepository
-				.loginProcess(username, password);
+				.loginProcess(email, password);
 
 		// Execute business & update
 		findAccount = accountBusiness.loginProcess(findAccount);

@@ -15,11 +15,14 @@ import pitayaa.nail.domain.account.Account;
 public interface AccountRepository extends
 		PagingAndSortingRepository<Account, UUID> { 
 	
-	@Query("select acc from Account acc where acc.username = :username and acc.password = :password")
-	Account loginProcess(@Param("username") String username,
+	@Query("select acc from Account acc where acc.contact.email = :email and acc.password = :password")
+	Account loginProcess(@Param("email") String email,
 			@Param("password") String password);
 	
-	@Query("select acc from Account acc where acc.username = :username ")
-	Account findAccountByUsername(@Param("username") String username);
+	@Query("select acc from Account acc where acc.contact.email = :email ")
+	Account findAccountByEmail(@Param("email") String email);
+	
+	@Query("select acc from Account acc where acc.contact.mobilePhone = :mobilePhone ")
+	Account findAccountByPhone(@Param("mobilePhone") String mobilePhone);
 
 }
