@@ -123,16 +123,17 @@ public class JobHelper {
 
 		// Execute Request By Rest Template
 		RestTemplate restTemplate = new RestTemplate();
-		ResponseEntity<JsonHttp> response = restTemplate.exchange(url, HttpMethod.GET, null,
-				new ParameterizedTypeReference<JsonHttp>() {
+		ResponseEntity<List<Customer>> response = restTemplate.exchange(url, HttpMethod.GET, null,
+				new ParameterizedTypeReference<List<Customer>>() {
 				});
 		if (response.getStatusCode().is2xxSuccessful()) {
 			LOGGER.info("Get response successully from URL [" + url + "]");
 		}
 		
 		// Transform customers list to customer list summary
-		List<Customer> customers = (List<Customer>) response.getBody().getObject();
+		List<Customer> customers = response.getBody();
 		List<CustomerSummary> customersSummary = new ArrayList<CustomerSummary>();
+		
 		customers.stream().forEach(customer ->{
 			CustomerSummary customerSummary = new CustomerSummary();
 			customerSummary.setCustomerDetail(customer.getCustomerDetail());
@@ -299,7 +300,7 @@ public class JobHelper {
 	 */
 	public List<SettingSms> loadSettingSms(String salonId) {
 
-		LOGGER.info("Call rest template .....Load list appointment .........");
+		LOGGER.info("Call rest template .....Load list setting sms .........");
 
 		Map<String, String> headersMap = new HashMap<String, String>();
 		HttpHeaders headers = new HttpHeaders();

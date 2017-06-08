@@ -51,5 +51,8 @@ public class CoreConstant {
 	public static final String DEFAULT_IMAGE_NAME = "Default";
 	public static final String DEFAULT_IMAGE_EXTENSION = ".png";
 	
+	/* Key word */
+	public static final String OPERATION_REFRESH = "refresh";
+	
 	
 }

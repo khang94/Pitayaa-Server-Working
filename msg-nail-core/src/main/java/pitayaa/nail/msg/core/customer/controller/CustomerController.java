@@ -27,6 +27,7 @@ import pitayaa.nail.domain.hibernate.transaction.QueryCriteria;
 import pitayaa.nail.json.http.JsonHttp;
 import pitayaa.nail.msg.business.json.JsonHttpService;
 import pitayaa.nail.msg.business.util.security.EncryptionUtils;
+import pitayaa.nail.msg.core.common.CoreConstant;
 import pitayaa.nail.msg.core.common.CoreHelper;
 import pitayaa.nail.msg.core.customer.repository.CustomerRepository;
 import pitayaa.nail.msg.core.customer.service.CustomerService;
@@ -134,11 +135,16 @@ public class CustomerController {
 	@RequestMapping(value = "customers/salons", method = RequestMethod.GET)
 	public @ResponseBody ResponseEntity<?> findAllCustomerBySalonId(
 			@RequestParam("salonId") String salonId,
-			@RequestParam(name = "type", required = false , defaultValue = "") String customerType) throws Exception {
+			@RequestParam(name = "type", required = false , defaultValue = "") String customerType,
+			@RequestParam(name = "operation", required = false , defaultValue = "") String operation) throws Exception {
 
 	
 		List<Customer> lstCustomer = customerService.findAllCustomer(salonId , customerType);
 		JsonHttp jsonHttp = httpService.getResponseSuccess(lstCustomer, "Getting list data successfully...");
+		
+		if(operation.equalsIgnoreCase(CoreConstant.OPERATION_REFRESH)){
+			return new ResponseEntity<>(lstCustomer, jsonHttp.getHttpCode());
+		}
 		
 		return new ResponseEntity<>(jsonHttp, jsonHttp.getHttpCode());
 	}
