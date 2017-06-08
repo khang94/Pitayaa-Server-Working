@@ -1,6 +1,7 @@
 package pitayaa.nail.msg.core.appointment.business;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -90,8 +91,9 @@ public class AppointmentBusinessImpl implements AppointmentBusiness {
 
 		// Get customer for appointment
 		if (customerId != null) {
+			
 			customer = customerService.findOne(customerId);
-
+			customer.get().getCustomerDetail().setLastCheckin(new Date());
 			if (customer.isPresent()) {
 				appmBody.setCustomer(customer.get());
 			} else {
@@ -99,6 +101,7 @@ public class AppointmentBusinessImpl implements AppointmentBusiness {
 						"This Customer ID does not exist ! Please check again or create new one .");
 			}
 		}
+		appmBody.getCustomer().getCustomerDetail().setLastCheckin(new Date());
 		appmBody.getCustomer().getView().setImgData(null);
 		return appmBody;
 	}

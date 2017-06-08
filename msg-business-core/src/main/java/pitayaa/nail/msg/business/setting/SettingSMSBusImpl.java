@@ -39,6 +39,8 @@ public class SettingSMSBusImpl implements SettingSMSBus {
 		smsContent.setContent("");
 		smsContent.getTemplateDetail().setTemplateActive(0);
 		smsContent.getCustomerGroups().setCustomers(summaryCustomers);
+		smsContent.getCustomerGroups().setIsSendAll(true);
+		
 		smsContent.getEmployeeGroups().setEmployees(summaryEmployees);
 		
 		lstSetting.add(smsContent);
@@ -50,12 +52,14 @@ public class SettingSMSBusImpl implements SettingSMSBus {
 		smsContent.setSalonId(salonId);
 		smsContent.setType(BusinessConstant.CUSTOMER);
 		smsContent.setKey(BusinessConstant.CUSTOMER_NEW);
-		smsContent.setTimesRepeat(5);
+		smsContent.setTimesRepeat(0);
 		smsContent.setMinutesRepeat(0);
 		smsContent.setHoursRepeat(0);
 		smsContent.setContent("");
 		smsContent.getTemplateDetail().setTemplateActive(0);
 		smsContent.getCustomerGroups().setCustomers(summaryCustomers);
+		smsContent.getCustomerGroups().setIsSendAll(true);
+		
 		smsContent.getEmployeeGroups().setEmployees(summaryEmployees);
 		
 		lstSetting.add(smsContent);
@@ -66,12 +70,14 @@ public class SettingSMSBusImpl implements SettingSMSBus {
 		smsContent.setSalonId(salonId);
 		smsContent.setType(BusinessConstant.CUSTOMER);
 		smsContent.setKey(BusinessConstant.CUSTOMER_REFERRAL);
-		smsContent.setTimesRepeat(5);
+		smsContent.setTimesRepeat(0);
 		smsContent.setMinutesRepeat(0);
 		smsContent.setHoursRepeat(0);
 		smsContent.setContent("");
 		smsContent.getTemplateDetail().setTemplateActive(0);
 		smsContent.getCustomerGroups().setCustomers(summaryCustomers);
+		smsContent.getCustomerGroups().setIsSendAll(true);
+		
 		smsContent.getEmployeeGroups().setEmployees(summaryEmployees);
 		
 		lstSetting.add(smsContent);
@@ -82,12 +88,14 @@ public class SettingSMSBusImpl implements SettingSMSBus {
 		smsContent.setSalonId(salonId);
 		smsContent.setType(BusinessConstant.CUSTOMER);
 		smsContent.setKey(BusinessConstant.CUSTOMER_RETURN);
-		smsContent.setTimesRepeat(5);
+		smsContent.setTimesRepeat(0);
 		smsContent.setMinutesRepeat(0);
 		smsContent.setHoursRepeat(0);
 		smsContent.setContent("");
 		smsContent.getTemplateDetail().setTemplateActive(0);
 		smsContent.getCustomerGroups().setCustomers(summaryCustomers);
+		smsContent.getCustomerGroups().setIsSendAll(true);
+		
 		smsContent.getEmployeeGroups().setEmployees(summaryEmployees);
 		
 		lstSetting.add(smsContent);
@@ -99,13 +107,15 @@ public class SettingSMSBusImpl implements SettingSMSBus {
 		smsContent.setSalonId(salonId);
 		smsContent.setType(BusinessConstant.CUSTOMER);
 		smsContent.setKey(BusinessConstant.CUSTOMER_APPOINTMENT_REMIND);
-		smsContent.setTimesRepeat(5);
+		smsContent.setTimesRepeat(0);
 		smsContent.setMinutesRepeat(0);
 		smsContent.setHoursRepeat(0);
 		smsContent.setContent("");
 		smsContent.getTemplateDetail().setTemplateActive(0);
 		smsContent.getTemplateDetailForEmployee().setTemplateActive(0);
 		smsContent.getCustomerGroups().setCustomers(summaryCustomers);
+		smsContent.getCustomerGroups().setIsSendAll(true);
+		
 		smsContent.getEmployeeGroups().setEmployees(summaryEmployees);
 		
 		List<SmsAppointmentReminder> appointments = this.initTimerAppointment();
@@ -119,12 +129,14 @@ public class SettingSMSBusImpl implements SettingSMSBus {
 		smsContent.setSalonId(salonId);
 		smsContent.setType(BusinessConstant.CUSTOMER);
 		smsContent.setKey(BusinessConstant.CUSTOMER_APPOINTMENT_CANCEL);
-		smsContent.setTimesRepeat(5);
+		smsContent.setTimesRepeat(0);
 		smsContent.setMinutesRepeat(0);
 		smsContent.setHoursRepeat(0);
 		smsContent.setContent("");
 		smsContent.getTemplateDetail().setTemplateActive(0);
 		smsContent.getCustomerGroups().setCustomers(summaryCustomers);
+		smsContent.getCustomerGroups().setIsSendAll(true);
+		
 		smsContent.getEmployeeGroups().setEmployees(summaryEmployees);
 		
 		lstSetting.add(smsContent);
@@ -135,12 +147,14 @@ public class SettingSMSBusImpl implements SettingSMSBus {
 		smsContent.setSalonId(salonId);
 		smsContent.setType(BusinessConstant.CUSTOMER);
 		smsContent.setKey(BusinessConstant.CUSTOMER_APPOINTMENT);
-		smsContent.setTimesRepeat(5);
+		smsContent.setTimesRepeat(0);
 		smsContent.setMinutesRepeat(0);
 		smsContent.setHoursRepeat(0);
 		smsContent.setContent("");
 		smsContent.getTemplateDetail().setTemplateActive(0);
 		smsContent.getCustomerGroups().setCustomers(summaryCustomers);
+		smsContent.getCustomerGroups().setIsSendAll(true);
+		
 		smsContent.getEmployeeGroups().setEmployees(summaryEmployees);
 		
 		lstSetting.add(smsContent);

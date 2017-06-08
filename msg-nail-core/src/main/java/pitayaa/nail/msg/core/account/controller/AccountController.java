@@ -18,6 +18,7 @@ import pitayaa.nail.domain.account.Account;
 import pitayaa.nail.json.account.JsonAccount;
 import pitayaa.nail.json.account.JsonAccountLogin;
 import pitayaa.nail.json.http.JsonHttp;
+import pitayaa.nail.msg.business.json.JsonHttpService;
 import pitayaa.nail.msg.business.util.security.EncryptionUtils;
 import pitayaa.nail.msg.core.account.repository.AccountRepository;
 import pitayaa.nail.msg.core.account.service.AccountService;
@@ -34,6 +35,9 @@ public class AccountController {
 	
 	@Autowired
 	AccountRepository accountRepository;
+	
+	@Autowired
+	JsonHttpService httpService;
 
 	@RequestMapping(value = "/about", method = RequestMethod.GET)
 	public @ResponseBody ResponseEntity<?> about() {
@@ -73,44 +77,35 @@ public class AccountController {
 	public @ResponseBody ResponseEntity<?> registerAccount(
 			@RequestBody Account accountBody) throws Exception {
 
-		JsonHttp json=new JsonHttp();
-		json.setCode(200);
+		JsonHttp jsonHttp =new JsonHttp();
 		try{
 			JsonAccount account = accountService.registerAccount(accountBody);
-			json.setStatus("success");
-			json.setObject(account);
+			jsonHttp = httpService.getResponseSuccess(account, "Register this account successfully");
 		}catch(Exception e){
-			json.setCode(500);
-			json.setStatus("error");
-			json.setMessage(e.getMessage());
+			jsonHttp = httpService.getResponseError("Register failed", e.getMessage());
 		}
-		return ResponseEntity.ok(json);
+		return new ResponseEntity<>(jsonHttp , jsonHttp.getHttpCode());
 	}
 
 	@RequestMapping(value = "/accounts/login", method = RequestMethod.POST)
 	public @ResponseBody ResponseEntity<?> login(
 			@RequestBody JsonAccountLogin jsonAccountLogin) throws Exception {
 
-		JsonHttp json=new JsonHttp();
+		JsonHttp jsonHttp = new JsonHttp();
 		try{
-			String encryptionPassword=EncryptionUtils.encodeMD5(jsonAccountLogin.getPassword(), jsonAccountLogin.getEmail());
-			jsonAccountLogin.setPassword(encryptionPassword);
 			JsonAccount accountLogin = accountService
 					.loginProcess(jsonAccountLogin);
 			
 			if (accountLogin == null) {
 				throw new Exception ("Can't find account with email!");
 			}
-			
-			json.setStatus(JsonHttp.SUCCESS);
-			json.setObject(accountLogin);
+			jsonHttp = httpService.getResponseSuccess(accountLogin, "Login success");
 
 		}catch(Exception e){
-			json.setMessage(e.getMessage());
-			json.setStatus(JsonHttp.ERROR);
+			jsonHttp = httpService.getResponseError("Login failed", e.getMessage());
 		}
 	
-		return ResponseEntity.ok(json);
+		return new ResponseEntity<>(jsonHttp , jsonHttp.getHttpCode());
 
 	}
 

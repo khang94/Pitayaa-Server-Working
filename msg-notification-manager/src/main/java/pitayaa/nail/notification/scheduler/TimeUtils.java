@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import pitayaa.nail.domain.customer.Customer;
 import pitayaa.nail.domain.setting.SettingSms;
+import pitayaa.nail.domain.setting.sms.CustomerSummary;
 
 public class TimeUtils {
 	
@@ -59,25 +60,38 @@ public class TimeUtils {
 	}
 	
 	public static boolean checkLastTimeSms(Date lastSms , SettingSms settingSms){
-		boolean isSend = false;
+		boolean isRightTime = false;
 		
 		long lastSmsSend = lastSms.getTime();
 		long currentTime = System.currentTimeMillis();
 		
 		long gapNotify = 0;
-		if (settingSms.getTimesRepeat() != 0 && settingSms.getMinutesRepeat() ==0){
-			gapNotify = (86400000 * settingSms.getTimesRepeat());
-		} else if (settingSms.getMinutesRepeat() != 0 && settingSms.getTimesRepeat() == 0){
-			gapNotify = (60000 * settingSms.getMinutesRepeat());
+		
+		// DAY
+		if(settingSms.getTimesRepeat() > 0 && settingSms.getMinutesRepeat() == 0 && settingSms.getHoursRepeat() == 0){
+			gapNotify = 86400000 * settingSms.getTimesRepeat();
+		} 
+		// MINUTES
+		else if (settingSms.getTimesRepeat() == 0 && settingSms.getMinutesRepeat() > 0 && settingSms.getHoursRepeat() == 0){
+			gapNotify = 60000 * settingSms.getMinutesRepeat();
+		} 
+		// HOURS
+		else if (settingSms.getTimesRepeat() == 0 && settingSms.getMinutesRepeat() == 0 && settingSms.getHoursRepeat() > 0){
+			gapNotify = 60 * 60000 * settingSms.getHoursRepeat();
 		}
 		
-		long maxTimeSend = lastSmsSend + 150000;
-		if((currentTime - maxTimeSend) <= gapNotify){
-			isSend = true;
+		long timeExpectToNotify = lastSmsSend + gapNotify;
+		
+		if (currentTime > timeExpectToNotify && (currentTime - timeExpectToNotify) < 60000){
+			isRightTime = true;
+		} else if (currentTime == timeExpectToNotify){
+			isRightTime = true;
+		} else if (currentTime < timeExpectToNotify && (timeExpectToNotify - currentTime) < 60000){
+			isRightTime = true;
 		}
 		
 
-		return isSend;
+		return isRightTime;
 	}
 	
 	
@@ -153,6 +167,46 @@ public class TimeUtils {
 			isCorrectTime = true;
 		}
 		return isCorrectTime;
+	}
+	
+	public static boolean isRightTimeToSend(SettingSms settingSms , CustomerSummary customerSummary){
+		
+		// Get last checkin time
+		long lastCheckin = customerSummary.getCustomerDetail().getLastCheckin().getTime();
+		
+		// Get current time
+		long currentTime = System.currentTimeMillis();
+		
+		long gapNotify = 0;
+		
+		boolean isRightTime = false;
+		
+		// Get time type
+		
+		// DAY
+		if(settingSms.getTimesRepeat() > 0 && settingSms.getMinutesRepeat() == 0 && settingSms.getHoursRepeat() == 0){
+			gapNotify = 86400000 * settingSms.getTimesRepeat();
+		} 
+		// MINUTES
+		else if (settingSms.getTimesRepeat() == 0 && settingSms.getMinutesRepeat() > 0 && settingSms.getHoursRepeat() == 0){
+			gapNotify = 60000 * 1;
+		} 
+		// HOURS
+		else if (settingSms.getTimesRepeat() == 0 && settingSms.getMinutesRepeat() == 0 && settingSms.getHoursRepeat() > 0){
+			gapNotify = 60 * 60000 * settingSms.getHoursRepeat();
+		}
+		
+		long timeExpectToNotify = lastCheckin + gapNotify;
+		
+		if (currentTime > timeExpectToNotify && (currentTime - timeExpectToNotify) < 90000){
+			isRightTime = true;
+		} else if (currentTime == timeExpectToNotify){
+			isRightTime = true;
+		} else if (currentTime < timeExpectToNotify && (timeExpectToNotify - currentTime) < 90000){
+			isRightTime = true;
+		}
+		
+		return isRightTime;
 	}
 
 }

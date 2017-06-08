@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import pitayaa.nail.domain.category.Category;
 import pitayaa.nail.msg.core.category.repository.CategoryRepository;
 import pitayaa.nail.msg.core.common.CoreConstant;
+import pitayaa.nail.msg.core.common.CoreHelper;
 import pitayaa.nail.msg.core.hibernate.CriteriaRepository;
 import pitayaa.nail.msg.core.hibernate.QueryCriteria;
 
@@ -22,6 +23,14 @@ public class CategoryServiceImpl implements CategoryService {
 
 	@Autowired
 	CriteriaRepository criteriaRepo;
+	
+	@Autowired
+	private CoreHelper coreHelper;
+	
+	@Autowired
+	private CategoryViewService viewService;
+	
+	
 
 	@Override
 	public List<Category> categoriesForGroup(String groupType,String salonId ) {
@@ -39,8 +48,58 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	public Category save(Category category) {
-		return cateRepo.save(category);
+	public Category save(Category category) throws Exception {
+		
+		byte[] binaryImg = null;
+		boolean isUploadImage = false;
+		
+		// Get stream image
+		if (category.getView().getImgData().length > 0){
+			binaryImg = category.getView().getImgData();
+			isUploadImage = true;
+		}
+		
+		// Hide image
+		category.getView().setImgData(null);
+		
+		category = cateRepo.save(category);
+		
+		if(isUploadImage && category.getSalonId() != null){
+			viewService.buildViewByDate(category, binaryImg);
+		}
+		
+		return category;
+	}
+	
+	@Override
+	public Category update(Category categorySaved , Category categoryUpdated) throws Exception {
+		
+		byte[] binaryImg = null;
+		boolean isUpdatedImage = false;
+		
+		// Update New Image
+		if (categoryUpdated.getView().getImgData().length > 0){
+			isUpdatedImage = true;
+			binaryImg = categoryUpdated.getView().getImgData();
+		}
+		
+		// Hide image
+		categoryUpdated.getView().setImgData(null);
+		
+		if (isUpdatedImage && categorySaved.getView().getImgData()!= null){
+			// Delete image from static path in local server
+			coreHelper.deleteFile(categorySaved.getView().getPathImage());
+		}
+		
+		// Update hibernate
+		categoryUpdated.setUuid(categorySaved.getUuid());
+		categoryUpdated = cateRepo.save(categoryUpdated);
+		
+		if(isUpdatedImage && categoryUpdated.getSalonId() != null ){
+			viewService.buildViewByDate(categoryUpdated, binaryImg);
+		}
+		
+		return categoryUpdated;
 	}
 
 	@Override
@@ -51,5 +110,12 @@ public class CategoryServiceImpl implements CategoryService {
 	@Override
 	public void delete(Category category) {
 		cateRepo.delete(category);
+	}
+	
+	@Override
+	public Category initModel() throws Exception{
+		Category category = (Category) coreHelper.createModelStructure(new Category());
+		
+		return category;
 	}
 }

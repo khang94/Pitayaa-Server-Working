@@ -26,6 +26,7 @@ import pitayaa.nail.domain.notification.scheduler.SmsQueue;
 import pitayaa.nail.domain.notification.sms.SmsModel;
 import pitayaa.nail.domain.salon.Salon;
 import pitayaa.nail.domain.setting.SettingSms;
+import pitayaa.nail.domain.setting.sms.CustomerSummary;
 import pitayaa.nail.json.http.JsonHttp;
 import pitayaa.nail.notification.common.NotificationConstant;
 
@@ -92,17 +93,67 @@ public class JobHelper {
 		return response.getBody();
 	}
 	
-	public SmsQueue addSmsQueue (Customer customer , SettingSms settingSms){
+	/**
+	 * Load Get All Customer by Type & Salon
+	 * 
+	 * @return
+	 */
+	public List<CustomerSummary> loadCustomersByType(String salonId , String customerType) {
+
+		LOGGER.info("Call rest template .....Load list customers .........");
+
+		Map<String, String> headersMap = new HashMap<String, String>();
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		for (String header : headers.keySet()) {
+			headersMap.put(header, headers.getFirst(header));
+		}
+
+		// urlParameters
+		Map<String, String> urlParameters = new HashMap<String, String>();
+		urlParameters.put(NotificationConstant.SALON_ID, salonId);
+		urlParameters.put(NotificationConstant.CUSTOMER_TYPE, customerType);
+
+		// String url = this.urlLoadListAppm();
+		String url = this.getValueProperties(NotificationConstant.CUSTOMER_URI_SALON);
+		RestTemplateHelper restTemplateHelper = new RestTemplateHelper();
+		url = restTemplateHelper.buildUrlRequestParam(urlParameters, url);
+		LOGGER.info("Get URL Load List List customers : [" + url + "] to send request !");
+
+		// Execute Request By Rest Template
+		RestTemplate restTemplate = new RestTemplate();
+		ResponseEntity<JsonHttp> response = restTemplate.exchange(url, HttpMethod.GET, null,
+				new ParameterizedTypeReference<JsonHttp>() {
+				});
+		if (response.getStatusCode().is2xxSuccessful()) {
+			LOGGER.info("Get response successully from URL [" + url + "]");
+		}
+		
+		// Transform customers list to customer list summary
+		List<Customer> customers = (List<Customer>) response.getBody().getObject();
+		List<CustomerSummary> customersSummary = new ArrayList<CustomerSummary>();
+		customers.stream().forEach(customer ->{
+			CustomerSummary customerSummary = new CustomerSummary();
+			customerSummary.setCustomerDetail(customer.getCustomerDetail());
+			customerSummary.setContact(customer.getContact());
+			customerSummary.setAddress(customer.getAddress());
+		});
+
+		return customersSummary;
+	}
+	
+	public SmsQueue addSmsQueue (CustomerSummary customer , SettingSms settingSms){
 		SmsQueue queue = new SmsQueue();
 		
 		// Execute business
-		queue.setCustomerId(customer.getUuid().toString());
+		queue.setCustomerId(customer.getCustomerRefID());
 		queue.setSettingSmsId(settingSms.getUuid().toString());
 		queue.setIsSend(true);
 		queue.setSmsType(settingSms.getKey());
 		queue.setCustomerType(settingSms.getKey());
 		queue.setTimeUpdateSetting(settingSms.getUpdatedDate());
-		queue.setSalonId(customer.getSalonId());
+		queue.setSalonId(settingSms.getSalonId());
 			
 		// Call API Function
 		Map<String, String> headersMap = new HashMap<String, String>();
@@ -132,7 +183,7 @@ public class JobHelper {
 		return response.getBody();
 	}
 	
-	public SmsQueue openQueue (Customer customer , SettingSms settingSms){
+	public SmsQueue openQueue (String customerId, SettingSms settingSms){
 
 		// Call API Function
 		Map<String, String> headersMap = new HashMap<String, String>();
@@ -146,7 +197,7 @@ public class JobHelper {
 		// urlParameters
 		Map<String, String> urlParameters = new HashMap<String, String>();
 		urlParameters.put("settingSmsId", settingSms.getUuid().toString());
-		urlParameters.put("customerId", customer.getUuid().toString());
+		urlParameters.put("customerId", customerId);
 		urlParameters.put("customerType", settingSms.getKey());
 
 		// String url = this.urlLoadListAppm();
@@ -230,15 +281,15 @@ public class JobHelper {
 
 		// Execute Request By Rest Template
 		RestTemplate restTemplate = new RestTemplate();
-		ResponseEntity<List<Customer>> response = restTemplate.exchange(url, HttpMethod.GET, null,
-				new ParameterizedTypeReference<List<Customer>>() {
+		ResponseEntity<JsonHttp> response = restTemplate.exchange(url, HttpMethod.GET, null,
+				new ParameterizedTypeReference<JsonHttp>() {
 				});
 		if (response.getStatusCode().is2xxSuccessful() && response.getStatusCodeValue() == 200) {
 			LOGGER.info("Get response successully from URL [" + url + "]");
 			//customerList = (List<Customer>) response.getBody().getObject();
 		}
 
-		return response.getBody();
+		return (List<Customer>) response.getBody().getObject();
 	}
 	
 	/**

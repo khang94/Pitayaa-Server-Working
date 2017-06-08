@@ -8,12 +8,16 @@ import pitayaa.nail.domain.category.Category;
 
 public interface CategoryService {
 
-	Category save(Category category);
+	Category save(Category category) throws Exception ;
 
 	Optional<Category> findOne(UUID id);
 
 	void delete(Category category);
 
 	List<Category> categoriesForGroup(String groupType, String salonId);
+
+	Category initModel() throws Exception;
+
+	Category update(Category categorySaved, Category categoryUpdated) throws Exception;
 
 }

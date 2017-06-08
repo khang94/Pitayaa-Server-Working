@@ -12,12 +12,14 @@ import pitayaa.nail.domain.license.License;
 import pitayaa.nail.domain.salon.Salon;
 import pitayaa.nail.domain.service.ServiceModel;
 import pitayaa.nail.domain.setting.SettingSms;
+import pitayaa.nail.domain.systemconf.SystemConf;
 import pitayaa.nail.json.account.JsonAccount;
 import pitayaa.nail.json.account.JsonAccountLogin;
 import pitayaa.nail.msg.business.account.AccountBus;
 import pitayaa.nail.msg.business.category.CategoryBus;
 import pitayaa.nail.msg.business.service.ServiceBus;
 import pitayaa.nail.msg.business.setting.SettingSMSBus;
+import pitayaa.nail.msg.business.setting.systemconf.SystemConfBus;
 import pitayaa.nail.msg.business.util.security.EncryptionUtils;
 import pitayaa.nail.msg.core.account.repository.AccountLicenseRepository;
 import pitayaa.nail.msg.core.account.repository.AccountRepository;
@@ -27,6 +29,7 @@ import pitayaa.nail.msg.core.license.service.ILicenseService;
 import pitayaa.nail.msg.core.salon.service.SalonService;
 import pitayaa.nail.msg.core.serviceEntity.repository.ServiceRepository;
 import pitayaa.nail.msg.core.setting.sms.repository.SettingSmsRepository;
+import pitayaa.nail.msg.core.systemconf.repository.SystemConfRepository;
 
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -39,6 +42,9 @@ public class AccountServiceImpl implements AccountService {
 	
 	@Autowired
 	SettingSmsRepository settingSMSRepo;
+	
+	@Autowired
+	SystemConfRepository systemConfRepo;
 
 	@Autowired
 	CategoryRepository categoryRepo;
@@ -46,6 +52,8 @@ public class AccountServiceImpl implements AccountService {
 	@Autowired
 	ServiceRepository serviceRepo;
 	
+	@Autowired
+	SystemConfBus systemConfBus;
 	
 	@Autowired
 	ILicenseService licenseService;
@@ -96,6 +104,13 @@ public class AccountServiceImpl implements AccountService {
 			settingSMSRepo.save(settingSms);
 		}
 		
+		// save systemconf
+		List<SystemConf> lstSettingConf = systemConfBus
+				.getListSystemConfDefault(salon.getUuid().toString());
+		for (SystemConf systemConf : lstSettingConf) {
+			systemConfRepo.save(systemConf);
+		}
+		
 		//save default category
 		
 		List<Category> lstCategory=categoryBus.getListServiceCategoryDefault(salon.getUuid().toString());
@@ -104,7 +119,6 @@ public class AccountServiceImpl implements AccountService {
 		}
 		
 		//save default service
-		
 		List<ServiceModel> lstService=serviceBus.getListServiceDefault(salon.getUuid().toString());
 		Category category=lstCategory.get(0);
 		for(ServiceModel serviceModel:lstService){
@@ -136,6 +150,9 @@ public class AccountServiceImpl implements AccountService {
 	public JsonAccount loginProcess(JsonAccountLogin jsonAccountLogin) throws Exception {
 
 		//JsonHttp result = new JsonHttp();
+		
+		String encryptionPassword=EncryptionUtils.encodeMD5(jsonAccountLogin.getPassword(), jsonAccountLogin.getEmail());
+		jsonAccountLogin.setPassword(encryptionPassword);
 
 		// Map jsonAccountLogin to AccountModel
 		String email = jsonAccountLogin.getEmail();

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import pitayaa.nail.domain.service.ServiceModel;
 import pitayaa.nail.json.http.JsonHttp;
+import pitayaa.nail.msg.business.json.JsonHttpService;
 import pitayaa.nail.msg.core.common.CoreHelper;
 import pitayaa.nail.msg.core.serviceEntity.service.ServiceEntityInterface;
 
@@ -28,76 +29,107 @@ public class ServiceController {
 	
 	@Autowired
 	private ServiceEntityInterface serviceCore;
+	
+	@Autowired
+	private JsonHttpService httpService;
 
 	@RequestMapping(value = "services/model", method = RequestMethod.GET)
 	public @ResponseBody ResponseEntity<?> initAccountModel() throws Exception {
 
-		ServiceModel account = (ServiceModel) coreHelper
-				.createModelStructure(new ServiceModel());
+		ServiceModel service = serviceCore.initModel();
 
-		return ResponseEntity.ok(account);
+		return ResponseEntity.ok(service);
 	}
 	
-	@RequestMapping(value = "services/bySalon", method = RequestMethod.GET)
+	@RequestMapping(value = "services/salons", method = RequestMethod.GET)
 	public @ResponseBody ResponseEntity<?> getServicesBySalonId(@RequestParam("salonId") String salonId) throws Exception {
 
-		List<ServiceModel> servicesList = serviceCore.getServicesBySalonId(salonId);
-		JsonHttp jsonHttp = new JsonHttp();
-		if (servicesList!= null && servicesList.size() > 0){
-			jsonHttp.setCode(200);
-			jsonHttp.setObject(servicesList);
-			jsonHttp.setStatus("success");
-			jsonHttp.setMessage("get list success");
-		} 
+		JsonHttp jsonHttp = new JsonHttp();	
 		
-		else{
-			jsonHttp.setCode(404);
-			jsonHttp.setStatus("error");
-			jsonHttp.setMessage("get list failed");
-		} 
-		return ResponseEntity.ok(jsonHttp);
+		try {
+			List<ServiceModel> servicesList = serviceCore.getServicesBySalonId(salonId);
+			jsonHttp = httpService.getResponseSuccess(servicesList, "Get list service success");
+		}catch (Exception ex){
+			jsonHttp = httpService.getResponseError("Get list failed...." , ex.getMessage());
+		}
+
+		return new ResponseEntity<>(jsonHttp , jsonHttp.getHttpCode());
 	}
 	
 	@RequestMapping(value = "services", method = RequestMethod.POST)
-	public @ResponseBody ResponseEntity<?> savePackage(@RequestBody ServiceModel serviceModel) throws Exception {
+	public @ResponseBody ResponseEntity<?> savePackage(@RequestBody ServiceModel serviceBody) throws Exception {
 
-		serviceCore.save(serviceModel);
-		return ResponseEntity.ok(serviceModel);
+		JsonHttp jsonHttp = new JsonHttp();
+		
+		try {
+			serviceBody = serviceCore.save(serviceBody);
+			jsonHttp = httpService.saveData("Saved service successfully....");
+		} catch (Exception ex){
+			jsonHttp = httpService.getResponseError("Saved service failed...." , ex.getMessage());
+		}
+		return new ResponseEntity<>(jsonHttp , jsonHttp.getHttpCode());
 	}
 	
 	@RequestMapping(value = "services/{ID}", method = RequestMethod.PUT)
-	public @ResponseBody ResponseEntity<?> updateService(@PathVariable("ID") UUID uid ,@RequestBody ServiceModel serviceUpdated) throws Exception {
-
-		Optional<ServiceModel> serviceSaved = serviceCore.findOne(uid);
+	public @ResponseBody ResponseEntity<?> update(@RequestBody ServiceModel serviceUpdated,
+			@PathVariable("ID") UUID id) throws Exception {
+		
+		Optional<ServiceModel> serviceSaved = serviceCore.findOne(id);
+		JsonHttp jsonHttp = new JsonHttp();
 		
 		if(!serviceSaved.isPresent()){
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			jsonHttp = httpService.getNotFoundData("Not found this services");
+			return new ResponseEntity<>(jsonHttp , jsonHttp.getHttpCode());
 		}
 		
-		ServiceModel service = serviceCore.update(serviceSaved.get(), serviceUpdated);
-		return ResponseEntity.ok(service);
+		
+		try {
+			ServiceModel serviceResult = serviceCore.update(serviceSaved.get() , serviceUpdated);	
+			jsonHttp = httpService.getResponseSuccess(serviceResult, "Update service successfully !");
+		} catch (Exception ex ) {
+			jsonHttp = httpService.getResponseError("Update this service failed" , ex.getMessage());
+		}
+		
+		return new ResponseEntity<>(jsonHttp, jsonHttp.getHttpCode());
+
+	}
+	
+	@RequestMapping(value = "services/{ID}", method = RequestMethod.GET)
+	public @ResponseBody ResponseEntity<?> findById(@PathVariable("ID") UUID id) throws Exception {
+		
+		Optional<ServiceModel> serviceSaved = serviceCore.findOne(id);
+		JsonHttp jsonHttp = new JsonHttp();
+		
+		if(!serviceSaved.isPresent()){
+			jsonHttp = httpService.getNotFoundData("Not found this services");
+			return new ResponseEntity<>(jsonHttp , jsonHttp.getHttpCode());
+		}
+		
+		jsonHttp = httpService.getResponseSuccess(serviceSaved.get(), "Get service successfully !");
+		
+		return new ResponseEntity<>(jsonHttp, jsonHttp.getHttpCode());
+
 	}
 	
 	@RequestMapping(value = "services/{ID}", method = RequestMethod.DELETE)
 	public @ResponseBody ResponseEntity<?> delete(@PathVariable("ID") UUID id) throws Exception {
 
-		JsonHttp jsonHttp=new JsonHttp();
+		Optional<ServiceModel> serviceSaved = serviceCore.findOne(id);
+		JsonHttp jsonHttp = new JsonHttp();
+		
+		if(!serviceSaved.isPresent()){
+			jsonHttp = httpService.getNotFoundData("Not found this services");
+			return new ResponseEntity<>(jsonHttp , jsonHttp.getHttpCode());
+		}
 
 		try {
-			Optional<ServiceModel> optionService = serviceCore.findOne(id);
-
-			if (optionService.isPresent()) {
-				serviceCore.delete(optionService.get());
-			}
-			jsonHttp.setCode(200);
-			jsonHttp.setObject(optionService.get());
-			jsonHttp.setStatus("success");
-		} catch (Exception e) {
-			// TODO: handle exception
-			jsonHttp.setMessage(e.getMessage());
-			jsonHttp.setStatus("error");
+			serviceCore.delete(serviceSaved.get());
+			jsonHttp = httpService.deleteData("Delete success.....");
+			
+		} catch (Exception ex) {
+			jsonHttp = httpService.getResponseError("Delete failed...." , ex.getMessage());
 		}
-		return new ResponseEntity<>(jsonHttp, HttpStatus.OK);
+		return new ResponseEntity<>(jsonHttp, jsonHttp.getHttpCode());
 
 	}
 }

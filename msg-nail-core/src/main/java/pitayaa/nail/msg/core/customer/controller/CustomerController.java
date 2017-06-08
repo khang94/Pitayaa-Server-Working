@@ -3,6 +3,7 @@ package pitayaa.nail.msg.core.customer.controller;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +25,7 @@ import pitayaa.nail.domain.appointment.Appointment;
 import pitayaa.nail.domain.customer.Customer;
 import pitayaa.nail.domain.hibernate.transaction.QueryCriteria;
 import pitayaa.nail.json.http.JsonHttp;
+import pitayaa.nail.msg.business.json.JsonHttpService;
 import pitayaa.nail.msg.business.util.security.EncryptionUtils;
 import pitayaa.nail.msg.core.common.CoreHelper;
 import pitayaa.nail.msg.core.customer.repository.CustomerRepository;
@@ -40,6 +42,9 @@ public class CustomerController {
 
 	@Autowired
 	private CustomerRepository customerRepo;
+	
+	@Autowired
+	private JsonHttpService httpService;
 
 	@RequestMapping(value = "customers/model", method = RequestMethod.GET)
 	public @ResponseBody ResponseEntity<?> initAccountModel() throws Exception {
@@ -126,36 +131,19 @@ public class CustomerController {
 		return ResponseEntity.ok(customerLst);
 	}
 
-	@RequestMapping(value = "customers/bySalon", method = RequestMethod.GET)
+	@RequestMapping(value = "customers/salons", method = RequestMethod.GET)
 	public @ResponseBody ResponseEntity<?> findAllCustomerBySalonId(
 			@RequestParam("salonId") String salonId,
-			@RequestParam(name ="type", required = false , defaultValue = "") String customerType) throws Exception {
+			@RequestParam(name = "type", required = false , defaultValue = "") String customerType) throws Exception {
 
-		List<Customer> lstCustomer = null;
-		if (!customerType.equalsIgnoreCase("") && customerType != null){
-			lstCustomer = customerService
-					.findAllCustomer(salonId , customerType);
-		} else {
-			lstCustomer = customerService
-				.findAllCustomer(salonId);
-		}
-		JsonHttp jsonHttp = new JsonHttp();
-		if (lstCustomer != null) {
-			jsonHttp.setCode(200);
-			jsonHttp.setObject(lstCustomer);
-			jsonHttp.setStatus("success");
-			jsonHttp.setMessage("get list success");
-		}
-
-		else {
-			jsonHttp.setCode(404);
-			jsonHttp.setStatus("error");
-			jsonHttp.setMessage("get list failed");
-		}
-
-		return new ResponseEntity<>(jsonHttp, HttpStatus.OK);
+	
+		List<Customer> lstCustomer = customerService.findAllCustomer(salonId , customerType);
+		JsonHttp jsonHttp = httpService.getResponseSuccess(lstCustomer, "Getting list data successfully...");
+		
+		return new ResponseEntity<>(jsonHttp, jsonHttp.getHttpCode());
 	}
-	@RequestMapping(value = "customers/sms/bySalon", method = RequestMethod.GET)
+	
+	/*@RequestMapping(value = "customers/sms/bySalon", method = RequestMethod.GET)
 	public @ResponseBody ResponseEntity<?> findAllCustomerSmsBySalonId(
 			@RequestParam("salonId") String salonId) throws Exception {
 
@@ -176,7 +164,7 @@ public class CustomerController {
 		}
 
 		return new ResponseEntity<>(lstCustomer, HttpStatus.OK);
-	}
+	}*/
 	
 	@RequestMapping(value = "customers/findByQrcode", method = RequestMethod.POST)
 	public @ResponseBody ResponseEntity<?> findByQrcode(

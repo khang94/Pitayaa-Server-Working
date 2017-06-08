@@ -21,7 +21,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import pitayaa.nail.domain.category.Category;
 import pitayaa.nail.domain.customer.Customer;
+import pitayaa.nail.domain.service.ServiceModel;
 import pitayaa.nail.json.http.JsonHttp;
+import pitayaa.nail.msg.business.json.JsonHttpService;
 import pitayaa.nail.msg.core.category.repository.CategoryRepository;
 import pitayaa.nail.msg.core.category.service.CategoryService;
 import pitayaa.nail.msg.core.common.CoreHelper;
@@ -30,97 +32,116 @@ import pitayaa.nail.msg.core.customer.controller.CustomerController;
 @Controller
 public class CategoryController {
 
-	@Autowired
-	private CoreHelper coreHelper;
+
 
 	@Autowired
 	private CategoryService cateService;
 
 	@Autowired
 	private CategoryRepository cateRepo;
+	
+	@Autowired
+	private JsonHttpService httpService;
 
 	@RequestMapping(value = "categories/model", method = RequestMethod.GET)
-	public @ResponseBody ResponseEntity<?> initAccountModel() throws Exception {
+	public @ResponseBody ResponseEntity<?> initCategory() throws Exception {
 
-		Category account = (Category) coreHelper.createModelStructure(new Category());
+		Category category = cateService.initModel();
 
-		return ResponseEntity.ok(account);
+		return ResponseEntity.ok(category);
 	}
 
 	@RequestMapping(value = "categories", method = RequestMethod.POST)
-	public @ResponseBody ResponseEntity<?> createCustomer(@RequestBody Category categoryBody) throws Exception {
+	public @ResponseBody ResponseEntity<?> save(@RequestBody Category categoryBody) throws Exception {
 
-		Category category = cateService.save(categoryBody);
-
-		if (category.equals(null)) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		JsonHttp jsonHttp = new JsonHttp();
+		try {
+			categoryBody = cateRepo.save(categoryBody);
+			jsonHttp = httpService.saveData("Save this category success....");
+		} catch (Exception ex){
+			jsonHttp = httpService.getResponseError("Save category failed...." , ex.getMessage());
 		}
-
-		Resource<Category> response = new Resource<Category>(category);
-		response.add(linkTo(methodOn(CategoryController.class).findOne(category.getUuid())).withSelfRel());
-
-		return new ResponseEntity<Resource<Category>>(response, HttpStatus.CREATED);
+		
+		return new ResponseEntity<>(jsonHttp , jsonHttp.getHttpCode());
 	}
 
 	@RequestMapping(value = "categories/{ID}", method = RequestMethod.GET)
 	public @ResponseBody ResponseEntity<?> findOne(@PathVariable("ID") UUID id) throws Exception {
 
-		Optional<Category> category = cateService.findOne(id);
-
-		if (!category.isPresent()) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		Optional<Category> categorySaved = cateService.findOne(id);
+		JsonHttp jsonHttp = new JsonHttp();
+		
+		if(!categorySaved.isPresent()){
+			jsonHttp = httpService.getNotFoundData("Not found this category");
+			return new ResponseEntity<>(jsonHttp , jsonHttp.getHttpCode());
 		}
-
-		Resource<Category> response = new Resource<Category>(category.get());
-		response.add(linkTo(methodOn(CustomerController.class).findOne(category.get().getUuid())).withSelfRel());
-		return new ResponseEntity<>(category.get(), HttpStatus.OK);
+		
+		jsonHttp = httpService.getResponseSuccess(categorySaved.get(), "Get category successfully !");
+		
+		return new ResponseEntity<>(jsonHttp, jsonHttp.getHttpCode());
 	}
 
 	@RequestMapping(value = "categories/{ID}", method = RequestMethod.DELETE)
 	public @ResponseBody ResponseEntity<?> delete(@PathVariable("ID") UUID id) throws Exception {
 
-		Optional<Category> category = cateService.findOne(id);
-
-		if (!category.isPresent()) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		Optional<Category> categorySaved = cateService.findOne(id);
+		JsonHttp jsonHttp = new JsonHttp();
+		
+		if(!categorySaved.isPresent()){
+			jsonHttp = httpService.getNotFoundData("Not found this services");
+			return new ResponseEntity<>(jsonHttp , jsonHttp.getHttpCode());
 		}
-		return new ResponseEntity<>(HttpStatus.OK);
+
+		try {
+			cateService.delete(categorySaved.get());
+			jsonHttp = httpService.deleteData("Delete success.....");
+			
+		} catch (Exception ex) {
+			jsonHttp = httpService.getResponseError("Delete failed...." , ex.getMessage());
+		}
+		return new ResponseEntity<>(jsonHttp, jsonHttp.getHttpCode());
 	}
 
 	@RequestMapping(value = "categories/{ID}", method = RequestMethod.PUT)
 	public @ResponseBody ResponseEntity<?> updateCategory(@RequestBody Category categoryBody,
 			@PathVariable("ID") UUID id) throws Exception {
 
-		Category category = cateService.save(categoryBody);
-
-		if (category.equals(null)) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		Optional<Category> categorySaved = cateService.findOne(id);
+		JsonHttp jsonHttp = new JsonHttp();
+		
+		if(!categorySaved.isPresent()){
+			jsonHttp = httpService.getNotFoundData("Not found this services");
+			return new ResponseEntity<>(jsonHttp , jsonHttp.getHttpCode());
 		}
-
-		Resource<Category> response = new Resource<Category>(category);
-		response.add(linkTo(methodOn(CustomerController.class).findOne(category.getUuid())).withSelfRel());
-
-		return new ResponseEntity<Resource<Category>>(response, HttpStatus.OK);
+		
+		
+		try {
+			Category cateResult = cateService.update(categorySaved.get() , categoryBody);	
+			jsonHttp = httpService.getResponseSuccess(cateResult, "Update this category successfully !");
+		} catch (Exception ex ) {
+			jsonHttp = httpService.getResponseError("Update this category failed" , ex.getMessage());
+		}
+		
+		return new ResponseEntity<>(jsonHttp, jsonHttp.getHttpCode());
 	}
 
 	@RequestMapping(value = "categories/byType", method = RequestMethod.GET)
 	public @ResponseBody ResponseEntity<?> getCategoriesByType(@RequestParam("salonId") String salonId,@RequestParam("type") String type) throws Exception {
 
-		List<Category> categoryList = cateService.categoriesForGroup(type,salonId);
 		JsonHttp jsonHttp = new JsonHttp();
-		if (categoryList != null && categoryList.size() > 0) {
+		try {
+			List<Category> categoryList = cateService.categoriesForGroup(type,salonId);
 			jsonHttp.setCode(200);
 			jsonHttp.setObject(categoryList);
 			jsonHttp.setStatus("success");
 			jsonHttp.setMessage("get list success");
-		}
-
-		else {
+		} catch (Exception e) {
+			// TODO: handle exception
 			jsonHttp.setCode(404);
 			jsonHttp.setStatus("error");
-			jsonHttp.setMessage("get list failed");
+			jsonHttp.setMessage(e.getMessage());
 		}
-
+		
 		return ResponseEntity.ok(jsonHttp);
 	}
 }

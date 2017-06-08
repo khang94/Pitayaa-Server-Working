@@ -27,16 +27,6 @@ public class SendSmsNexmo {
 
 		LOGGER.info("Decrypt API Key & API Secret Successfully !");
 		
-		// Test
-		//apiKey = "620ba56b";
-		//apiSecret = "9debAcc7";
-		
-		apiKey = "08a5e867";
-		apiSecret = "a2ed09b2e0754c45";
-		
-		//apiKey = "bd49d0df";
-		//apiSecret = "f1e525b0f9ecae5f";
-		
 
 		NexmoSmsClient client = null;
 		try {

@@ -33,5 +33,7 @@ public class CustomerSummary {
 
 	@Embedded
 	private Address address;
+	
+	private String customerRefID;
 
 }

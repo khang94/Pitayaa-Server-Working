@@ -22,6 +22,8 @@ import pitayaa.nail.domain.notification.scheduler.SmsQueue;
 import pitayaa.nail.domain.notification.sms.SmsModel;
 import pitayaa.nail.domain.salon.Salon;
 import pitayaa.nail.domain.setting.SettingSms;
+import pitayaa.nail.domain.setting.sms.CustomerGroupSending;
+import pitayaa.nail.domain.setting.sms.CustomerSummary;
 import pitayaa.nail.notification.common.NotificationConstant;
 import pitayaa.nail.notification.common.NotificationHelper;
 import pitayaa.nail.notification.sms.config.SmsConstant;
@@ -80,12 +82,17 @@ public class PromotionJob implements Job {
 
 			// Execute to notify
 			if (settingSms.size() > 0 && customers.size() > 0) {
-				this.executeNotify(customers, settingSms);
+				try {
+					this.executeNotify(customers, settingSms);
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		});
 	}
 
-	public void executeNotify(List<Customer> customers, List<SettingSms> settingSms) {
+	public void executeNotify(List<Customer> customers, List<SettingSms> settingSms) throws ParseException {
 
 		// Filter customer
 		HashMap<String, List<Customer>> customerList = this.filterCustomerByType(customers);
@@ -96,33 +103,26 @@ public class PromotionJob implements Job {
 
 			// Notify to All Customer by Promotion
 			if (setting.getKey().equalsIgnoreCase(NotificationConstant.CUSTOMER_PROMOTION)) {
-				try {
-					notifyToAllCustomer(customers, setting);
-				} catch (ParseException e) {
-					e.printStackTrace();
-					LOGGER.info(e.getMessage());
-				}
 			}
 
 			// Notify to new Customer
 			if (setting.getKey().equalsIgnoreCase(NotificationConstant.CUSTOMER_NEW)) {
-				notifyToCustomer(customerList.get(NotificationConstant.CUSTOMER_NEW), setting,
-						NotificationConstant.CUSTOMER_NEW);
+				notifyToCustomer(setting);
 			}
 			// Notify to return customer
 			else if (setting.getKey().equalsIgnoreCase(NotificationConstant.CUSTOMER_RETURN)) {
-				notifyToCustomer(customerList.get(NotificationConstant.CUSTOMER_RETURN), setting,
-						NotificationConstant.CUSTOMER_RETURN);
+				//notifyToCustomer(customerList.get(NotificationConstant.CUSTOMER_RETURN), setting,
+				//		NotificationConstant.CUSTOMER_RETURN);
 			}
 			// Notify to referral customer
 			else if (setting.getKey().equalsIgnoreCase(NotificationConstant.CUSTOMER_REFERRAL)) {
-				notifyToCustomer(customerList.get(NotificationConstant.CUSTOMER_REFERRAL), setting,
-						NotificationConstant.CUSTOMER_REFERRAL);
+				//notifyToCustomer(customerList.get(NotificationConstant.CUSTOMER_REFERRAL), setting,
+				//		NotificationConstant.CUSTOMER_REFERRAL);
 			}
 			// Notify to appointment customer
 			else if (setting.getKey().equalsIgnoreCase(NotificationConstant.CUSTOMER_APPOINTMENT_REMIND)) {
-				notifyToCustomer(customerList.get(NotificationConstant.CUSTOMER_APPOINTMENT_REMIND), setting,
-						NotificationConstant.CUSTOMER_APPOINTMENT_REMIND);
+				//notifyToCustomer(customerList.get(NotificationConstant.CUSTOMER_APPOINTMENT_REMIND), setting,
+				//		NotificationConstant.CUSTOMER_APPOINTMENT_REMIND);
 			}
 		});
 	}
@@ -185,8 +185,72 @@ public class PromotionJob implements Job {
 
 		return mapCustomerType;
 	}
+	
+	public void notifyToCustomer(SettingSms settingSms){
+		
+		List<CustomerSummary> customers = new ArrayList<CustomerSummary>();
+		
+		if (settingSms.getCustomerGroups().getIsSendAll()){
+			customers = jobHelper.loadCustomersByType(settingSms.getSalonId(), settingSms.getKey());
+		} else {
+			customers = settingSms.getCustomerGroups().getCustomers();
+		}
+		
+		if(customers.size() > 0){
+			customers.stream().forEach(customer ->{
+				boolean isCorrectTime = TimeUtils.isRightTimeToSend(settingSms, customer);
+				
+				if(isCorrectTime){
+					try {
+						// Is sms send for this quartz
+						boolean isSend = this.isSendPermission(customer, settingSms);
+						
+						// Build sms body
+						if (isSend) {
+							SmsModel smsBody = this.buildSmsBody(customer, settingSms);
 
-	public void notifyToCustomer(List<Customer> customers, SettingSms settingSms, String type) {
+							// Validate sms body
+							boolean isSmsValid = this.validateSmsBody(smsBody);
+
+							if (isSmsValid) {
+								LOGGER.info("This sms for customer ID [" + customer.getUuid()
+										+ "] is valid . Send message.....");
+	
+								// Function send
+								SmsModel result = jobHelper.sendSms(smsBody);
+
+								if (result.getMeta().getStatus().equalsIgnoreCase(SmsConstant.STATUS_SMS_DELIVERED)) {
+									
+									LOGGER.info("This message for customer ID [" + customer.getUuid()
+											+ "] has been deliveried success .!");
+									
+									// Create Sms Queue
+									SmsQueue queue = jobHelper.addSmsQueue(customer, settingSms);
+									if(queue.getUuid() != null){
+										LOGGER.info("Create queue success with ID [" + queue.getUuid() + "] for customer ID [" + customer.getUuid() + "]"
+												+ " in salon [" + settingSms.getSalonId() + "]");
+									}
+									
+								} else {
+									LOGGER.info("This message has deliveried failed.");
+								}
+							} else {
+								LOGGER.info(
+										"Sms body for customer [" + customer.getUuid().toString() + "] is invalid !");
+							}
+						}
+					} catch (Exception ex){
+						LOGGER.info(ex.toString());
+					}
+				}
+			});
+		}
+		
+		
+		
+	}
+
+/*	public void notifyToCustomer(List<Customer> customers, SettingSms settingSms, String type) {
 
 
 		boolean isCorrectTime = true;
@@ -244,9 +308,9 @@ public class PromotionJob implements Job {
 			});
 		}
 
-	}
+	}*/
 
-	public void notifyToAllCustomer(List<Customer> customers, SettingSms setting) throws ParseException {
+	/*public void notifyToAllCustomer(List<Customer> customers, SettingSms setting) throws ParseException {
 		
 		Date notifyDate = TimeUtils.getDateFromString(setting.getSendSmsOn() + " " + setting.getSendSmsOnTime());
 		
@@ -291,7 +355,7 @@ public class PromotionJob implements Job {
 			});
 		}	
 
-	}
+	}*/
 
 	public List<SettingSms> filterSettingSms(List<SettingSms> settingSms) {
 
@@ -300,17 +364,19 @@ public class PromotionJob implements Job {
 		List<SettingSms> filterList = new ArrayList<SettingSms>();
 		settingSms.stream().forEach(setting -> {
 
-			boolean isCorrectTime = TimeUtils.compareDate(new Date(), setting.getUpdatedDate(),
-					setting.getTimesRepeat());
+			//boolean isCorrectTime = TimeUtils.compareDate(new Date(), setting.getUpdatedDate(),
+			//		setting.getTimesRepeat());
 			if(setting.isAutoSend()){
 				
+				filterList.add(setting);
+				
 				// Check time to notify to return , appointment customer type
-				if (isCorrectTime && !setting.getKey().equalsIgnoreCase(NotificationConstant.CUSTOMER_PROMOTION)){
+				/*if (isCorrectTime && !setting.getKey().equalsIgnoreCase(NotificationConstant.CUSTOMER_PROMOTION)){
 					filterList.add(setting);
 				} else if (setting.getKey().equalsIgnoreCase(NotificationConstant.CUSTOMER_PROMOTION)
 						&& setting.getSendSmsOn() != null && setting.getSendSmsOnTime() != null){
 					filterList.add(setting);
-				}
+				}*/
 			}
 		});
 
@@ -378,7 +444,7 @@ public class PromotionJob implements Job {
 	 * @return
 	 * @throws Exception
 	 */
-	private SmsModel buildSmsBody(Customer customer, SettingSms settingSms) throws Exception {
+	private SmsModel buildSmsBody(CustomerSummary customer, SettingSms settingSms) throws Exception {
 
 		LOGGER.info("Building SMS Body ........");
 		SmsModel smsBody = null;
@@ -396,9 +462,11 @@ public class PromotionJob implements Job {
 				// throws Exception ("Customer phone has been null , please
 				// check again to update to use this feature !");
 			}
+			
+			String message = this.getMessage(settingSms);
 
 			smsBody.getHeader().setToPhone(to);
-			smsBody.setSalonId(customer.getSalonId());
+			smsBody.setSalonId(settingSms.getSalonId());
 			smsBody.getHeader().setMessage(settingSms.getContent());
 			smsBody.setSmsType(NotificationConstant.SMS_PROMOTION);
 			smsBody.setModuleId(customer.getUuid().toString());
@@ -411,6 +479,23 @@ public class PromotionJob implements Job {
 		}
 		return smsBody;
 	}
+	
+	private String getMessage(SettingSms setting){
+		
+		String message = "";
+		if (setting.getTemplateDetail().getTemplateActive() == 0 && setting.getTemplateDetail().getTemplate1() != null)  {
+			message = setting.getTemplateDetail().getTemplate1();
+		}else if (setting.getTemplateDetail().getTemplateActive() == 1 && setting.getTemplateDetail().getTemplate2() != null){
+			message = setting.getTemplateDetail().getTemplate2();
+		}else if (setting.getTemplateDetail().getTemplateActive() == 2 && setting.getTemplateDetail().getTemplate3() != null){
+			message = setting.getTemplateDetail().getTemplate3();
+		}else if (setting.getTemplateDetail().getTemplateActive() == 3 && setting.getTemplateDetail().getTemplate4() != null){
+			message = setting.getTemplateDetail().getTemplate4();
+		}
+		return message;
+	}
+	
+	
 
 	private boolean validateSmsBody(SmsModel smsBody) {
 		boolean isBodyValid = true;
@@ -424,28 +509,31 @@ public class PromotionJob implements Job {
 	}
 
 	
-	private boolean isSendPermission(Customer customer , SettingSms settingSms){
+	private boolean isSendPermission(CustomerSummary customer , SettingSms settingSms){
 		
 		// Init flag
-		boolean isFirstTimeSend = false;
-		boolean isSmsSend = false;
+		boolean isHavePermission = false;
 		
 		// Get queue sms
-		SmsQueue queue = jobHelper.openQueue(customer, settingSms);
+		SmsQueue queue = jobHelper.openQueue(customer.getCustomerRefID() , settingSms);
 		
 		// IF this sms have not been send , will check from first sign in to current time
 		if(queue == null){
-			isFirstTimeSend = TimeUtils.isFirstTimeNotify(customer, settingSms);
-			return isFirstTimeSend;
+			isHavePermission = true;
+		}
+		
+		if(settingSms.getKey().equalsIgnoreCase(NotificationConstant.CUSTOMER_NEW) ||
+				settingSms.getKey().equalsIgnoreCase(NotificationConstant.CUSTOMER_REFERRAL)){
+			return isHavePermission;
 		}
 		
 		try{
 			// Check last time send sms
-			isSmsSend = TimeUtils.checkLastTimeSms(queue.getCreatedDate(), settingSms);
+			isHavePermission = TimeUtils.checkLastTimeSms(queue.getCreatedDate(), settingSms);
 		} catch (Exception ex){
 			LOGGER.info("There is error when check last time send sms");
 		}	
-		return !isSmsSend;
+		return isHavePermission;
 	}
 	
 

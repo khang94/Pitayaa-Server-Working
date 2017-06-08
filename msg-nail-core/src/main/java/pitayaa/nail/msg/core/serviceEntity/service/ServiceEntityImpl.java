@@ -26,6 +26,18 @@ public class ServiceEntityImpl implements ServiceEntityInterface {
 	private CoreHelper coreHelper;
 	
 	@Override
+	public ServiceModel initModel() throws Exception{
+		ServiceModel service = (ServiceModel) coreHelper
+				.createModelStructure(new ServiceModel());
+		
+		// Set empty data img
+		byte[] emptyArray = new byte[0];
+		service.getView().setImgData(emptyArray);
+		
+		return service;
+	}
+	
+	@Override
 	public List<ServiceModel> getServicesBySalonId(String salonId){
 		return serviceRepo.getServicesBySalonId(salonId);
 	}

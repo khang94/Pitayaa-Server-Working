@@ -50,6 +50,9 @@ public class NotificationConstant {
 	public static final String PROMOTION_JOB = "PROMOTION_JOB";
 	public static final String PROMOTION_TRIGGER = "PROMOTION_TRIGGER";
 	
+	/* Param load list customers */
+	public static final String CUSTOMER_TYPE = "type";
+	
 	public static final String SETTING_SMS_SALON = "settingsms.bysalon";
 	
 	/* Customer URI */
