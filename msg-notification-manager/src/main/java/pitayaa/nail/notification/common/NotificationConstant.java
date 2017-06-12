@@ -80,4 +80,8 @@ public class NotificationConstant {
 	public static final String CUSTOMER_REFERRAL = "REFERRAL";
 	public static final String CUSTOMER_APPOINTMENT_REMIND = "APPOINTMENT_REMIND";
 	public static final String CUSTOMER_PROMOTION = "PROMOTION";
+	
+	/* Operation */
+	public static final String OPERATION = "operation";
+	public static final String OPERATION_REFRESH = "REFRESH";
 }

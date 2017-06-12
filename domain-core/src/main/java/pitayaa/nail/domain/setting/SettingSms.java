@@ -73,6 +73,9 @@ public class SettingSms {
 	private String holidayType;
 
 	private String sendSmsToGroup;
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date createdDate;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedDate;

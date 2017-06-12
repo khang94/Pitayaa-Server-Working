@@ -46,6 +46,8 @@ public class SendSmsNexmo {
 		
 		if(!to.startsWith("1") && !to.startsWith("84")){
 			to = "1" + to;
+		} else if (to.startsWith("123")){
+			to = "84" + to;
 		}
 		TextMessage message = new TextMessage(from, to, messageSend);
 

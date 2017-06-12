@@ -16,6 +16,6 @@ import pitayaa.nail.domain.setting.SettingSms;
 @RepositoryRestResource(collectionResourceRel = "settingSmsRest", path = "settingSmsRest")
 public interface SettingSmsRepository extends
 		PagingAndSortingRepository<SettingSms, UUID> { 
-	@Query("select ss from SettingSms ss where ss.salonId = :salonId ")
+	@Query("select ss from SettingSms ss where ss.salonId = :salonId order by ss.createdDate DESC")
 	List<SettingSms> getListSetting(@Param("salonId") String salonId);
 }

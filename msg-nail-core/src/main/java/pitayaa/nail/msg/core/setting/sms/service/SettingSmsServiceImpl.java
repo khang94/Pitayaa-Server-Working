@@ -36,7 +36,7 @@ public class SettingSmsServiceImpl implements SettingSmsService {
 		
 		settingLst.stream().forEach(key ->{
 			key.setSalonId(salonId);
-			if(key.getHoursRepeat() == null){
+			/*if(key.getHoursRepeat() == null){
 				key.setHoursRepeat(0);
 			}
 			if(key.getMinutesRepeat() == null){
@@ -44,7 +44,7 @@ public class SettingSmsServiceImpl implements SettingSmsService {
 			}
 			if(key.getTimesRepeat() == null){
 				key.setTimesRepeat(0);
-			}
+			}*/
 			key = settingSmsRepo.save(key);
 		});
 		

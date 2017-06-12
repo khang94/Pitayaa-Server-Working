@@ -114,6 +114,7 @@ public class JobHelper {
 		Map<String, String> urlParameters = new HashMap<String, String>();
 		urlParameters.put(NotificationConstant.SALON_ID, salonId);
 		urlParameters.put(NotificationConstant.CUSTOMER_TYPE, customerType);
+		urlParameters.put(NotificationConstant.OPERATION, NotificationConstant.OPERATION_REFRESH);
 
 		// String url = this.urlLoadListAppm();
 		String url = this.getValueProperties(NotificationConstant.CUSTOMER_URI_SALON);
@@ -139,6 +140,7 @@ public class JobHelper {
 			customerSummary.setCustomerDetail(customer.getCustomerDetail());
 			customerSummary.setContact(customer.getContact());
 			customerSummary.setAddress(customer.getAddress());
+			customersSummary.add(customerSummary);
 		});
 
 		return customersSummary;
@@ -313,6 +315,7 @@ public class JobHelper {
 		// urlParameters
 		Map<String, String> urlParameters = new HashMap<String, String>();
 		urlParameters.put(NotificationConstant.SALON_ID, salonId);
+		urlParameters.put(NotificationConstant.OPERATION, NotificationConstant.OPERATION_REFRESH);
 		
 		
 		// url Variable

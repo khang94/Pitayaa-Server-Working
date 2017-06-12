@@ -13,9 +13,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import pitayaa.nail.domain.setting.SettingSms;
+import pitayaa.nail.json.http.JsonHttp;
+import pitayaa.nail.msg.business.json.JsonHttpService;
+import pitayaa.nail.msg.core.common.CoreConstant;
 import pitayaa.nail.msg.core.common.CoreHelper;
 import pitayaa.nail.msg.core.setting.sms.service.SettingSmsService;
 
@@ -27,6 +31,9 @@ public class SettingSmsController {
 
 	@Autowired
 	private SettingSmsService settingSmsService;
+	
+	@Autowired
+	private JsonHttpService httpService;
 
 	@RequestMapping(value = "settingSms/model", method = RequestMethod.GET)
 	public @ResponseBody ResponseEntity<?> initSettingSms() throws Exception {
@@ -69,30 +76,51 @@ public class SettingSmsController {
 		return new ResponseEntity<>(savedSettingSms.get() , HttpStatus.OK);
 	}
 	
-	@RequestMapping(value = "settingSms", method = RequestMethod.GET)
-	public @ResponseBody ResponseEntity<?> getListSetting(@Param("salonId") String salonId) throws Exception {
-		
-		Optional<List<SettingSms>> lstSetting=settingSmsService.getListSettingSMS(salonId);
-		if(!lstSetting.isPresent()){
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
-		
-		return ResponseEntity.ok(lstSetting.get());
-	}
-	
-	@RequestMapping(value = "settingSms", method = RequestMethod.PUT)
-	public @ResponseBody ResponseEntity<?> updateListSetting(@Param("salonId") String salonId,
-			@RequestBody List<SettingSms> lstSettingSms) throws Exception {
+	@RequestMapping(value = "settingSms/salons", method = RequestMethod.GET)
+	public @ResponseBody ResponseEntity<?> getListSetting(@Param("salonId") String salonId , 
+			@RequestParam(name = "operation" , required = false , defaultValue = "") String operation) throws Exception {
 		
 		Optional<List<SettingSms>> lstSetting = settingSmsService.getListSettingSMS(salonId);
+		JsonHttp jsonHttp = new JsonHttp();
 		
-		if(!lstSetting.isPresent() || lstSetting.get().size() == 0){
-			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		if(CoreConstant.OPERATION_REFRESH.equalsIgnoreCase(operation)){
+			return ResponseEntity.ok(lstSetting.get());
 		}
 		
-		lstSettingSms = settingSmsService.updateListSettingSms(salonId, lstSettingSms);
+		if(!lstSetting.isPresent()){
+			jsonHttp = httpService.getNotFoundData("Not found list setting for this salon [" + salonId + "]");
+		}
+		jsonHttp = httpService.getResponseSuccess(lstSetting.get(), "Get list setting success..");
 
-		return ResponseEntity.ok(lstSettingSms);
+		return new ResponseEntity<>(jsonHttp , jsonHttp.getHttpCode());
+	}
+	
+	@RequestMapping(value = "settingSms/salons", method = RequestMethod.PUT)
+	public @ResponseBody ResponseEntity<?> updateListSetting(@Param("salonId") String salonId,
+			@RequestBody List<SettingSms> lstSettingSms,
+			@RequestParam(name = "operation" , required = false , defaultValue = "") String operation) throws Exception {
+		
+		Optional<List<SettingSms>> lstSetting = settingSmsService.getListSettingSMS(salonId);
+		JsonHttp jsonHttp = new JsonHttp();
+		
+		if(!lstSetting.isPresent() || lstSetting.get().size() == 0){
+			jsonHttp = httpService.getNotFoundData("Not found list setting for salon [" + salonId + "]  to updated.");
+		}
+		
+		try {
+			lstSettingSms = settingSmsService.updateListSettingSms(salonId, lstSettingSms);
+			jsonHttp = httpService.getResponseSuccess(lstSettingSms, "Update list setting sms for salon Id [" + salonId + "] successfully !");
+		} catch (Exception ex){
+			jsonHttp = httpService.getResponseError("Updated list setting for salon failed", ex.getMessage());
+		}
+		
+		
+		if(CoreConstant.OPERATION_REFRESH.equalsIgnoreCase("operation")){
+			return ResponseEntity.ok(lstSettingSms);
+		}
+		
+
+		return new ResponseEntity<>(jsonHttp , jsonHttp.getHttpCode());
 	}
 	
 }

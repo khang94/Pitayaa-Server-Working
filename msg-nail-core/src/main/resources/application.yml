@@ -1,5 +1,5 @@
 server:
-  port: 7272
+  port: 7070
   display-name: Microservice Group Notification Management
 
 spring:

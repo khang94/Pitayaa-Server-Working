@@ -24,6 +24,7 @@ import pitayaa.nail.domain.salon.Salon;
 import pitayaa.nail.domain.setting.SettingSms;
 import pitayaa.nail.domain.setting.sms.CustomerGroupSending;
 import pitayaa.nail.domain.setting.sms.CustomerSummary;
+import pitayaa.nail.msg.business.helper.TextHelper;
 import pitayaa.nail.notification.common.NotificationConstant;
 import pitayaa.nail.notification.common.NotificationHelper;
 import pitayaa.nail.notification.sms.config.SmsConstant;
@@ -102,6 +103,7 @@ public class PromotionJob implements Job {
 			LOGGER.info("Notify for customer type [" + setting.getKey() + "] in salon ID [" + setting.getSalonId() + "]");
 
 			// Notify to All Customer by Promotion
+			notifyToCustomer(setting);
 			if (setting.getKey().equalsIgnoreCase(NotificationConstant.CUSTOMER_PROMOTION)) {
 			}
 
@@ -463,9 +465,8 @@ public class PromotionJob implements Job {
 				// check again to update to use this feature !");
 			}
 			
-			String message = this.getMessage(settingSms);
 
-			smsBody.getHeader().setToPhone(to);
+			smsBody.getHeader().setToPhone(TextHelper.formatPhoneNumber(to));
 			smsBody.setSalonId(settingSms.getSalonId());
 			smsBody.getHeader().setMessage(settingSms.getContent());
 			smsBody.setSmsType(NotificationConstant.SMS_PROMOTION);
@@ -479,6 +480,7 @@ public class PromotionJob implements Job {
 		}
 		return smsBody;
 	}
+	
 	
 	private String getMessage(SettingSms setting){
 		

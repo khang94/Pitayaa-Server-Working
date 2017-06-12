@@ -95,6 +95,7 @@ public class ObjectHibernateListenerHelper {
 			view.setUpdatedDate(new Date());
 		} else if (ob.getClass().equals(SettingSms.class)){
 			SettingSms settingSms = (SettingSms) ob;
+			settingSms.setCreatedDate(new Date());
 			settingSms.setUpdatedDate(new Date());
 		}
 		return ob;
