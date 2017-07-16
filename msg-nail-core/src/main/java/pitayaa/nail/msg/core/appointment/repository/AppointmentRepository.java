@@ -21,5 +21,8 @@ public interface AppointmentRepository extends
 	
 	@Query("Select appm from Appointment appm where appm.salonId= :salonId")
 	List<Appointment> findAllAppmBySalon(@Param("salonId") String salonId);
+	
+	@Query("Select appm from Appointment appm where appm.customer.contact.email = :email")
+	List<Appointment> findAllTurnCustomer(@Param("email") String email);
 
 }

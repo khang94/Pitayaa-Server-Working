@@ -3,7 +3,10 @@ package pitayaa.nail.notification.scheduler;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,30 +14,29 @@ import org.slf4j.LoggerFactory;
 import pitayaa.nail.domain.customer.Customer;
 import pitayaa.nail.domain.setting.SettingSms;
 import pitayaa.nail.domain.setting.sms.CustomerSummary;
+import pitayaa.nail.notification.common.NotificationConstant;
 
 public class TimeUtils {
 	
 	public final static Logger LOGGER = LoggerFactory.getLogger(TimeUtils.class);
+	
+	public static Date getCurrentUTCTime(){
+		
+		TimeZone timeZone = TimeZone.getTimeZone("UTC");
+		Calendar calendar = Calendar.getInstance(timeZone);
+		SimpleDateFormat simpleDateFormat = 
+		       new SimpleDateFormat("EE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH);
+		simpleDateFormat.setTimeZone(timeZone);
 
-	public static boolean compareDate(Date currentDate, Date lastModify, int timeNotify) {
+		LOGGER.info("Time zone: " + timeZone.getID());
+		LOGGER.info("default time zone: " + TimeZone.getDefault().getID());
+		System.out.println();
 
-		boolean isCorrectTime = false;
-
-		long dateNotify = System.currentTimeMillis();
-		long dateModify = lastModify.getTime();
-
-		long gapNotify = 86400000 * timeNotify;
-
-		long timeExpectNotify = dateModify + gapNotify;
-
-		if (dateNotify > timeExpectNotify && (dateNotify - timeExpectNotify) <= 86400000) {
-			isCorrectTime = true;
-		} else if (timeExpectNotify >= dateNotify) {
-			isCorrectTime = true;
-		}
-		return isCorrectTime;
+		LOGGER.info("UTC:     " + simpleDateFormat.format(calendar.getTime()));
+		LOGGER.info("Default: " + calendar.getTime());
+		
+		return calendar.getTime();
 	}
-
 	
 	public static boolean isTimeNotify(Date lastSms , SettingSms settingSms){
 		boolean isSend = false;
@@ -73,7 +75,7 @@ public class TimeUtils {
 		} 
 		// MINUTES
 		else if (settingSms.getTimesRepeat() == 0 && settingSms.getMinutesRepeat() > 0 && settingSms.getHoursRepeat() == 0){
-			gapNotify = 60000 * settingSms.getMinutesRepeat();
+			gapNotify = 60000 * 3;
 		} 
 		// HOURS
 		else if (settingSms.getTimesRepeat() == 0 && settingSms.getMinutesRepeat() == 0 && settingSms.getHoursRepeat() > 0){
@@ -126,60 +128,15 @@ public class TimeUtils {
 	}
 	
 	public static void main(String[] args) throws ParseException{
-		String date = "2017-04-06 ";
-		String time = "22 : 25";
+		Date currentTime = getCurrentUTCTime();
 		
-		String fullTime = date + time;
-		
-		Date result = getDateFromString(fullTime);
-		System.out.println(result);
+		LOGGER.info("Current Time [" + currentTime + "]");
 		
 	}
 	
-	public static boolean isFirstTimeNotify(Customer customer , SettingSms settingSms){
-		
-		 boolean isCorrectTime = false;
-	
-		// Get current time
-		long currentTime = System.currentTimeMillis();
-		
-		// Get first time when customer visit
-		long firstVisitCustomer = customer.getCreatedDate().getTime();
-		
-		// time expect to notify after long time
-		long gapNotify = 0;
-		if (settingSms.getTimesRepeat() != 0 && settingSms.getMinutesRepeat() ==0){
-			gapNotify = 86400000 * settingSms.getTimesRepeat();
-		} else if (settingSms.getMinutesRepeat() != 0 && settingSms.getTimesRepeat() == 0){
-			gapNotify = 60000 * settingSms.getMinutesRepeat();
-		}
-		long timeExpectToNotify = firstVisitCustomer + gapNotify;
-		
-		if((timeExpectToNotify - firstVisitCustomer) > gapNotify){
-			return true;
-		}
-		
-		if(currentTime > timeExpectToNotify && (currentTime - timeExpectToNotify) < 150000){
-			isCorrectTime = true;
-		} else if(currentTime == timeExpectToNotify){
-			isCorrectTime = true;
-		} else if (currentTime < timeExpectToNotify && (timeExpectToNotify - currentTime) < 150000){
-			isCorrectTime = true;
-		}
-		return isCorrectTime;
-	}
-	
-	public static boolean isRightTimeToSend(SettingSms settingSms , CustomerSummary customerSummary){
-		
-		// Get last checkin time
-		long lastCheckin = customerSummary.getCustomerDetail().getLastCheckin().getTime();
-		
-		// Get current time
-		long currentTime = System.currentTimeMillis();
+	public static long getGapNotify (SettingSms settingSms){
 		
 		long gapNotify = 0;
-		
-		boolean isRightTime = false;
 		
 		// Get time type
 		
@@ -189,22 +146,72 @@ public class TimeUtils {
 		} 
 		// MINUTES
 		else if (settingSms.getTimesRepeat() == 0 && settingSms.getMinutesRepeat() > 0 && settingSms.getHoursRepeat() == 0){
-			gapNotify = 60000 * 1;
+			gapNotify = 60000 * settingSms.getMinutesRepeat();
 		} 
 		// HOURS
 		else if (settingSms.getTimesRepeat() == 0 && settingSms.getMinutesRepeat() == 0 && settingSms.getHoursRepeat() > 0){
 			gapNotify = 60 * 60000 * settingSms.getHoursRepeat();
 		}
 		
-		long timeExpectToNotify = lastCheckin + gapNotify;
+		return gapNotify;
+	}
+	
+	public static boolean isTimeSend(long timeExpectToNotify){
 		
-		if (currentTime > timeExpectToNotify && (currentTime - timeExpectToNotify) < 90000){
+		// Get current time
+		long currentTime = System.currentTimeMillis();
+		
+		boolean isRightTime = false;
+		
+		if (currentTime > timeExpectToNotify && (currentTime - timeExpectToNotify) < 60000){
 			isRightTime = true;
 		} else if (currentTime == timeExpectToNotify){
 			isRightTime = true;
-		} else if (currentTime < timeExpectToNotify && (timeExpectToNotify - currentTime) < 90000){
+		} else if (currentTime < timeExpectToNotify && (timeExpectToNotify - currentTime) < 60000){
 			isRightTime = true;
 		}
+		
+		return isRightTime;
+		
+	}
+	
+	public static boolean isTimeSendForFirst(long timeExpectToNotify){
+		
+		// Get current time
+		long currentTime = System.currentTimeMillis();
+		
+		boolean isRightTime = false;
+		
+		if (currentTime > timeExpectToNotify && (currentTime - timeExpectToNotify) < 150000){
+			isRightTime = true;
+		} else if (currentTime == timeExpectToNotify){
+			isRightTime = true;
+		} else if (currentTime < timeExpectToNotify && (timeExpectToNotify - currentTime) < 150000){
+			isRightTime = true;
+		}
+		
+		return isRightTime;
+		
+	}
+	
+	public static boolean isRightTimeToSend(SettingSms settingSms , Date lastActionSms , String type){
+		
+		// Get last checkin time
+ 		long lastCheckin = lastActionSms.getTime();
+		
+		boolean isRightTime = false;
+		
+		// Get time type
+		long gapNotify = getGapNotify(settingSms);
+
+		long timeExpectToNotify = lastCheckin + gapNotify;
+		
+		if (NotificationConstant.TIME_REPEAT.equalsIgnoreCase(type)){
+			isRightTime = isTimeSendForFirst(timeExpectToNotify);
+		} else {
+			isRightTime = isTimeSend(timeExpectToNotify);
+		}
+
 		
 		return isRightTime;
 	}

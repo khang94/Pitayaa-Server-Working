@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
@@ -68,6 +67,8 @@ public class SettingSms {
 	
 	private String sendSmsOn;
 	private String sendSmsOnTime;
+	
+	private boolean enableRepeat;
 
 	private String note;
 	private String holidayType;

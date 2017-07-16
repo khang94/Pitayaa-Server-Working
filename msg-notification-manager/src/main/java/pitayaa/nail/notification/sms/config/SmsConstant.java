@@ -63,6 +63,12 @@ public class SmsConstant extends NotificationConstant {
 	/* Sms Template Format */
 	public static final String SMS_APPOINTMENT = "SmsAppointment";
 	public static final String SMS_RESPONSE = "SmsResponse";
+	public static final String SMS_RESPONSE_STOP = "SmsResponseStop";
+	public static final String SMS_RESPONSE_UNSTOP = "SmsResponseUnstop";
+	
+	/* Sms Feedback from customers */
+	public static final String FEEDBACK_STOP = "STOP";
+	public static final String FEEDBACK_UNSTOP = "UNSTOP";
 	
 	/* RECEIVE SMS */
 	public static final String PHONE_SENDER = "msisdn"; 

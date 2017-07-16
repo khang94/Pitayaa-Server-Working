@@ -32,32 +32,32 @@ public class SmsControllerImpl {
 			SmsReceive receiveBody = new SmsReceive();
 			
 			strTemp = request.getParameter(SmsConstant.PHONE_SENDER);
-			if(!StringUtil.isNullOrEmpty(strTemp)){
+			if(!strTemp.equalsIgnoreCase("") && strTemp != null){
 				receiveBody.setFromPhone(strTemp);
 			}
 			
 			strTemp = request.getParameter(SmsConstant.PHONE_TO);
-			if(!StringUtil.isNullOrEmpty(strTemp)){
+			if(!strTemp.equalsIgnoreCase("") && strTemp != null){
 				receiveBody.setToPhone(strTemp);
 			}
 			
 			strTemp = request.getParameter(SmsConstant.MESSAGE_ID);
-			if(!StringUtil.isNullOrEmpty(strTemp)){
+			if(!strTemp.equalsIgnoreCase("") && strTemp != null){
 				receiveBody.setMessageId(strTemp);
 			}
 			
 			strTemp = request.getParameter(SmsConstant.CONTENT_MESSAGE);
-			if(!StringUtil.isNullOrEmpty(strTemp)){
+			if(!strTemp.equalsIgnoreCase("") && strTemp != null){
 				receiveBody.setMessage(strTemp);
 			}
 			
 			strTemp = request.getParameter(SmsConstant.TYPE_MESSAGE);
-			if(!StringUtil.isNullOrEmpty(strTemp)){
+			if(!strTemp.equalsIgnoreCase("") && strTemp != null){
 				receiveBody.setSmsType(strTemp);
 			}
 			
 			strTemp = request.getParameter(SmsConstant.TIMESTAMP_MESSAGE);
-			if(!StringUtil.isNullOrEmpty(strTemp)){
+			if(!strTemp.equalsIgnoreCase("") && strTemp != null){
 				receiveBody.setCreatedDate(format.parse(strTemp));
 			}
 			
@@ -70,13 +70,13 @@ public class SmsControllerImpl {
 			LOGGER.info(info.toString());
 			
 			// handle
-			if(!StringUtil.isNullOrEmpty(receiveBody.getMessageId()) 
-					&& !StringUtil.isNullOrEmpty(receiveBody.getToPhone())
-					&& !StringUtil.isNullOrEmpty(receiveBody.getFromPhone())){
+			if(!receiveBody.getMessageId().equalsIgnoreCase("")
+					&& !receiveBody.getToPhone().equalsIgnoreCase("")
+					&& !receiveBody.getFromPhone().equalsIgnoreCase("")){
 				//smsMgr.handleSmsReceiveInfo(receiveBody);
 				smsService.saveSmsReceive(receiveBody);
 			} else{
-				LOGGER.info("Empty message id or empty sms to or sms from.");
+				LOGGER.info("Empty message id or empty sms to or sms from a.");
 			}
 		} catch (Exception e) {
 			LOGGER.info("error when received sms message. Exception: ", e.getMessage());

@@ -15,4 +15,6 @@ public interface SmsQueueService {
 
 	JsonHttp deliverMessage(SettingSms settingSms) throws Exception;
 
+	SmsQueue getTopQueue(String customerId, String settingSmsId, String customerType);
+
 }

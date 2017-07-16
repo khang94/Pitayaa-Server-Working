@@ -18,33 +18,33 @@ public class ObjectListener extends ObjectListenerHelper{
 	
 	@PrePersist
 	public void ObjectPrePersist(Object ob) {
-		LOGGER.info("Listening Object Pre Persist : " + ob.toString());
+		//LOGGER.info("Listening Object Pre Persist : " + ob.toString());
 		this.setDateInsert(ob);
 		
 	}
 	@PostPersist
 	public void ObjectPostPersist(Object ob) {
-		LOGGER.info("Listening Object Post Persist : " + ob.toString());
+		//LOGGER.info("Listening Object Post Persist : " + ob.toString());
 	}
 	@PostLoad
 	public void ObjectPostLoad(Object ob) {
-		LOGGER.info("Listening Object Post Load : " + ob.toString());
+		//LOGGER.info("Listening Object Post Load : " + ob.toString());
 	}	
 	@PreUpdate
 	public void ObjectPreUpdate(Object ob) {
-		LOGGER.info("Listening Object Pre Update : " + ob.toString());
+		//LOGGER.info("Listening Object Pre Update : " + ob.toString());
 		this.setDateUpdate(ob);
 	}
 	@PostUpdate
 	public void ObjectPostUpdate(Object ob) {
-		LOGGER.info("Listening Object Post Update : " + ob.toString());
+		//LOGGER.info("Listening Object Post Update : " + ob.toString());
 	}
 	@PreRemove
 	public void ObjectPreRemove(Object ob) {
-		LOGGER.info("Listening Object Pre Remove : " + ob.toString());
+		//LOGGER.info("Listening Object Pre Remove : " + ob.toString());
 	}
 	@PostRemove
 	public void ObjectPostRemove(Object ob) {
-		LOGGER.info("Listening Object Post Remove : " + ob.toString());
+		//LOGGER.info("Listening Object Post Remove : " + ob.toString());
 	}
 }

@@ -20,6 +20,9 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import pitayaa.nail.notification.common.NotificationHelper;
+import pitayaa.nail.notification.promotion.business.PromotionJobBus;
+import pitayaa.nail.notification.promotion.business.PromotionJobBusImpl;
+import pitayaa.nail.notification.scheduler.JobHelper;
 import pitayaa.nail.notification.scheduler.RestTemplateHelper;
 import pitayaa.nail.notification.sms.api.nexmo.SendSmsNexmo;
 import pitayaa.nail.notification.sms.repository.SmsRepository;
@@ -52,14 +55,19 @@ public class BeanConfiguration {
 		return smsRepository();
 	}
 
-	/*
-	 * @Bean public SmsReceiveRepository smsReceiveRepo() { return
-	 * smsReceiveRepo(); }
-	 */
-
+	@Bean
+	public JobHelper jobHelper(){
+		return new JobHelper();
+	}
+	
 	@Bean
 	public SendSmsNexmo sendSmsNexmo() {
 		return new SendSmsNexmo();
+	}
+
+	@Bean
+	public PromotionJobBus promotionJobBus() {
+		return new PromotionJobBusImpl();
 	}
 
 	@Bean
@@ -71,8 +79,7 @@ public class BeanConfiguration {
 	private Environment environment;
 
 	@Bean
-	public HibernateJpaSessionFactoryBean sessionFactory(
-			EntityManagerFactory emf) {
+	public HibernateJpaSessionFactoryBean sessionFactory(EntityManagerFactory emf) {
 		HibernateJpaSessionFactoryBean factory = new HibernateJpaSessionFactoryBean();
 		factory.setEntityManagerFactory(emf);
 		return factory;
@@ -83,8 +90,7 @@ public class BeanConfiguration {
 		DriverManagerDataSource dataSource = new DriverManagerDataSource();
 
 		dataSource.setDriverClassName("org.postgresql.Driver");
-		dataSource
-				.setUrl("jdbc:postgresql://localhost:5432/pitayaa_notification");
+		dataSource.setUrl("jdbc:postgresql://localhost:5432/pitayaa_notification");
 		dataSource.setUsername("postgres");
 		dataSource.setPassword("postgres");
 

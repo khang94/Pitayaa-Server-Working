@@ -10,10 +10,10 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Version;
 
-import lombok.Data;
-
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
+
+import lombok.Data;
 
 @Data
 @Entity
@@ -40,7 +40,7 @@ public class CustomerMembership {
 	private String note;
 	private String memberType;
 	private Double spending;
-	private Double point;
+	private Integer point;
 	private Integer rating;
 
 }

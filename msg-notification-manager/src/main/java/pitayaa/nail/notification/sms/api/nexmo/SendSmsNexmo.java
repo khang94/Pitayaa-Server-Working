@@ -4,13 +4,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import pitayaa.nail.domain.notification.sms.SmsModel;
-import pitayaa.nail.msg.business.util.security.EncryptionUtils;
-import pitayaa.nail.notification.sms.config.SmsConstant;
-
 import com.nexmo.messaging.sdk.NexmoSmsClient;
 import com.nexmo.messaging.sdk.SmsSubmissionResult;
 import com.nexmo.messaging.sdk.messages.TextMessage;
+
+import pitayaa.nail.domain.notification.sms.SmsModel;
+import pitayaa.nail.msg.business.util.security.EncryptionUtils;
+import pitayaa.nail.notification.sms.config.SmsConstant;
 
 @Service
 public class SendSmsNexmo {
@@ -26,6 +26,7 @@ public class SendSmsNexmo {
 				.decrypt(apiSecret, EncryptionUtils.getKey());
 
 		LOGGER.info("Decrypt API Key & API Secret Successfully !");
+		
 
 		NexmoSmsClient client = null;
 		try {
@@ -42,9 +43,9 @@ public class SendSmsNexmo {
 		String messageSend = smsModel.getHeader().getMessage();
 
 		
-		if(!to.startsWith("1") && !to.startsWith("84")){
+		if(!to.startsWith("1") && !to.startsWith("84") && !to.startsWith("9")){
 			to = "1" + to;
-		} else if (to.startsWith("123")){
+		} else if (to.startsWith("123") || to.startsWith("9")){
 			to = "84" + to;
 		}
 		TextMessage message = new TextMessage(from, to, messageSend);

@@ -70,7 +70,7 @@ public class SmsServiceImpl implements ISmsService {
 			LOGGER.info("This sms with Message ID [" + smsReceive.getMessageId() + "] does not exist !");
 			return null;
 		} 
-		else if(!isReply && smsOriginal != null){
+		else if(smsOriginal != null){
 			
 			// Response To Customer
 			this.responseToCustomer(smsReceive);
@@ -99,8 +99,18 @@ public class SmsServiceImpl implements ISmsService {
 		
 		// Response to customer
 		SmsModel smsResponse = (SmsModel)notificationHelper.createModelStructure(new SmsModel());
-		smsResponse.getMeta().setTemplateId(SmsConstant.SMS_RESPONSE);
+		
+		String message = smsReceive.getMessage().trim();
+		
+		if (message.equalsIgnoreCase(SmsConstant.FEEDBACK_STOP)){
+			smsResponse.getMeta().setTemplateId(SmsConstant.SMS_RESPONSE_STOP);
+		} else if  (message.equalsIgnoreCase(SmsConstant.FEEDBACK_UNSTOP)){
+			smsResponse.getMeta().setTemplateId(SmsConstant.SMS_RESPONSE_UNSTOP);
+		} else {
+			smsResponse.getMeta().setTemplateId(SmsConstant.SMS_RESPONSE);
+		}
 		smsResponse.getHeader().setToPhone(smsReceive.getFromPhone());
+		smsResponse.setMessageId(smsReceive.getMessageId());
 		
 		// Response to Customer
 		smsResponse = this.sendSms(smsResponse);
@@ -262,6 +272,13 @@ public class SmsServiceImpl implements ISmsService {
 			templateFileName = this.getSmsTemplateConfig(SmsConstant.SMS_RESPONSE_TEMPLATE);
 			path = SmsConstant.PATH_SMS_TEMPLATE + SmsConstant.SLASH + templateFileName
 					+ SmsConstant.TEMPLATE_FILE_SMS_EXTENSION;
+		} else if (SmsConstant.SMS_RESPONSE_STOP.equalsIgnoreCase(templateId)){
+			path = SmsConstant.PATH_SMS_TEMPLATE + SmsConstant.SLASH + templateId
+					+ SmsConstant.TEMPLATE_FILE_SMS_EXTENSION;
+		} else if (SmsConstant.SMS_RESPONSE_UNSTOP.equalsIgnoreCase(templateId)){
+			templateFileName = this.getSmsTemplateConfig(SmsConstant.SMS_RESPONSE_TEMPLATE);
+			path = SmsConstant.PATH_SMS_TEMPLATE + SmsConstant.SLASH + templateId
+					+ SmsConstant.TEMPLATE_FILE_SMS_EXTENSION;
 		}
 		LOGGER.info("Find template [" + templateFileName + "] in path [" + path + "]");
 
@@ -313,7 +330,7 @@ public class SmsServiceImpl implements ISmsService {
 			// smsBody = this.initAppointmentSms(smsBody);
 			smsContent = this.bindingDataSms(smsBody, smsContent);
 			smsBody.getHeader().setMessage(smsContent);
-		} else if (SmsConstant.SMS_RESPONSE.equalsIgnoreCase(templateId)){
+		} else {
 			smsBody.getHeader().setMessage(smsContent);
 		}
 		return smsBody;

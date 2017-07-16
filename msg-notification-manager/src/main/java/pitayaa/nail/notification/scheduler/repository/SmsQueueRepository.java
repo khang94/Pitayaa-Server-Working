@@ -20,5 +20,10 @@ public interface SmsQueueRepository extends PagingAndSortingRepository<SmsQueue,
 	public List<SmsQueue> getQueue(@Param("customerId") String customerId , @Param("settingSmsId") String settingSmsId,
 			@Param("customerType") String customerType);
 	
+	/*@Query("SELECT queue from SmsQueue queue where queue.customerId = :customerId and "
+			+ "queue.settingSmsId = :settingSmsId and queue.customerType = :customerType order by updatedDate DESC")
+	public List<SmsQueue> getTopQueue(@Param("customerId") String customerId , @Param("settingSmsId") String settingSmsId,
+			@Param("customerType") String customerType);*/
+	
 
 }

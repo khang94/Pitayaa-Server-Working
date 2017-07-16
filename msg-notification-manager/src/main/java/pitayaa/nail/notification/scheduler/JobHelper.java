@@ -3,6 +3,7 @@ package pitayaa.nail.notification.scheduler;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -140,6 +141,7 @@ public class JobHelper {
 			customerSummary.setCustomerDetail(customer.getCustomerDetail());
 			customerSummary.setContact(customer.getContact());
 			customerSummary.setAddress(customer.getAddress());
+			customerSummary.setCustomerRefID(customer.getUuid().toString());
 			customersSummary.add(customerSummary);
 		});
 
@@ -157,6 +159,7 @@ public class JobHelper {
 		queue.setCustomerType(settingSms.getKey());
 		queue.setTimeUpdateSetting(settingSms.getUpdatedDate());
 		queue.setSalonId(settingSms.getSalonId());
+		queue.setSendTime(new Date());
 			
 		// Call API Function
 		Map<String, String> headersMap = new HashMap<String, String>();

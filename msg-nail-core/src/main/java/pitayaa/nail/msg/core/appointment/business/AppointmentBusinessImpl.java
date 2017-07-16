@@ -14,10 +14,15 @@ import pitayaa.nail.domain.customer.Customer;
 import pitayaa.nail.domain.employee.Employee;
 import pitayaa.nail.domain.packages.PackageModel;
 import pitayaa.nail.domain.service.ServiceModel;
+import pitayaa.nail.domain.setting.SettingPromotion;
+import pitayaa.nail.domain.setting.promotion.CustomerTurn;
+import pitayaa.nail.msg.core.appointment.repository.AppointmentRepository;
+import pitayaa.nail.msg.core.common.CoreConstant;
 import pitayaa.nail.msg.core.customer.service.CustomerService;
 import pitayaa.nail.msg.core.employee.service.EmployeeService;
 import pitayaa.nail.msg.core.packageEntity.service.PackageService;
 import pitayaa.nail.msg.core.serviceEntity.service.ServiceEntityInterface;
+import pitayaa.nail.msg.core.setting.promotion.service.SettingPromotionService;
 
 @Service
 public class AppointmentBusinessImpl implements AppointmentBusiness {
@@ -33,6 +38,54 @@ public class AppointmentBusinessImpl implements AppointmentBusiness {
 
 	@Autowired
 	PackageService packageNail;
+	
+	@Autowired
+	SettingPromotionService settingPromotionService;
+	
+	@Autowired
+	AppointmentRepository appointmentRepo;
+	
+	
+	private Customer updateCustomerPoint(Customer customer){
+		
+		// Get promotion setting
+		SettingPromotion settingPromotion = settingPromotionService.getSettingPromoteBySalonId(customer.getSalonId());
+
+		// Get point setting
+		Integer loyalPoint = settingPromotion.getPointRegularTurn();
+		Integer promotionPoint = settingPromotion.getPointReferralCode();
+		Integer referralPoint = settingPromotion.getPointReferralCode();
+		
+		// Get turn for target of customer
+		CustomerTurn customerTurnRegular = null;
+		CustomerTurn customerTurnVIP = null;
+		for (CustomerTurn turn : settingPromotion.getCustomerTurn()){
+			if(CoreConstant.CUSTOMER_TYPE_LOYAL.equalsIgnoreCase(turn.getTargetType())){
+				customerTurnRegular = turn;
+			}
+		}
+		
+		// Get current status & point of customer
+		String currentStatus = customer.getCustomerDetail().getCustomerType();
+		Integer currentPoint = customer.getCustomerMembership().getPoint();
+		
+		// Get history of customer
+		List<Appointment> appointments = appointmentRepo.findAllTurnCustomer(customer.getContact().getEmail());
+		
+		// Increase point for customers
+		Integer pointAdd = currentPoint + loyalPoint;
+		
+		// Update Status 
+		if(appointments.size() >= customerTurnRegular.getTimeTurns()){
+			customer.getCustomerDetail().setCustomerType(CoreConstant.CUSTOMER_TYPE_RETURN);
+		}
+		
+		// Add extra point
+		customer.getCustomerMembership().setPoint(pointAdd);
+		
+		return customer;
+		
+	}
 
 	@Override
 	public Appointment executeCreateAppm(Appointment appmBody) throws Exception {
@@ -95,7 +148,8 @@ public class AppointmentBusinessImpl implements AppointmentBusiness {
 			customer = customerService.findOne(customerId);
 			customer.get().getCustomerDetail().setLastCheckin(new Date());
 			if (customer.isPresent()) {
-				appmBody.setCustomer(customer.get());
+				Customer customerInfo = this.updateCustomerPoint(customer.get());
+				appmBody.setCustomer(customerInfo);
 			} else {
 				throw new Exception(
 						"This Customer ID does not exist ! Please check again or create new one .");

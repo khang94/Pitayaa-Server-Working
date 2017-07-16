@@ -75,6 +75,7 @@ public class NotificationConstant {
 	public static final String SMS_FOR_EMPLOYEE = "EMPLOYEE";
 	
 	/* Notify to customer type */
+	public static final String CUSTOMER_ALL = "ALL";
 	public static final String CUSTOMER_NEW = "NEW";
 	public static final String CUSTOMER_RETURN = "RETURN";
 	public static final String CUSTOMER_REFERRAL = "REFERRAL";
@@ -84,4 +85,8 @@ public class NotificationConstant {
 	/* Operation */
 	public static final String OPERATION = "operation";
 	public static final String OPERATION_REFRESH = "REFRESH";
+	
+	/* CHECK TIME SEND SMS */
+	public static final String TIME_REPEAT = "TIME_REPEAT"; 
+	public static final String SCHEDULER_TIME_REPEAT = "SCHEDULER_TIME_REPEAT";
 }

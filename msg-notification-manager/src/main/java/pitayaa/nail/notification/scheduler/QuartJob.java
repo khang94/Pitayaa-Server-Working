@@ -73,7 +73,7 @@ public class QuartJob {
 				  newTrigger().
 				  withIdentity("trigger1", "group2").
 				  startNow()
-				  .withSchedule(simpleSchedule().withIntervalInSeconds(50).repeatForever()).build();
+				  .withSchedule(simpleSchedule().withIntervalInSeconds(300).repeatForever()).build();
 		promotionJob.put(NotificationConstant.PROMOTION_JOB, job);
 		promotionJob.put(NotificationConstant.PROMOTION_TRIGGER, trigger);
 		return promotionJob;

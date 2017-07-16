@@ -37,6 +37,7 @@ public class SettingSMSBusImpl implements SettingSMSBus {
 		smsContent.setMinutesRepeat(0);
 		smsContent.setHoursRepeat(0);
 		smsContent.setContent("");
+		smsContent.setEnableRepeat(false);
 		smsContent.getTemplateDetail().setTemplateActive(0);
 		smsContent.getCustomerGroups().setCustomers(summaryCustomers);
 		smsContent.getCustomerGroups().setIsSendAll(true);
@@ -56,6 +57,7 @@ public class SettingSMSBusImpl implements SettingSMSBus {
 		smsContent.setMinutesRepeat(0);
 		smsContent.setHoursRepeat(0);
 		smsContent.setContent("");
+		smsContent.setEnableRepeat(false);
 		smsContent.getTemplateDetail().setTemplateActive(0);
 		smsContent.getCustomerGroups().setCustomers(summaryCustomers);
 		smsContent.getCustomerGroups().setIsSendAll(true);
@@ -74,6 +76,7 @@ public class SettingSMSBusImpl implements SettingSMSBus {
 		smsContent.setMinutesRepeat(0);
 		smsContent.setHoursRepeat(0);
 		smsContent.setContent("");
+		smsContent.setEnableRepeat(false);
 		smsContent.getTemplateDetail().setTemplateActive(0);
 		smsContent.getCustomerGroups().setCustomers(summaryCustomers);
 		smsContent.getCustomerGroups().setIsSendAll(true);
@@ -92,6 +95,7 @@ public class SettingSMSBusImpl implements SettingSMSBus {
 		smsContent.setMinutesRepeat(0);
 		smsContent.setHoursRepeat(0);
 		smsContent.setContent("");
+		smsContent.setEnableRepeat(false);
 		smsContent.getTemplateDetail().setTemplateActive(0);
 		smsContent.getCustomerGroups().setCustomers(summaryCustomers);
 		smsContent.getCustomerGroups().setIsSendAll(true);
@@ -111,6 +115,7 @@ public class SettingSMSBusImpl implements SettingSMSBus {
 		smsContent.setMinutesRepeat(0);
 		smsContent.setHoursRepeat(0);
 		smsContent.setContent("");
+		smsContent.setEnableRepeat(false);
 		smsContent.getTemplateDetail().setTemplateActive(0);
 		smsContent.getTemplateDetailForEmployee().setTemplateActive(0);
 		smsContent.getCustomerGroups().setCustomers(summaryCustomers);
@@ -133,6 +138,7 @@ public class SettingSMSBusImpl implements SettingSMSBus {
 		smsContent.setMinutesRepeat(0);
 		smsContent.setHoursRepeat(0);
 		smsContent.setContent("");
+		smsContent.setEnableRepeat(false);
 		smsContent.getTemplateDetail().setTemplateActive(0);
 		smsContent.getCustomerGroups().setCustomers(summaryCustomers);
 		smsContent.getCustomerGroups().setIsSendAll(true);
@@ -151,6 +157,7 @@ public class SettingSMSBusImpl implements SettingSMSBus {
 		smsContent.setMinutesRepeat(0);
 		smsContent.setHoursRepeat(0);
 		smsContent.setContent("");
+		smsContent.setEnableRepeat(false);
 		smsContent.getTemplateDetail().setTemplateActive(0);
 		smsContent.getCustomerGroups().setCustomers(summaryCustomers);
 		smsContent.getCustomerGroups().setIsSendAll(true);

@@ -11,6 +11,7 @@ import pitayaa.nail.domain.category.Category;
 import pitayaa.nail.domain.license.License;
 import pitayaa.nail.domain.salon.Salon;
 import pitayaa.nail.domain.service.ServiceModel;
+import pitayaa.nail.domain.setting.SettingPromotion;
 import pitayaa.nail.domain.setting.SettingSms;
 import pitayaa.nail.domain.systemconf.SystemConf;
 import pitayaa.nail.json.account.JsonAccount;
@@ -19,6 +20,7 @@ import pitayaa.nail.msg.business.account.AccountBus;
 import pitayaa.nail.msg.business.category.CategoryBus;
 import pitayaa.nail.msg.business.service.ServiceBus;
 import pitayaa.nail.msg.business.setting.SettingSMSBus;
+import pitayaa.nail.msg.business.setting.promotion.SettingPromotionBus;
 import pitayaa.nail.msg.business.setting.systemconf.SystemConfBus;
 import pitayaa.nail.msg.business.util.security.EncryptionUtils;
 import pitayaa.nail.msg.core.account.repository.AccountLicenseRepository;
@@ -28,6 +30,7 @@ import pitayaa.nail.msg.core.common.HttpHelper;
 import pitayaa.nail.msg.core.license.service.ILicenseService;
 import pitayaa.nail.msg.core.salon.service.SalonService;
 import pitayaa.nail.msg.core.serviceEntity.repository.ServiceRepository;
+import pitayaa.nail.msg.core.setting.promotion.service.SettingPromotionService;
 import pitayaa.nail.msg.core.setting.sms.repository.SettingSmsRepository;
 import pitayaa.nail.msg.core.systemconf.repository.SystemConfRepository;
 
@@ -65,6 +68,9 @@ public class AccountServiceImpl implements AccountService {
 	SettingSMSBus settingSMSBus;
 	
 	@Autowired
+	SettingPromotionBus settingPromoteBus;
+	
+	@Autowired
 	CategoryBus categoryBus;
 	
 	@Autowired
@@ -72,6 +78,9 @@ public class AccountServiceImpl implements AccountService {
 	
 	@Autowired
 	SalonService salonService;
+	
+	@Autowired
+	SettingPromotionService settingPromoteService;
 
 	@Autowired
 	HttpHelper httpHelper;
@@ -97,6 +106,11 @@ public class AccountServiceImpl implements AccountService {
 		//Save salon
 		Salon salon = accountBody.getSalon().get(0);
 		salon= salonService.save(salon);
+		
+		// save Setting promotion
+		SettingPromotion settingPromote = settingPromoteBus.getSettingPromotionDefault(salon.getUuid().toString());
+		settingPromoteService.save(settingPromote);
+		
 		
 		//save setting sms
 		List<SettingSms> lstSettingSMS=settingSMSBus.getListSettingSMSDefault(salon.getUuid().toString());

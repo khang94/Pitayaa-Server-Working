@@ -54,5 +54,13 @@ public class CoreConstant {
 	/* Key word */
 	public static final String OPERATION_REFRESH = "refresh";
 	
+	/* Customer target type */
+	public static final String CUSTOMER_TYPE_LOYAL = "LOYAL_CUSTOMER";
+	public static final String CUSTOMER_TYPE_VIP = "VIP_CUSTOMER";
+	
+	/* Customer type */
+	public static final String CUSTOMER_TYPE_NEW = "NEW";
+	public static final String CUSTOMER_TYPE_RETURN = "RETURN";
+	public static final String CUSTOMER_TYPE_APPOINTMENT = "APPOINTMENT";
 	
 }
