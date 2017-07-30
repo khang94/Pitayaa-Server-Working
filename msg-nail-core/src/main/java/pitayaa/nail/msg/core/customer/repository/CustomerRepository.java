@@ -28,4 +28,7 @@ public interface CustomerRepository extends
 	
 	@Query("select c from Customer c where c.salonId = :salonId and c.customerDetail.customerType = :customerType")
 	List<Customer> findAllCustomer(@Param("salonId") String salonId , @Param("customerType") String customerType);
+	
+	@Query("select c from Customer c where c.contact.mobilePhone = :phoneNumber")
+	Customer findByPhoneNumber(@Param("phoneNumber") String phoneNumber);
 }

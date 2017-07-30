@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import pitayaa.nail.domain.customer.Customer;
-import pitayaa.nail.domain.employee.Employee;
 import pitayaa.nail.domain.hibernate.transaction.QueryCriteria;
+import pitayaa.nail.msg.business.customer.CustomerServiceBusiness;
 import pitayaa.nail.msg.core.common.CoreHelper;
 import pitayaa.nail.msg.core.customer.repository.CustomerRepository;
 import pitayaa.nail.msg.core.hibernate.CriteriaRepository;
@@ -32,6 +32,9 @@ public class CustomerServiceImpl implements CustomerService {
 	
 	@Autowired
 	CoreHelper coreHelper;
+	
+	@Autowired 
+	CustomerServiceBusiness customerServiceBusiness;
 
 	@Override
 	public List<Customer> findAllCustomer(String salonId) {
@@ -80,7 +83,7 @@ public class CustomerServiceImpl implements CustomerService {
 		boolean isUpdatedImage = false;
 		
 		// Update New Image
-		if (customerUpdated.getView().getImgData().length > 0){
+		if (customerUpdated.getView().getImgData() != null && customerUpdated.getView().getImgData().length > 0){
 			isUpdatedImage = true;
 			binaryImg = customerUpdated.getView().getImgData();
 		}
@@ -131,5 +134,22 @@ public class CustomerServiceImpl implements CustomerService {
 	@Override
 	public Optional<Customer> findByQrcode(String qrcode,String salonId) {
 		return Optional.ofNullable(customerRepo.findByQrcode(qrcode, salonId));
+	}
+	
+	@Override
+	public Customer signIn(Customer customerBody){
+		
+		// Get by phone
+		Customer customer = customerRepo.findByPhoneNumber(customerBody.getContact().getMobilePhone());
+		
+		if(customer == null ){
+			
+			// Init default info
+			customer = customerServiceBusiness.initDefaultCustomer(customerBody);
+			
+			// Save
+			customer = customerRepo.save(customer);
+		} 
+		return customer;		
 	}
 }

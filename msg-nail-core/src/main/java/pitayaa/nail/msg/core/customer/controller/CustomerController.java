@@ -58,21 +58,18 @@ public class CustomerController {
 
 	@RequestMapping(value = "customers", method = RequestMethod.POST)
 	public @ResponseBody ResponseEntity<?> createCustomer(
-			@RequestBody Customer customerBody) throws Exception {
+			@RequestBody Customer customerBody,
+			@RequestParam (value = "operation" , required = false , defaultValue = "") String operation) throws Exception {
 
-		Customer customer = customerService.save(customerBody);
-
-		if (customer.equals(null)) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		Customer customer = null;
+		if(CoreConstant.OPERATION_SIGN_IN.equalsIgnoreCase(operation)){
+			customer = customerService.signIn(customerBody);
+		} else {
+			customer = customerService.save(customerBody);
 		}
 
-		/*Resource<Customer> response = new Resource<Customer>(customer);
-		response.add(linkTo(
-				methodOn(CustomerController.class).findOne(customer.getUuid()))
-				.withSelfRel());*/
 
-		return new ResponseEntity<Customer>(customer,
-				HttpStatus.CREATED);
+		return new ResponseEntity<>(customer, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "customers/{ID}", method = RequestMethod.PUT)
@@ -87,11 +84,6 @@ public class CustomerController {
 		}
 		
 		Customer customer = customerService.update(savedCustomer.get() , customerUpdate);
-
-		/*Resource<Customer> response = new Resource<Customer>(customer);
-		response.add(linkTo(
-				methodOn(CustomerController.class).findOne(customer.getUuid()))
-				.withSelfRel());*/
 
 		return new ResponseEntity<Customer>(customer, HttpStatus.OK);
 	}

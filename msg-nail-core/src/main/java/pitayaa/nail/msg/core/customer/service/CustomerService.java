@@ -26,4 +26,6 @@ public interface CustomerService {
 	Optional<Customer> login(String email, String password, String salonId);
 
 	Optional<Customer> findByQrcode(String qrcode, String salonId);
+
+	Customer signIn(Customer customerBody);
 }

@@ -68,6 +68,9 @@ public class AppointmentBusinessImpl implements AppointmentBusiness {
 		// Get current status & point of customer
 		String currentStatus = customer.getCustomerDetail().getCustomerType();
 		Integer currentPoint = customer.getCustomerMembership().getPoint();
+		if(currentPoint == null){
+			currentPoint = 0;
+		}
 		
 		// Get history of customer
 		List<Appointment> appointments = appointmentRepo.findAllTurnCustomer(customer.getContact().getEmail());
@@ -141,21 +144,29 @@ public class AppointmentBusinessImpl implements AppointmentBusiness {
 			throws Exception {
 
 		Optional<Customer> customer = null;
-
+		Customer customerInfo = appmBody.getCustomer();
+		
 		// Get customer for appointment
-		if (customerId != null) {
-			
+		if (customerId != null) {		
 			customer = customerService.findOne(customerId);
-			customer.get().getCustomerDetail().setLastCheckin(new Date());
-			if (customer.isPresent()) {
-				Customer customerInfo = this.updateCustomerPoint(customer.get());
-				appmBody.setCustomer(customerInfo);
-			} else {
-				throw new Exception(
-						"This Customer ID does not exist ! Please check again or create new one .");
+			
+			if (customer.isPresent()) {			
+				customerInfo = this.updateCustomerPoint(customerInfo);
+				customerInfo = customerService.update(customer.get(), customerInfo);		
 			}
+		}else {
+			customerInfo = customerService.signIn(customerInfo);
 		}
-		appmBody.getCustomer().getCustomerDetail().setLastCheckin(new Date());
+		
+		// Update last check in
+		customerInfo.getCustomerDetail().setLastCheckin(new Date());
+		
+		// Update last service
+		ServiceModel serviceUsed = appmBody.getServicesGroup().get(0);
+		customerInfo.getCustomerDetail().setLastUsedServiceName(serviceUsed.getServiceName());
+		customerInfo.getCustomerDetail().setLastUsedServiceId(serviceUsed.getUuid().toString());
+		
+		appmBody.setCustomer(customerInfo);
 		appmBody.getCustomer().getView().setImgData(null);
 		return appmBody;
 	}

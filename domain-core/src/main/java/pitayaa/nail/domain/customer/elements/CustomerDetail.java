@@ -12,9 +12,15 @@ import lombok.Data;
 @Embeddable
 public class CustomerDetail {
 	
-	private String lastUsedServiceId;	
+	private String lastUsedServiceId;
+	private String lastUsedServiceName;
+	
+	private String lastUsedPackageId;
+	private String lastUsedPackageName;
+	
 	private String lastPromotionCode;
 	
+	private String fullName;
 	private String firstName;
 	private String lastName;
 	private Date birthDay;	
@@ -23,5 +29,6 @@ public class CustomerDetail {
 	private String customerType; // New , Return or Appointment
 	private String status;
 	private String customerLevel; // VIP or Normal
+	private String note;
 	
 }
