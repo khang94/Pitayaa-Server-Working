@@ -26,7 +26,6 @@ public class SendSmsNexmo {
 				.decrypt(apiSecret, EncryptionUtils.getKey());
 
 		LOGGER.info("Decrypt API Key & API Secret Successfully !");
-		
 
 		NexmoSmsClient client = null;
 		try {

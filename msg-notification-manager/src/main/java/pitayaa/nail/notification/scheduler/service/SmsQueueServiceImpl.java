@@ -117,6 +117,9 @@ public class SmsQueueServiceImpl implements SmsQueueService {
 				smsBody.setSmsType(NotificationConstant.SMS_PROMOTION);
 				smsBody.setModuleId(customerSummary.getCustomerRefID());
 				smsBody.setMessageFor(NotificationConstant.SMS_FOR_CUSTOMER);
+				
+				// Fulfill sms body
+				smsBody = jobHelper.fulFillBodySms(smsBody, customerSummary);
 
 				listMessageDeliver.add(smsBody);
 			}

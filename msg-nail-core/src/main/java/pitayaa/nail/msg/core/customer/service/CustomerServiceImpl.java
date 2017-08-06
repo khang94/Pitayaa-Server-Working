@@ -149,7 +149,14 @@ public class CustomerServiceImpl implements CustomerService {
 			
 			// Save
 			customer = customerRepo.save(customer);
-		} 
+		} else {
+			
+			// Update customer
+			customerBody.setUuid(customer.getUuid());
+			customer = customerRepo.save(customerBody);
+		}
+		
+		
 		return customer;		
 	}
 }

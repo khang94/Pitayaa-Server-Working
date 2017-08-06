@@ -66,6 +66,9 @@ public class NotificationConstant {
 	/* Url Sms Queue */
 	public static final String SMS_QUEUE = "sms.queue";
 	
+	/* Url Promotion deliver */
+	public static final String PROMOTION_DELIVER = "promotion.sms";
+	
 	/* Sms summary type */
 	public static final String SMS_PROMOTION = "PROMOTION";
 	public static final String SMS_APPOINTMENT = "APPOINTMENT";

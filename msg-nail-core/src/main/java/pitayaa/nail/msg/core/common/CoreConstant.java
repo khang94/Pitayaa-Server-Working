@@ -65,4 +65,11 @@ public class CoreConstant {
 	
 	public static final String OPERATION_SIGN_IN = "SIGN_IN";
 	
+	/* Promotion constant*/
+	public static final String PROMOTION_CODE_ACTIVE = "ACTIVE";
+	public static final String PROMOTION_CODE_INACTIVE = "INACTIVE";
+	public static final String PROMOTION_CODE_SEND_OUT = "SEND_OUT";
+	public static final String PROMOTION_CODE_EXPIRED = "EXPIRED";
+	public static final String PROMOTION_CODE_USED = "USED";
+	
 }

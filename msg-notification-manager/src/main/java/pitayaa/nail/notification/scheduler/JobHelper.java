@@ -25,11 +25,13 @@ import pitayaa.nail.domain.customer.Customer;
 import pitayaa.nail.domain.notification.common.KeyValueModel;
 import pitayaa.nail.domain.notification.scheduler.SmsQueue;
 import pitayaa.nail.domain.notification.sms.SmsModel;
+import pitayaa.nail.domain.promotion.Promotion;
 import pitayaa.nail.domain.salon.Salon;
 import pitayaa.nail.domain.setting.SettingSms;
 import pitayaa.nail.domain.setting.sms.CustomerSummary;
 import pitayaa.nail.json.http.JsonHttp;
 import pitayaa.nail.notification.common.NotificationConstant;
+import pitayaa.nail.notification.common.SchedulerConstant;
 
 @Service
 public class JobHelper {
@@ -148,6 +150,12 @@ public class JobHelper {
 		return customersSummary;
 	}
 	
+	/**
+	 * Add sms to queue
+	 * @param customer
+	 * @param settingSms
+	 * @return
+	 */
 	public SmsQueue addSmsQueue (CustomerSummary customer , SettingSms settingSms){
 		SmsQueue queue = new SmsQueue();
 		
@@ -189,6 +197,12 @@ public class JobHelper {
 		return response.getBody();
 	}
 	
+	/**
+	 * Open queue sms
+	 * @param customerId
+	 * @param settingSms
+	 * @return
+	 */
 	public SmsQueue openQueue (String customerId, SettingSms settingSms){
 
 		// Call API Function
@@ -230,6 +244,10 @@ public class JobHelper {
 		return null;
 	}
 	
+	/**
+	 * Load list salon data
+	 * @return
+	 */
 	public List<Salon> loadListSalon(){
 		LOGGER.info("Call rest template .....Load list appointment .........");
 
@@ -262,6 +280,11 @@ public class JobHelper {
 		return response.getBody();
 	}
 	
+	/**
+	 * Load list customer by salon
+	 * @param salonId
+	 * @return
+	 */
 	public List<Customer> loadListCustomerBySalon(String salonId){
 		LOGGER.info("Call rest template .....Load list customer ......... by salon id [" + salonId + "]");
 
@@ -510,6 +533,54 @@ public class JobHelper {
 
 		return response;
 	}
+	
+	public Promotion getPromotionDeliver(String salonId , String type , String customerId) throws Exception{
+		
+		LOGGER.info("Get Promotion Deliver by salon Id [" + salonId + "]");
+
+		Map<String, String> headersMap = new HashMap<String, String>();
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		for (String header : headers.keySet()) {
+			headersMap.put(header, headers.getFirst(header));
+		}
+
+		// urlParameters
+		Map<String, String> urlParameters = new HashMap<String, String>();
+		urlParameters.put("type", "emptyString");
+		urlParameters.put("salonId", salonId);
+		urlParameters.put("customerId", customerId);
+
+		// Path variables
+		Map<String, String> pathVars = new HashMap<String, String>();
+
+
+		// HttpEntity<String> request = new HttpEntity<>(input, createHeader());
+		String url = this.getValueProperties(NotificationConstant.PROMOTION_DELIVER);
+		RestTemplateHelper restTemplateHelper = new RestTemplateHelper();
+		url = restTemplateHelper.buildUrlRequestParam(urlParameters, url);
+		LOGGER.info("Get Salon by URL : [" + url + "] to send request !");
+
+		// Execute Request By Rest Template
+		RestTemplate restTemplate = new RestTemplate();
+		ResponseEntity<Promotion> response = restTemplate.exchange(url, HttpMethod.GET, null,
+				new ParameterizedTypeReference<Promotion>() {
+				});
+		if (response.getStatusCode().is2xxSuccessful()) {
+			LOGGER.info("Get response successully from URL [" + url + "]");
+		}
+
+		return response.getBody();
+	}
+	
+	/**
+	 * Bind data sms appointment
+	 * @param smsModel
+	 * @param salon
+	 * @param appointment
+	 * @return
+	 */
 
 	public SmsModel bindDataSms(SmsModel smsModel, Salon salon, Appointment appointment) {
 		LOGGER.info("Binding data for sms body .......");
@@ -556,6 +627,44 @@ public class JobHelper {
 		LOGGER.info("Finish binding data for SMS .............");
 		return smsModel;
 
+	}
+	
+	public SmsModel bindDataPromotionSms(SmsModel smsModel , Promotion promotion , CustomerSummary customer){
+		
+		String content = smsModel.getHeader().getMessage();
+		
+		// Bind base infor
+		
+		// Customer Name
+		if(content.contains(SchedulerConstant.CUSTOMER_NAME_WORD)){
+			String fullname = customer.getCustomerDetail().getFirstName() + " "  + customer.getCustomerDetail().getLastName();
+			content = content.replaceAll(SchedulerConstant.CUSTOMER_NAME_WORD, fullname);
+		}
+		
+		// Promotion Code
+		if(content.contains(SchedulerConstant.PROMOTION_CODE_WORD)){
+			content = content.replaceAll(SchedulerConstant.PROMOTION_CODE_WORD, promotion.getCodeValue());
+		}
+		
+		smsModel.getHeader().setMessage(content);
+		return smsModel;
+		
+	}
+	
+	public SmsModel fulFillBodySms (SmsModel smsModel , CustomerSummary customer) throws Exception{
+		
+		// Get content
+		String content = smsModel.getHeader().getMessage();
+		
+		// Init promotion & smsModel
+		Promotion promotion = null;
+		
+		if(content.contains(SchedulerConstant.CUSTOMER_NAME_WORD)
+				|| content.contains(SchedulerConstant.PROMOTION_CODE_WORD)){
+			promotion = this.getPromotionDeliver(smsModel.getSalonId(), "", smsModel.getModuleId());
+			smsModel = this.bindDataPromotionSms(smsModel, promotion, customer);
+		}
+		return smsModel;
 	}
 	
 	

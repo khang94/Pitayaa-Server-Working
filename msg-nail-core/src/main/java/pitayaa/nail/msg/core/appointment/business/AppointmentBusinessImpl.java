@@ -13,6 +13,7 @@ import pitayaa.nail.domain.appointment.Appointment;
 import pitayaa.nail.domain.customer.Customer;
 import pitayaa.nail.domain.employee.Employee;
 import pitayaa.nail.domain.packages.PackageModel;
+import pitayaa.nail.domain.promotion.Promotion;
 import pitayaa.nail.domain.service.ServiceModel;
 import pitayaa.nail.domain.setting.SettingPromotion;
 import pitayaa.nail.domain.setting.promotion.CustomerTurn;
@@ -21,6 +22,7 @@ import pitayaa.nail.msg.core.common.CoreConstant;
 import pitayaa.nail.msg.core.customer.service.CustomerService;
 import pitayaa.nail.msg.core.employee.service.EmployeeService;
 import pitayaa.nail.msg.core.packageEntity.service.PackageService;
+import pitayaa.nail.msg.core.promotion.service.PromotionService;
 import pitayaa.nail.msg.core.serviceEntity.service.ServiceEntityInterface;
 import pitayaa.nail.msg.core.setting.promotion.service.SettingPromotionService;
 
@@ -44,6 +46,9 @@ public class AppointmentBusinessImpl implements AppointmentBusiness {
 	
 	@Autowired
 	AppointmentRepository appointmentRepo;
+	
+	@Autowired
+	PromotionService promotionService;
 	
 	
 	private Customer updateCustomerPoint(Customer customer){
@@ -108,6 +113,12 @@ public class AppointmentBusinessImpl implements AppointmentBusiness {
 		if (appmBody.getPackagesGroup() != null) {
 			appmBody = this.executePackages(appmBody.getPackagesGroup(),
 					appmBody);
+		}
+		if(appmBody.getPromotion().getCodeValue() != null && 
+				!appmBody.getPromotion().getCodeValue().equalsIgnoreCase("")) {
+			appmBody = this.executePromotions(appmBody.getPromotion(), appmBody);
+		} else {
+			appmBody.setPromotion(null);
 		}
 		
 		// UPDATE STATUS APPOINTMENT
@@ -210,6 +221,20 @@ public class AppointmentBusinessImpl implements AppointmentBusiness {
 			}
 		}
 		appmBody.setPackagesGroup(packagesGroup);
+		return appmBody;
+	}
+	
+	@Override
+	public Appointment executePromotions (Promotion promotion , Appointment appmBody) throws Exception{
+		
+		// Get by code value
+		promotion = promotionService.findPromotion(promotion.getSalonId(), promotion.getCodeValue());
+		
+		// Update promotion
+		promotion = promotionService.signInPromotion(promotion.getSalonId(), promotion.getCodeValue());
+		
+		appmBody.setPromotion(promotion);
+		
 		return appmBody;
 	}
 

@@ -267,7 +267,6 @@ public class SmsServiceImpl implements ISmsService {
 			templateFileName = this.getSmsTemplateConfig(SmsConstant.SMS_APPOINTMENT_TEMPLATE);
 			path = SmsConstant.PATH_SMS_TEMPLATE + SmsConstant.SLASH + templateFileName
 					+ SmsConstant.TEMPLATE_FILE_SMS_EXTENSION;
-
 		} else if (SmsConstant.SMS_RESPONSE.equalsIgnoreCase(templateId)){
 			templateFileName = this.getSmsTemplateConfig(SmsConstant.SMS_RESPONSE_TEMPLATE);
 			path = SmsConstant.PATH_SMS_TEMPLATE + SmsConstant.SLASH + templateFileName

@@ -19,12 +19,14 @@ import pitayaa.nail.domain.appointment.elements.NotificationSignal;
 import pitayaa.nail.domain.customer.Customer;
 import pitayaa.nail.domain.notification.scheduler.SmsQueue;
 import pitayaa.nail.domain.notification.sms.SmsModel;
+import pitayaa.nail.domain.promotion.Promotion;
 import pitayaa.nail.domain.salon.Salon;
 import pitayaa.nail.domain.setting.SettingSms;
 import pitayaa.nail.domain.setting.sms.CustomerSummary;
 import pitayaa.nail.msg.business.helper.TextHelper;
 import pitayaa.nail.notification.common.NotificationConstant;
 import pitayaa.nail.notification.common.NotificationHelper;
+import pitayaa.nail.notification.common.SchedulerConstant;
 import pitayaa.nail.notification.promotion.business.PromotionJobBus;
 import pitayaa.nail.notification.promotion.business.PromotionJobBusImpl;
 import pitayaa.nail.notification.sms.config.SmsConstant;
@@ -273,90 +275,6 @@ public class PromotionJob implements Job {
 		}
 	}
 
-	/*
-	 * public void notifyToCustomer(List<Customer> customers, SettingSms
-	 * settingSms, String type) {
-	 * 
-	 * 
-	 * boolean isCorrectTime = true;
-	 * 
-	 * // If correct time build body to send sms if (isCorrectTime) {
-	 * customers.stream().forEach(customer -> { if
-	 * (customer.getCustomerDetail().getCustomerType().equalsIgnoreCase(type)) {
-	 * try {
-	 * 
-	 * // Is sms send for this quartz boolean isSend =
-	 * this.isSendPermission(customer, settingSms);
-	 * LOGGER.info("Check is send sms to customer ID [" + customer.getUuid() +
-	 * "] has been [" + isSend + "]");
-	 * 
-	 * // Build sms body if (isSend) { SmsModel smsBody =
-	 * this.buildSmsBody(customer, settingSms);
-	 * 
-	 * // Validate sms body boolean isSmsValid = this.validateSmsBody(smsBody);
-	 * 
-	 * if (isSmsValid) { LOGGER.info("This sms for customer ID [" +
-	 * customer.getUuid() + "] is valid . Send message.....");
-	 * 
-	 * // Function send SmsModel result = jobHelper.sendSms(smsBody);
-	 * 
-	 * if (result.getMeta().getStatus().equalsIgnoreCase(SmsConstant.
-	 * STATUS_SMS_DELIVERED)) {
-	 * 
-	 * LOGGER.info("This message for customer ID [" + customer.getUuid() +
-	 * "] has been deliveried success .!");
-	 * 
-	 * // Create Sms Queue SmsQueue queue = jobHelper.addSmsQueue(customer,
-	 * settingSms); if(queue.getUuid() != null){
-	 * LOGGER.info("Create queue success with ID [" + queue.getUuid() +
-	 * "] for customer ID [" + customer.getUuid() + "]" + " in salon [" +
-	 * customer.getSalonId() + "]"); }
-	 * 
-	 * } else { LOGGER.info("This message has deliveried failed."); } } else {
-	 * LOGGER.info( "Sms body for customer [" + customer.getUuid().toString() +
-	 * "] is invalid !"); } } } catch (Exception e) { // TODO Auto-generated
-	 * catch block e.printStackTrace(); } } }); }
-	 * 
-	 * }
-	 */
-
-	/*
-	 * public void notifyToAllCustomer(List<Customer> customers, SettingSms
-	 * setting) throws ParseException {
-	 * 
-	 * Date notifyDate = TimeUtils.getDateFromString(setting.getSendSmsOn() +
-	 * " " + setting.getSendSmsOnTime());
-	 * 
-	 * Date currentDate = new Date(); boolean isCorrectTime =
-	 * TimeUtils.compareTime(currentDate, notifyDate);
-	 * 
-	 * if(isCorrectTime){ customers.stream().forEach(customer->{
-	 * 
-	 * try { SmsModel smsBody = this.buildSmsBody(customer, setting);
-	 * 
-	 * // Validate sms body boolean isSmsValid = this.validateSmsBody(smsBody);
-	 * 
-	 * if (isSmsValid) { LOGGER.info("This sms for customer ID [" +
-	 * customer.getUuid() + "] is valid . Send message.....");
-	 * 
-	 * // Function Testing // SmsModel result = jobHelper.sendSms(smsBody);
-	 * 
-	 * LOGGER.info("This message for customer ID [" + customer.getUuid() +
-	 * "] has been deliveried success .!");
-	 * 
-	 * SmsModel result = smsService.sendSms(smsBody);
-	 * 
-	 * if (result.getMeta().getStatus().equalsIgnoreCase(SmsConstant.
-	 * STATUS_SMS_DELIVERED)) { LOGGER.info("This message for customer ID [" +
-	 * customer.getUuid() + "] has been deliveried success .!"); } else {
-	 * LOGGER.info("This message has deliveried failed."); } } else {
-	 * LOGGER.info( "Sms body for customer [" + customer.getUuid().toString() +
-	 * "] is invalid !"); } } catch(Exception ex){ ex.printStackTrace();
-	 * LOGGER.info(ex.getMessage()); } }); }
-	 * 
-	 * }
-	 */
-
 	public List<SettingSms> filterSettingSms(List<SettingSms> settingSms) {
 
 		// Filter list
@@ -456,6 +374,9 @@ public class PromotionJob implements Job {
 			smsBody.setSmsType(NotificationConstant.SMS_PROMOTION);
 			smsBody.setModuleId(customer.getCustomerRefID());
 			smsBody.setMessageFor(NotificationConstant.SMS_FOR_CUSTOMER);
+			
+			// Fullfill with word binding
+			smsBody = jobHelper.fulFillBodySms(smsBody, customer);
 
 			LOGGER.info("Finish building SMS Body ....");
 		} catch (Exception ex) {
@@ -464,6 +385,7 @@ public class PromotionJob implements Job {
 		}
 		return smsBody;
 	}
+	
 
 	private String getMessage(SettingSms setting) {
 

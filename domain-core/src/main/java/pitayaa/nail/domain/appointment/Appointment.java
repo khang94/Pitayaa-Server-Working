@@ -12,16 +12,16 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Version;
 
-import lombok.Data;
-
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
+import lombok.Data;
 import pitayaa.nail.domain.appointment.elements.NotificationSignal;
 import pitayaa.nail.domain.customer.Customer;
 import pitayaa.nail.domain.employee.Employee;
@@ -50,10 +50,10 @@ public class Appointment  {
 	@ElementCollection
 	private List<NotificationSignal> notifyToEmployee;
 
-	@OneToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.ALL)
 	private Customer customer;
 
-	@OneToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.ALL)
 	private Employee employee;
 
 	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

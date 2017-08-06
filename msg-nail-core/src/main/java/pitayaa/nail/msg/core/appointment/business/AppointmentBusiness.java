@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import pitayaa.nail.domain.appointment.Appointment;
 import pitayaa.nail.domain.packages.PackageModel;
+import pitayaa.nail.domain.promotion.Promotion;
 import pitayaa.nail.domain.service.ServiceModel;
 
 public interface AppointmentBusiness {
@@ -20,5 +21,7 @@ public interface AppointmentBusiness {
 			Appointment appmBody);
 
 	Appointment executeCreateAppm(Appointment appmBody) throws Exception;
+
+	Appointment executePromotions(Promotion promotion, Appointment appmBody) throws Exception;
 
 }

@@ -32,9 +32,8 @@ public class Promotion {
 	@Version
 	Long version;
 
-	private String nameEvent;
 	private String codeValue;
-	private String codeType; // QR or normal
+	private String codeType; // Referral or promotion
 	private String isEncrypt;
 	private Date createdDate;
 	private Date updatedDate;
@@ -44,8 +43,11 @@ public class Promotion {
 	private Date expireTo;
 	private Date expireFrom;
 	private String salonId;
+	private String customerId;
 	private String objectType;
 	private String promotionEvent;
+	private String status; // Active or not active or EXPIRED
+	
 
 	@Embedded
 	private Discount promotionDiscount;
