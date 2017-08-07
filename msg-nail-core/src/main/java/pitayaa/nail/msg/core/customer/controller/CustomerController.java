@@ -3,7 +3,6 @@ package pitayaa.nail.msg.core.customer.controller;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import pitayaa.nail.domain.appointment.Appointment;
 import pitayaa.nail.domain.customer.Customer;
 import pitayaa.nail.domain.hibernate.transaction.QueryCriteria;
 import pitayaa.nail.json.http.JsonHttp;
@@ -43,54 +41,66 @@ public class CustomerController {
 
 	@Autowired
 	private CustomerRepository customerRepo;
-	
+
 	@Autowired
 	private JsonHttpService httpService;
+
+	private JsonHttp data;
 
 	@RequestMapping(value = "customers/model", method = RequestMethod.GET)
 	public @ResponseBody ResponseEntity<?> initAccountModel() throws Exception {
 
-		Customer customer = (Customer) coreHelper
-				.createModelStructure(new Customer());
+		Customer customer = (Customer) coreHelper.createModelStructure(new Customer());
 
 		return new ResponseEntity<>(customer, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "customers", method = RequestMethod.POST)
-	public @ResponseBody ResponseEntity<?> createCustomer(
-			@RequestBody Customer customerBody,
-			@RequestParam (value = "operation" , required = false , defaultValue = "") String operation) throws Exception {
+	public @ResponseBody ResponseEntity<?> createCustomer(@RequestBody Customer customerBody,
+			@RequestParam(value = "operation", required = false, defaultValue = "") String operation) throws Exception {
 
 		Customer customer = null;
-		if(CoreConstant.OPERATION_SIGN_IN.equalsIgnoreCase(operation)){
+		if (CoreConstant.OPERATION_SIGN_IN.equalsIgnoreCase(operation)) {
 			customer = customerService.signIn(customerBody);
 		} else {
 			customer = customerService.save(customerBody);
 		}
 
-
 		return new ResponseEntity<>(customer, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "customers/{ID}", method = RequestMethod.PUT)
-	public @ResponseBody ResponseEntity<?> createCustomer(
-			@RequestBody Customer customerUpdate, @PathVariable("ID") UUID id)
-			throws Exception {
+	public @ResponseBody ResponseEntity<?> createCustomer(@RequestBody Customer customerUpdate,
+			@PathVariable("ID") UUID id,
+			@RequestParam(name = "oldPass", defaultValue = "") String oldPass) throws Exception {
 
 		Optional<Customer> savedCustomer = customerService.findOne(id);
+		//String oldPass = null;
 		
-		if(!savedCustomer.isPresent()){
+		if (!savedCustomer.isPresent()) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-		
-		Customer customer = customerService.update(savedCustomer.get() , customerUpdate);
 
-		return new ResponseEntity<Customer>(customer, HttpStatus.OK);
+		try {
+			Customer customer = null;
+			if(oldPass != null){
+				customer = customerService.updatePassword(savedCustomer.get(), customerUpdate, oldPass);
+			} else {
+				customer = customerService.update(savedCustomer.get(), customerUpdate);
+			}
+					
+			data = httpService.getResponseSuccess(customer, "update successful");
+
+		} catch (Exception e) {
+
+			data = httpService.getResponseError(e.getMessage(), "");
+		}
+
+		return new ResponseEntity<>(data, data.getHttpCode());
 	}
 
 	@RequestMapping(value = "customers/{ID}", method = RequestMethod.GET)
-	public @ResponseBody ResponseEntity<?> findOne(@PathVariable("ID") UUID id)
-			throws Exception {
+	public @ResponseBody ResponseEntity<?> findOne(@PathVariable("ID") UUID id) throws Exception {
 
 		Optional<Customer> customer = customerService.findOne(id);
 
@@ -99,15 +109,12 @@ public class CustomerController {
 		}
 
 		Resource<Customer> response = new Resource<Customer>(customer.get());
-		response.add(linkTo(
-				methodOn(CustomerController.class).findOne(customer.get().getUuid()))
-				.withSelfRel());
+		response.add(linkTo(methodOn(CustomerController.class).findOne(customer.get().getUuid())).withSelfRel());
 		return new ResponseEntity<>(customer.get(), HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "customers/{ID}", method = RequestMethod.DELETE)
-	public @ResponseBody ResponseEntity<?> delete(@PathVariable("ID") UUID id)
-			throws Exception {
+	public @ResponseBody ResponseEntity<?> delete(@PathVariable("ID") UUID id) throws Exception {
 
 		Optional<Customer> customer = customerService.findOne(id);
 
@@ -116,7 +123,7 @@ public class CustomerController {
 		}
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
-	
+
 	@RequestMapping(value = "customers/search", method = RequestMethod.POST)
 	public @ResponseBody ResponseEntity<?> findAll(@RequestBody QueryCriteria query) throws Exception {
 
@@ -125,91 +132,66 @@ public class CustomerController {
 	}
 
 	@RequestMapping(value = "customers/salons", method = RequestMethod.GET)
-	public @ResponseBody ResponseEntity<?> findAllCustomerBySalonId(
-			@RequestParam("salonId") String salonId,
-			@RequestParam(name = "type", required = false , defaultValue = "") String customerType,
-			@RequestParam(name = "operation", required = false , defaultValue = "") String operation) throws Exception {
+	public @ResponseBody ResponseEntity<?> findAllCustomerBySalonId(@RequestParam("salonId") String salonId,
+			@RequestParam(name = "type", required = false, defaultValue = "") String customerType,
+			@RequestParam(name = "operation", required = false, defaultValue = "") String operation) throws Exception {
 
-	
-		List<Customer> lstCustomer = customerService.findAllCustomer(salonId , customerType);
+		List<Customer> lstCustomer = customerService.findAllCustomer(salonId, customerType);
 		JsonHttp jsonHttp = httpService.getResponseSuccess(lstCustomer, "Getting list data successfully...");
-		
-		if(operation.equalsIgnoreCase(CoreConstant.OPERATION_REFRESH)){
+
+		if (operation.equalsIgnoreCase(CoreConstant.OPERATION_REFRESH)) {
 			return new ResponseEntity<>(lstCustomer, jsonHttp.getHttpCode());
 		}
-		
+
 		return new ResponseEntity<>(jsonHttp, jsonHttp.getHttpCode());
 	}
-	
-	/*@RequestMapping(value = "customers/sms/bySalon", method = RequestMethod.GET)
-	public @ResponseBody ResponseEntity<?> findAllCustomerSmsBySalonId(
-			@RequestParam("salonId") String salonId) throws Exception {
 
-		List<Customer> lstCustomer = customerService
-				.findAllCustomer(salonId);
-		JsonHttp jsonHttp = new JsonHttp();
-		if (lstCustomer != null && lstCustomer.size() > 0) {
-			jsonHttp.setCode(200);
-			jsonHttp.setObject(lstCustomer);
-			jsonHttp.setStatus("success");
-			jsonHttp.setMessage("get list success");
-		}
 
-		else {
-			jsonHttp.setCode(404);
-			jsonHttp.setStatus("error");
-			jsonHttp.setMessage("get list failed");
-		}
 
-		return new ResponseEntity<>(lstCustomer, HttpStatus.OK);
-	}*/
-	
 	@RequestMapping(value = "customers/findByQrcode", method = RequestMethod.POST)
-	public @ResponseBody ResponseEntity<?> findByQrcode(
-			@RequestBody Customer customerBody) throws Exception {
-		JsonHttp json=new JsonHttp();
-		try{
-			Optional<Customer> opCustomer=customerService.findByQrcode(customerBody.getQrCode(), customerBody.getSalonId());
-			if(opCustomer.isPresent()){
+	public @ResponseBody ResponseEntity<?> findByQrcode(@RequestBody Customer customerBody) throws Exception {
+		JsonHttp json = new JsonHttp();
+		try {
+			Optional<Customer> opCustomer = customerService.findByQrcode(customerBody.getQrCode(),
+					customerBody.getSalonId());
+			if (opCustomer.isPresent()) {
 				json.setObject(opCustomer.get());
 				json.setStatus(JsonHttp.SUCCESS);
-			}else{
+			} else {
 				throw new Exception("Can't find customer with this qrcode");
 			}
-		}catch(Exception e){
+		} catch (Exception e) {
 			json.setStatus(JsonHttp.ERROR);
 			json.setMessage(e.getMessage());
 
 		}
-	
+
 		return ResponseEntity.ok(json);
 	}
-	
+
 	@RequestMapping(value = "customers/login", method = RequestMethod.POST)
-	public @ResponseBody ResponseEntity<?> customerLogin(
-			@RequestBody HashMap<String , Object>model) throws Exception {
-		JsonHttp json=new JsonHttp();
-		try{
-			String email=(String) model.get("email");
-			email=email.toLowerCase();
-			String password=(String) model.get("password");
-			String salonId=(String) model.get("salonId");
+	public @ResponseBody ResponseEntity<?> customerLogin(@RequestBody HashMap<String, Object> model) throws Exception {
+		JsonHttp json = new JsonHttp();
+		try {
+			String email = (String) model.get("email");
+			email = email.toLowerCase();
+			String password = (String) model.get("password");
+			String salonId = (String) model.get("salonId");
 
-
-			String encPassword=EncryptionUtils.encodeMD5(password, email);
-			Optional<Customer> opCustomer=customerService.login(email, encPassword, salonId);
-			if(opCustomer.isPresent()){
+			String encPassword = EncryptionUtils.encodeMD5(password, email);
+			Optional<Customer> opCustomer = customerService.login(email, encPassword, salonId);
+			if (opCustomer.isPresent()) {
 				json.setObject(opCustomer.get());
 				json.setStatus(JsonHttp.SUCCESS);
-			}else{
+			} else {
 				throw new Exception("Wrong email or password");
 			}
-		}catch(Exception e){
+		} catch (Exception e) {
 			json.setStatus(JsonHttp.ERROR);
 			json.setMessage(e.getMessage());
 
 		}
-	
+
 		return ResponseEntity.ok(json);
 	}
 

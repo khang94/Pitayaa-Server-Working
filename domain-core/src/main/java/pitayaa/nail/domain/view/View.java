@@ -51,12 +51,13 @@ public class View {
 	
 	private String status; // Visible or Hidden of imgData
 	private Boolean isBinaryStored; // to check whether stream have or not
-	private String imgType; // Img of color , img of nail , img of background or icon or Avatar
+	private Integer imgType; // Img of color , img of nail , img of background or icon or Avatar
 	private String pathImageServer;
 	
 	
 	private String type; // Salon group , customer Group 
 	private String description; // Discription of image
+	private String salonId;
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdDate;

@@ -19,8 +19,6 @@ public interface CustomerService {
 
 	List<?> findAllByQuery(QueryCriteria query) throws ClassNotFoundException;
 
-	Customer update(Customer customerSaved, Customer customerUpdated) throws Exception;
-
 	List<Customer> findAllCustomer(String salonId, String type);
 
 	Optional<Customer> login(String email, String password, String salonId);
@@ -28,4 +26,8 @@ public interface CustomerService {
 	Optional<Customer> findByQrcode(String qrcode, String salonId);
 
 	Customer signIn(Customer customerBody);
+
+	Customer update(Customer customerSaved, Customer customerUpdated) throws Exception;
+
+	Customer updatePassword(Customer customerSaved, Customer customerUpdated, String oldPass) throws Exception;
 }
