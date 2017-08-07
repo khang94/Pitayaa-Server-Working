@@ -94,12 +94,15 @@ public class SmsQueueServiceImpl implements SmsQueueService {
 		} else if (NotificationConstant.CUSTOMER_APPOINTMENT_REMIND.equalsIgnoreCase(settingSms.getKey())){
 			
 		} else {
-			if(!settingSms.getCustomerGroups().getIsSendAll()){
+			if(settingSms.getCustomerGroups().getIsSendAll()){
 				customerType = settingSms.getKey();
+				customers = jobHelper.loadCustomersByType(settingSms.getSalonId(), customerType);
+			} else {
+				customers = settingSms.getCustomerGroups().getCustomers();
 			}
 		}
 		
-		customers = jobHelper.loadCustomersByType(settingSms.getSalonId(), customerType);
+		
 		return customers;
 	}
 	

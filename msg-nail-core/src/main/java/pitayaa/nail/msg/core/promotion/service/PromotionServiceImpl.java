@@ -91,7 +91,7 @@ public class PromotionServiceImpl implements PromotionService {
 	public Promotion getPromotionCodeRandom(String salonId , String type , String customerId) throws Exception {
 		
 		// Query 
-		List<Promotion> promotions = promotionRepo.findPromotionCode(salonId, CoreConstant.PROMOTION_CODE_ACTIVE);
+		List<Promotion> promotions = promotionRepo.findActivePromotionCode(salonId, CoreConstant.PROMOTION_CODE_ACTIVE);
 		
 		// Get promotion random
 		Promotion promotionDeliver = promotions.get(0);

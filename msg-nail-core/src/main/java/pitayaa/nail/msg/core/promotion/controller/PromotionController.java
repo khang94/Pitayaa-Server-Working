@@ -70,7 +70,7 @@ public class PromotionController {
 		
 		Resource<Promotion> resource = new Resource<Promotion>(promotionDeliver);
 		
-		return new ResponseEntity<>(resource , HttpStatus.OK);
+		return new ResponseEntity<>(promotionDeliver , HttpStatus.OK);
 	}
 	
 	

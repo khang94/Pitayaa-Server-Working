@@ -12,9 +12,9 @@ spring:
       
   datasource:
      platform: postgres
-     url: jdbc:postgresql://localhost:5432/pitayaa
+     url: jdbc:postgresql://localhost:5432/pitayaa_core
      username: postgres
-     password: postgres
+     password: Postgres@2017
   http:
     multipart:
       maxFileSize: 20MB
