@@ -23,7 +23,7 @@ public class JsonHttpServiceImpl implements JsonHttpService {
 	@Override
 	public JsonHttp getResponseError(String messageError , String exception){
 		JsonHttp jsonHttp = new JsonHttp();
-		jsonHttp.setCode(500);
+		jsonHttp.setCode(200);
 		jsonHttp.setMessage(messageError);
 		jsonHttp.setStatus("error");
 		jsonHttp.setException(exception);
@@ -35,7 +35,7 @@ public class JsonHttpServiceImpl implements JsonHttpService {
 	@Override
 	public JsonHttp getNotFoundData(String messageNotFound){
 		JsonHttp jsonHttp = new JsonHttp();
-		jsonHttp.setCode(404);
+		jsonHttp.setCode(200);
 		jsonHttp.setMessage(messageNotFound);
 		jsonHttp.setStatus("Not Found");
 		jsonHttp.setHttpCode(HttpStatus.NOT_FOUND);
