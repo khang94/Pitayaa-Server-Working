@@ -103,7 +103,7 @@ public class PromotionJob implements Job {
 	public void executeNotify(List<Customer> customers, List<SettingSms> settingSms) throws ParseException {
 
 		// Filter customer
-		HashMap<String, List<Customer>> customerList = this.filterCustomerByType(customers);
+		//HashMap<String, List<Customer>> customerList = this.filterCustomerByType(customers);
 
 		settingSms.stream().forEach(setting -> {
 

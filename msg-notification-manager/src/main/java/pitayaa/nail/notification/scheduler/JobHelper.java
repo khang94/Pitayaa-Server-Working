@@ -302,6 +302,7 @@ public class JobHelper {
 		// urlParameters
 		Map<String, String> urlParameters = new HashMap<String, String>();
 		urlParameters.put(NotificationConstant.SALON_ID, salonId);
+		urlParameters.put(NotificationConstant.OPERATION, NotificationConstant.OPERATION_REFRESH);
 
 		// String url = this.urlLoadListAppm();
 		String url = this.getValueProperties(NotificationConstant.CUSTOMER_URI_SALON);
@@ -311,15 +312,15 @@ public class JobHelper {
 
 		// Execute Request By Rest Template
 		RestTemplate restTemplate = new RestTemplate();
-		ResponseEntity<JsonHttp> response = restTemplate.exchange(url, HttpMethod.GET, null,
-				new ParameterizedTypeReference<JsonHttp>() {
+		ResponseEntity<List<Customer>> response = restTemplate.exchange(url, HttpMethod.GET, null,
+				new ParameterizedTypeReference<List<Customer>>() {
 				});
 		if (response.getStatusCode().is2xxSuccessful() && response.getStatusCodeValue() == 200) {
 			LOGGER.info("Get response successully from URL [" + url + "]");
 			//customerList = (List<Customer>) response.getBody().getObject();
 		}
 
-		return (List<Customer>) response.getBody().getObject();
+		return response.getBody();
 	}
 	
 	/**
