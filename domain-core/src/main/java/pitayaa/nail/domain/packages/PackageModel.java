@@ -14,7 +14,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Version;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
@@ -23,7 +22,7 @@ import lombok.Data;
 import pitayaa.nail.domain.common.Discount;
 import pitayaa.nail.domain.hibernate.transaction.ObjectHibernateListener;
 import pitayaa.nail.domain.license.elements.Price;
-import pitayaa.nail.domain.packages.elements.PackageDtl;
+import pitayaa.nail.domain.packages.elements.PackageDetail;
 import pitayaa.nail.domain.view.View;
 
 @Data
@@ -36,14 +35,13 @@ public class PackageModel {
 	@Type(type = "pg-uuid")
 	private UUID uuid;
 
-	@Version
-	Long version;
-
 	private String categoryId;
 	private String salonId;
 	private String packageName;
 	private String packageType;
 	private String packageCode;
+	private Boolean isDoubleBook;
+	private Boolean availableToBook;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdDate;
@@ -64,7 +62,7 @@ public class PackageModel {
 	private Discount packageDiscount;
 
 	@OneToMany(cascade = CascadeType.ALL)
-	private List<PackageDtl> packageDtls;
+	private List<PackageDetail> packageDetails;
 
 	@OneToOne(cascade = CascadeType.ALL)
 	private Price price;

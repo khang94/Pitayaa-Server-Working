@@ -8,13 +8,13 @@ spring:
      show-sql: true
      hibernate:
       #ddl-auto: none
-      ddl-auto: none
+      ddl-auto: create
       
   datasource:
      platform: postgres
-     url: jdbc:postgresql://localhost:5432/pitayaa_core
+     url: jdbc:postgresql://localhost:5432/pitayaa
      username: postgres
-     password: Postgres@2017
+     password: postgres
   http:
     multipart:
       maxFileSize: 20MB

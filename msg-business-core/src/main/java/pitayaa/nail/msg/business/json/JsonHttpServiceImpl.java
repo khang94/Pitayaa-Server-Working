@@ -1,5 +1,7 @@
 package pitayaa.nail.msg.business.json;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -7,6 +9,8 @@ import pitayaa.nail.json.http.JsonHttp;
 
 @Service
 public class JsonHttpServiceImpl implements JsonHttpService {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(JsonHttpServiceImpl.class);
 
 	@Override
 	public JsonHttp getResponseSuccess(Object object , String messageSuccess){
@@ -28,6 +32,7 @@ public class JsonHttpServiceImpl implements JsonHttpService {
 		jsonHttp.setStatus("error");
 		jsonHttp.setException(exception);
 		jsonHttp.setHttpCode(HttpStatus.INTERNAL_SERVER_ERROR);
+		LOGGER.info("Error Content :[{}] , Error Detail [{}] :", messageError , exception);
 		
 		return jsonHttp;
 	}
@@ -39,6 +44,7 @@ public class JsonHttpServiceImpl implements JsonHttpService {
 		jsonHttp.setMessage(messageNotFound);
 		jsonHttp.setStatus("Not Found");
 		jsonHttp.setHttpCode(HttpStatus.NOT_FOUND);
+		LOGGER.info("Error Content :[{}] ", messageNotFound);
 		
 		return jsonHttp;
 	}
@@ -55,9 +61,10 @@ public class JsonHttpServiceImpl implements JsonHttpService {
 	}
 	
 	@Override 
-	public JsonHttp saveData (String messageSaved){
+	public JsonHttp saveDataSuccess (Object object , String messageSaved){
 		JsonHttp jsonHttp = new JsonHttp();
 		jsonHttp.setCode(201);
+		jsonHttp.setObject(object);
 		jsonHttp.setMessage(messageSaved);
 		jsonHttp.setStatus("success");
 		jsonHttp.setHttpCode(HttpStatus.CREATED);

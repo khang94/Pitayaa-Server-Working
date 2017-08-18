@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import pitayaa.nail.domain.packages.PackageModel;
+import pitayaa.nail.domain.packages.elements.PackageDetail;
+import pitayaa.nail.domain.service.ServiceModel;
 import pitayaa.nail.msg.core.packageEntity.repository.PackageDetailRepository;
 import pitayaa.nail.msg.core.packageEntity.repository.PackagesRepository;
 import pitayaa.nail.msg.core.serviceEntity.repository.ServiceRepository;
@@ -22,7 +24,7 @@ public class PackageServiceImpl implements PackageService {
 	PackageEntityViewService viewService;
 
 	@Autowired
-	PackageDetailRepository pckDetailRepo;
+	PackageDetailRepository packageDetailRepo;
 
 	@Autowired
 	ServiceRepository serviceRepo;
@@ -40,11 +42,33 @@ public class PackageServiceImpl implements PackageService {
 	@Override
 	public PackageModel save(PackageModel packageBody) throws Exception {
 
-		// for (ServiceModel service : packageBody.get)
-		/*for (PackageDtl p : packageBody.getPackageDtls()) {
-			serviceRepo.save(p.getService());
-			//pckDetailRepo.save(p);
-		}*/
+		
+		for(PackageDetail dtl : packageBody.getPackageDetails()){
+			ServiceModel service = serviceRepo.findOne(dtl.getService().getUuid());
+			dtl.setService(service);
+			packageDetailRepo.save(dtl);
+		}
+		
+		packageBody = packageRepo.save(packageBody);
+
+		if (packageBody.getView().getImgData() != null && !"".equalsIgnoreCase(
+				packageBody.getView().getImgData().toString())) {
+			viewService.buildView(packageBody);
+		}
+
+		return packageBody;
+	}
+	
+	@Override
+	public PackageModel update(PackageModel packageBody) throws Exception {
+
+		
+		for(PackageDetail dtl : packageBody.getPackageDetails()){
+			ServiceModel service = serviceRepo.findOne(dtl.getService().getUuid());
+			dtl.setService(service);
+			packageDetailRepo.save(dtl);
+		}
+		
 		packageBody = packageRepo.save(packageBody);
 
 		if (packageBody.getView().getImgData() != null && !"".equalsIgnoreCase(

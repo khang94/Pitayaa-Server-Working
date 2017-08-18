@@ -63,7 +63,7 @@ public class ServiceController {
 		
 		try {
 			serviceBody = serviceCore.save(serviceBody);
-			jsonHttp = httpService.saveData("Saved service successfully....");
+			jsonHttp = httpService.saveDataSuccess(serviceBody , "Saved service successfully....");
 		} catch (Exception ex){
 			jsonHttp = httpService.getResponseError("Saved service failed...." , ex.getMessage());
 		}

@@ -24,15 +24,12 @@ import pitayaa.nail.domain.service.ServiceModel;
 @Data
 @Entity
 @EntityListeners(ObjectHibernateListener.class)
-public class PackageDtl {
+public class PackageDetail {
 	@Id
 	@GenericGenerator(name = "uuid-gen", strategy = "uuid2")
 	@GeneratedValue(generator = "uuid-gen")
 	@Type(type = "pg-uuid")
 	private UUID uuid;
-
-	@Version
-	Long version;
 
 	private String salonId;
 	private String packageId;

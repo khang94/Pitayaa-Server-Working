@@ -12,6 +12,6 @@ public interface JsonHttpService {
 
 	JsonHttp deleteData(String messageDelete);
 
-	JsonHttp saveData(String messageSaved);
+	JsonHttp saveDataSuccess(Object object, String messageSaved);
 
 }

@@ -15,4 +15,6 @@ public interface PackageService {
 	PackageModel save(PackageModel packageBody) throws Exception;
 	void delete (PackageModel packageBody) throws Exception;
 
+	PackageModel update(PackageModel packageBody) throws Exception;
+
 }

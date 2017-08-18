@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import pitayaa.nail.domain.packages.PackageModel;
-import pitayaa.nail.domain.packages.elements.PackageDtl;
+import pitayaa.nail.domain.packages.elements.PackageDetail;
 import pitayaa.nail.msg.core.packageEntity.repository.PackageDetailRepository;
 
 @Service
@@ -28,7 +28,7 @@ public class PackageDetailServiceImpl implements PackageDetailService {
 	}
 
 	@Override
-	public PackageDtl save(PackageDtl entity) throws Exception {
+	public PackageDetail save(PackageDetail entity) throws Exception {
 		return repo.save(entity);
 	}
 

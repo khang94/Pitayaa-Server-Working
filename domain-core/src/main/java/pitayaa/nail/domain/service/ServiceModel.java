@@ -35,14 +35,15 @@ public class ServiceModel {
 	@Type(type = "pg-uuid")
 	private UUID uuid;
 	
-	@Version 
-	Long version;
-	
 	private String categoryId;
 	private String salonId;
 	private String serviceName;
 	private String serviceType;
 	private String serviceCode;
+	
+	private Boolean allowDoubleBook;
+	private Boolean availableToBook;
+	private Boolean isCommissionPrice;
 	
 	@Embedded 
 	private Discount serviceDiscount;

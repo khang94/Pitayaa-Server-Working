@@ -5,12 +5,13 @@ import java.util.Optional;
 import java.util.UUID;
 
 import pitayaa.nail.domain.packages.PackageModel;
-import pitayaa.nail.domain.packages.elements.PackageDtl;
+import pitayaa.nail.domain.packages.elements.PackageDetail;
 
 public interface PackageDetailService {
 	Optional<PackageModel> findOne(UUID id);
 
 	List<PackageModel> findAllPackages(String salonId);
 
-	public PackageDtl save(PackageDtl entity) throws Exception;
+	PackageDetail save(PackageDetail entity) throws Exception;
+
 }

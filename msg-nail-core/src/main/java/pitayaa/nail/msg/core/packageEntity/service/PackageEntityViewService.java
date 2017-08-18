@@ -47,12 +47,12 @@ public class PackageEntityViewService {
 		// Extract Image to Folder
 		String pathImage = coreHelper.buildFileNameFromPath(path,
 				packageModel.getView());
-		packageModel.getView().setPathImage(pathImage);
+		
 
 		// Extract Image to Folder
-		if (pathImage != null) {
-			coreHelper.writeBytesToFileNio(packageModel.getView().getImgData(),
-					pathImage);
+		if (pathImage != null && packageModel.getView().getImgData().length > 0) {
+			coreHelper.writeBytesToFileNio(packageModel.getView().getImgData(),pathImage);
+			packageModel.getView().setPathImage(pathImage);
 		}
 
 		// Update packageModel

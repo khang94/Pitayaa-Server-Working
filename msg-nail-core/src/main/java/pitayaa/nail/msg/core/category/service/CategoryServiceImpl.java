@@ -78,7 +78,8 @@ public class CategoryServiceImpl implements CategoryService {
 		boolean isUpdatedImage = false;
 		
 		// Update New Image
-		if (categoryUpdated.getView().getImgData().length > 0){
+		if (categoryUpdated.getView().getImgData() != null && 
+				categoryUpdated.getView().getImgData().length > 0){
 			isUpdatedImage = true;
 			binaryImg = categoryUpdated.getView().getImgData();
 		}

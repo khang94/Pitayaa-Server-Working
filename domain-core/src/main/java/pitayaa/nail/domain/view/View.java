@@ -32,9 +32,6 @@ public class View {
 	@GeneratedValue(generator = "uuid-gen")
 	@Type(type = "pg-uuid")
 	private UUID uuid;
-	
-	@Version
-	Long version;
 
 	private String moduleId;
 	private String color;

@@ -10,13 +10,13 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.stereotype.Service;
 
 import pitayaa.nail.domain.packages.PackageModel;
-import pitayaa.nail.domain.packages.elements.PackageDtl;
+import pitayaa.nail.domain.packages.elements.PackageDetail;
 
 
 @Service
 @RepositoryRestResource(collectionResourceRel = "packagesDetailRest", path = "packagesDetailRest")
 public interface PackageDetailRepository extends
-		PagingAndSortingRepository<PackageDtl, UUID> { 
+		PagingAndSortingRepository<PackageDetail, UUID> { 
 	
 	@Query("Select p from PackageModel p where p.salonId = :salonId")
 	List<PackageModel> findAllPackages(@Param("salonId") String salonId);
