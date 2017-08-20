@@ -25,7 +25,7 @@ public interface CustomerService {
 
 	Optional<Customer> findByQrcode(String qrcode, String salonId);
 
-	Customer signIn(Customer customerBody);
+	Customer signIn(Customer customerBody) throws Exception ;
 
 	Customer update(Customer customerSaved, Customer customerUpdated) throws Exception;
 

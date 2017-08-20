@@ -199,12 +199,22 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
-	public Customer signIn(Customer customerBody) {
+	public Customer signIn(Customer customerBody) throws Exception {
 
 		// Get by phone
 		Customer customer = customerRepo.findByPhoneNumber(customerBody.getContact().getMobilePhone());
 
 		if (customer == null) {
+			
+			// Generate qr code for customer
+			String qrCode = UUID.randomUUID().toString();
+			customerBody.setQrCode(qrCode);
+
+			// Encrypt password
+			if (customerBody.getContact().getEmail() != null && customerBody.getContact().getEmail().length() > 0) {
+				String encryptionPassword = EncryptionUtils.encodeMD5("123456", customerBody.getContact().getEmail());
+				customerBody.setPassword(encryptionPassword);
+			}
 
 			// Init default info
 			customer = customerServiceBusiness.initDefaultCustomer(customerBody);
