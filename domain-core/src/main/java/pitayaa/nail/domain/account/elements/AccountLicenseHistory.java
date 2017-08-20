@@ -24,9 +24,6 @@ public class AccountLicenseHistory {
 	@Type(type = "pg-uuid")
 	private UUID uuid;
 
-	@Version
-	Long version;
-
 	private String accountId;
 
 	@ElementCollection

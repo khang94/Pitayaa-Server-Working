@@ -36,9 +36,6 @@ public class Employee {
 	@Type(type = "pg-uuid")
 	private UUID uuid;
 
-	@Version
-	Long version;
-
 	@Embedded
 	private EmployeeDetail employeeDetail;
 

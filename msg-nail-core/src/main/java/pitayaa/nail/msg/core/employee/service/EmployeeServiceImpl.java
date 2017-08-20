@@ -40,7 +40,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 		boolean isUploadImage = false;
 		
 		// Get stream image
-		if (employeeBody.getView().getImgData().length > 0){
+		if (employeeBody.getView().getImgData() != null && employeeBody.getView().getImgData().length > 0){
 			binaryImg = employeeBody.getView().getImgData();
 			isUploadImage = true;
 		}
@@ -78,7 +78,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 		
 		// Update hibernate
 		employeeUpdated.setUuid(employeeSaved.getUuid());
-		employeeUpdated.setVersion(employeeSaved.getVersion());
 		employeeUpdated = employeeRepo.save(employeeUpdated);
 		
 		if(employeeUpdated.getSalonId() != null || !"".equalsIgnoreCase(employeeUpdated.getSalonId())){

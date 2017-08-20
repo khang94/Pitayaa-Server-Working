@@ -32,9 +32,6 @@ public class License {
 	@Type(type = "pg-uuid")
 	private UUID uuid;
 
-	@Version
-	Long version;
-
 	@OneToOne(cascade = CascadeType.ALL)
 	private LicenseDetail licenseDetail;
 

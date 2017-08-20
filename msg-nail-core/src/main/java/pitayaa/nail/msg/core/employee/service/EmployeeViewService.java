@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import pitayaa.nail.domain.customer.Customer;
 import pitayaa.nail.domain.employee.Employee;
 import pitayaa.nail.domain.salon.Salon;
 import pitayaa.nail.domain.view.View;
@@ -64,39 +63,39 @@ public class EmployeeViewService {
 		return employee;
 	}
 	
-	public Employee buildViewByDate(Employee customer , byte[] binaryImage) throws Exception {
+	public Employee buildViewByDate(Employee employee , byte[] binaryImage) throws Exception {
 		// Get path
 		String pathConfig = settingService
 				.getFolderStoreProperties(CoreConstant.PATH_FOLDER_STORE);
 
-		Map<String,String> mapPath = coreHelper.buildStructureFolderByDate(customer.getSalonId().toString() , customer.getUpdatedDate(),pathConfig);
+		Map<String,String> mapPath = coreHelper.buildStructureFolderByDate(employee.getSalonId().toString() , employee.getUpdatedDate(),pathConfig);
 		
 		String staticPath = mapPath.get(CoreConstant.STATIC_PATH);
 		String dynamicPath = mapPath.get(CoreConstant.DYNAMIC_PATH);
 		
-		//Create customer folder
+		//Create employee folder
 		staticPath = staticPath + CoreConstant.SLASH + CoreConstant.VIEW_EMPLOYEE;
 		dynamicPath = dynamicPath + CoreConstant.SLASH + CoreConstant.VIEW_EMPLOYEE;
 		coreHelper.createFolder(staticPath);
 		
 		// Extract Image to Folder
-		customer.getView().setModuleId(customer.getUuid().toString());
+		employee.getView().setModuleId(employee.getUuid().toString());
 		staticPath = coreHelper.buildFileImageFromPath(staticPath,
-				customer.getView());
+				employee.getView());
 		dynamicPath = coreHelper.buildFileImageFromPath(dynamicPath,
-				customer.getView());
+				employee.getView());
 		
 		// Update
-		customer.getView().setPathImage(staticPath);
-		customer.getView().setPathImageServer(dynamicPath);
-		employeeRepo.save(customer);
+		employee.getView().setPathImage(staticPath);
+		employee.getView().setPathImageServer(dynamicPath);
+		employeeRepo.save(employee);
 		
 		if (staticPath != null && binaryImage != null) {
 			coreHelper.writeBytesToFileNio(binaryImage,
 					staticPath);
 		}
 		
-		return customer;
+		return employee;
 	} 
 
 	private String buildEmployeeFileName(String uid, Date date) {

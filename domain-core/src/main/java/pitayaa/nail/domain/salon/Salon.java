@@ -37,9 +37,6 @@ public class Salon {
 	@Type(type = "pg-uuid")
 	private UUID uuid;
 
-	@Version
-	Long version;
-
 	@Embedded
 	private SalonDetail salonDetail;
 

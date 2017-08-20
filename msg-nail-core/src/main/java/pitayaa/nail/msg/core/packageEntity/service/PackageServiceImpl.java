@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import pitayaa.nail.domain.packages.PackageModel;
 import pitayaa.nail.domain.packages.elements.PackageDetail;
 import pitayaa.nail.domain.service.ServiceModel;
+import pitayaa.nail.msg.core.common.CoreHelper;
 import pitayaa.nail.msg.core.packageEntity.repository.PackageDetailRepository;
 import pitayaa.nail.msg.core.packageEntity.repository.PackagesRepository;
 import pitayaa.nail.msg.core.serviceEntity.repository.ServiceRepository;
@@ -28,6 +29,9 @@ public class PackageServiceImpl implements PackageService {
 
 	@Autowired
 	ServiceRepository serviceRepo;
+	
+	@Autowired
+	CoreHelper coreHelper;
 
 	@Override
 	public List<PackageModel> findAllPackages(String salonId) {
@@ -53,7 +57,7 @@ public class PackageServiceImpl implements PackageService {
 
 		if (packageBody.getView().getImgData() != null && !"".equalsIgnoreCase(
 				packageBody.getView().getImgData().toString())) {
-			viewService.buildView(packageBody);
+			viewService.buildViewByDate(packageBody, packageBody.getView().getImgData());
 		}
 
 		return packageBody;
@@ -62,18 +66,35 @@ public class PackageServiceImpl implements PackageService {
 	@Override
 	public PackageModel update(PackageModel packageBody) throws Exception {
 
+		byte[] binaryImg = null;
+		boolean isUpdatedImage = false;
 		
+		// Update New Image
+		if (packageBody.getView().getImgData().length > 0){
+			isUpdatedImage = true;
+			binaryImg = packageBody.getView().getImgData();
+		}
+
+		// Update package detail
 		for(PackageDetail dtl : packageBody.getPackageDetails()){
 			ServiceModel service = serviceRepo.findOne(dtl.getService().getUuid());
 			dtl.setService(service);
 			packageDetailRepo.save(dtl);
 		}
 		
+		// Hide image
+		packageBody.getView().setImgData(null);
+		
+		if (isUpdatedImage && packageBody.getView().getImgData()!= null){
+			// Delete image from static path in local server
+			coreHelper.deleteFile(packageBody.getView().getPathImage());
+		}
+		
 		packageBody = packageRepo.save(packageBody);
+		
 
-		if (packageBody.getView().getImgData() != null && !"".equalsIgnoreCase(
-				packageBody.getView().getImgData().toString())) {
-			viewService.buildView(packageBody);
+		if (isUpdatedImage) {
+			viewService.buildViewByDate(packageBody, binaryImg);
 		}
 
 		return packageBody;

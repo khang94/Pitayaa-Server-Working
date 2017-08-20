@@ -35,9 +35,6 @@ public class SettingSms {
 	@Type(type = "pg-uuid")
 	private UUID uuid;
 
-	//@Version
-	Long version;
-
 	private String type;
 	private String key;
 	private String repeatType; // DAY or HOURS or Time, D

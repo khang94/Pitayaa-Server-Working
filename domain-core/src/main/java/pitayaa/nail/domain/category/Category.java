@@ -32,9 +32,6 @@ public class Category  {
 	@Type(type = "pg-uuid")
 	private UUID uuid;
 
-	@Version
-	Long version;
-
 	private String categoryName;
 	private String categoryCode;
 	private String description;

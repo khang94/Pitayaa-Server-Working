@@ -29,9 +29,6 @@ public class Promotion {
 	@Type(type = "pg-uuid")
 	private UUID uuid;
 
-	@Version
-	Long version;
-
 	private String codeValue;
 	private String codeType; // Referral or promotion
 	private String isEncrypt;

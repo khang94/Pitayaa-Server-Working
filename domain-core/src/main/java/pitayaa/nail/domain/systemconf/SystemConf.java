@@ -9,7 +9,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Version;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
@@ -26,10 +25,7 @@ public class SystemConf {
 	@GeneratedValue(generator = "uuid-gen")
 	@Type(type = "pg-uuid")
 	private UUID uuid;
-	
-	@Version
-	Long version;
-	
+
 	private String key;
 	private String type;
 	private String value;

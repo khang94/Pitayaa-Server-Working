@@ -66,7 +66,6 @@ public class SalonServiceImpl implements SalonService {
 		byte[] binaryImg = null;
 		
 		salonUpdate.setUuid(salonOld.getUuid());
-		salonUpdate.setVersion(salonOld.getVersion());
 		
 		// Create Salon
 		if(salonUpdate.getView().getImgData() != null){

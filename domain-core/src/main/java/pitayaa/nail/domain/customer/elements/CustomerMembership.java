@@ -25,9 +25,6 @@ public class CustomerMembership {
 	@Type(type = "pg-uuid")
 	private UUID uuid;
 	
-	@Version
-	private Long version;
-	
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date registeredDate;
 	

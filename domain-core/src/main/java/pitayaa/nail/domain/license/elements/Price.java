@@ -9,13 +9,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Version;
-
-import lombok.Data;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
+import lombok.Data;
 import pitayaa.nail.domain.hibernate.transaction.ObjectHibernateListener;
 
 @Data
@@ -29,17 +27,14 @@ public class Price {
 	@Type(type = "pg-uuid")
 	private UUID uuid;
 
-	@Version
-	Long version;
-
 	private String priceType;
 	private Double price;
-	
+
 	private Integer status;
-	
+
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdDate;
-	
+
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedDate;
 }

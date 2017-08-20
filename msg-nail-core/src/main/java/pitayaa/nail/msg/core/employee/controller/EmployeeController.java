@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import pitayaa.nail.domain.employee.Employee;
 import pitayaa.nail.json.http.JsonHttp;
+import pitayaa.nail.msg.business.json.JsonHttpService;
 import pitayaa.nail.msg.core.common.CoreHelper;
 import pitayaa.nail.msg.core.employee.service.EmployeeService;
 
@@ -30,8 +31,13 @@ public class EmployeeController {
 	@Autowired
 	private EmployeeService employeeService;
 	
+	@Autowired
+	private JsonHttpService httpService;
+	
+	private JsonHttp jsonData;
+	
 	@RequestMapping(value = "employees/model", method = RequestMethod.GET)
-	public @ResponseBody ResponseEntity<?> initAccountModel() throws Exception {
+	public @ResponseBody ResponseEntity<?> initEmployeeModel() throws Exception {
 
 		Employee account = (Employee) coreHelper
 				.createModelStructure(new Employee());
@@ -42,9 +48,14 @@ public class EmployeeController {
 	@RequestMapping(value = "employees", method = RequestMethod.POST)
 	public @ResponseBody ResponseEntity<?> saveEmployee(@RequestBody Employee employeeBody) throws Exception {
 		
-		employeeBody = employeeService.save(employeeBody);
+		try {
+			employeeBody = employeeService.save(employeeBody);
+			jsonData = httpService.saveDataSuccess(employeeBody, "Add new employee success ...");
+		} catch (Exception ex){
+			jsonData = httpService.getResponseError("Add new employee failed ...", ex.getMessage());
+		}
 
-		return ResponseEntity.ok(employeeBody);
+		return new ResponseEntity<>(jsonData , jsonData.getHttpCode());
 	}
 	
 	@RequestMapping(value = "employees/{ID}", method = RequestMethod.PUT)
@@ -57,9 +68,14 @@ public class EmployeeController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 		
-		Employee employeeResponse = employeeService.update(employeeSaved.get(), employeeUpdated);
+		try {
+			Employee employeeResponse = employeeService.update(employeeSaved.get(), employeeUpdated);
+			jsonData = httpService.saveDataSuccess(employeeResponse, "Update employee successfully ...");
+		} catch (Exception ex){
+			jsonData = httpService.getResponseError("Update employee failed ....", ex.getMessage());
+		}
 
-		return ResponseEntity.ok(employeeResponse);
+		return new ResponseEntity<>(jsonData , jsonData.getHttpCode());
 	}
 	
 	@RequestMapping(value = "employees/bySalon", method = RequestMethod.GET)

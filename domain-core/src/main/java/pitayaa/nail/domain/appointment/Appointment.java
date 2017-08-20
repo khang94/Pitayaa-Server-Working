@@ -41,9 +41,6 @@ public class Appointment  {
 	@Type(type = "pg-uuid")
 	private UUID uuid;
 
-	@Version
-	private Long version;
-
 	@ElementCollection
 	private List<NotificationSignal> notifyToCustomer;
 

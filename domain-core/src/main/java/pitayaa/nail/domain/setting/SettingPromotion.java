@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.UUID;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
@@ -35,10 +34,7 @@ public class SettingPromotion {
 	@Type(type = "pg-uuid")
 	private UUID uuid;
 
-	// @Version
-	Long version;
-
-	@OneToMany(cascade = {CascadeType.ALL})
+	@OneToMany(cascade = { CascadeType.ALL })
 	private List<DiscountSetting> discount;
 
 	private Boolean isPushNotification;
@@ -49,11 +45,11 @@ public class SettingPromotion {
 	private Integer pointPromotionCode;
 	private Integer pointReferralCode;
 	private Integer pointRegularTurn;
-	
+
 	private String key;
 	private String type;
-	
-	@OneToOne(cascade = {CascadeType.ALL})
+
+	@OneToOne(cascade = { CascadeType.ALL })
 	private LoyaltyPoint loyaltyPoint;
 
 	@Temporal(TemporalType.TIMESTAMP)

@@ -114,7 +114,7 @@ public class AppointmentBusinessImpl implements AppointmentBusiness {
 			appmBody = this.executePackages(appmBody.getPackagesGroup(),
 					appmBody);
 		}
-		if(appmBody.getPromotion().getCodeValue() != null && 
+		if(appmBody.getPromotion() != null && appmBody.getPromotion().getCodeValue() != null && 
 				!appmBody.getPromotion().getCodeValue().equalsIgnoreCase("")) {
 			appmBody = this.executePromotions(appmBody.getPromotion(), appmBody);
 		} else {

@@ -31,9 +31,6 @@ public class ProductModel {
 	@Type(type = "pg-uuid")
 	private UUID uuid;
 
-	@Version
-	Long version;
-
 	private String salonId;
 	private String productName;
 	private String barcode;

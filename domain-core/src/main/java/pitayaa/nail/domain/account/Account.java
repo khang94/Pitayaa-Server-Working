@@ -38,9 +38,6 @@ public class Account{
 	@GeneratedValue(generator = "uuid-gen")
 	@Type(type = "pg-uuid")
 	private UUID uuid;
-
-	@Version
-	Long version;
 	
 	@Embedded
 	private AccountDetail accountDetail;
