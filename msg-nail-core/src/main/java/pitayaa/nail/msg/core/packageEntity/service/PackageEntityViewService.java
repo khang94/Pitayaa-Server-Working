@@ -86,9 +86,9 @@ public class PackageEntityViewService {
 				packageModel.getView());
 		
 		// Update
-
 		packageModel.getView().setPathImage(staticPath);
 		packageModel.getView().setPathImageServer(dynamicPath);
+		
 		packageModelRepo.save(packageModel);
 		if (staticPath != null && binaryImage != null) {
 			coreHelper.writeBytesToFileNio(binaryImage,
