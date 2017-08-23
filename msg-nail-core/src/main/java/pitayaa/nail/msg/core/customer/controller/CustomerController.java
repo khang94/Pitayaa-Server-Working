@@ -150,23 +150,22 @@ public class CustomerController {
 
 	@RequestMapping(value = "customers/findByQrcode", method = RequestMethod.POST)
 	public @ResponseBody ResponseEntity<?> findByQrcode(@RequestBody Customer customerBody) throws Exception {
-		JsonHttp json = new JsonHttp();
+
 		try {
 			Optional<Customer> opCustomer = customerService.findByQrcode(customerBody.getQrCode(),
 					customerBody.getSalonId());
-			if (opCustomer.isPresent()) {
-				json.setObject(opCustomer.get());
-				json.setStatus(JsonHttp.SUCCESS);
+			if(opCustomer.isPresent()){
+				data = httpService.getResponseSuccess(opCustomer.get(), "Get customer by qr success");
 			} else {
-				throw new Exception("Can't find customer with this qrcode");
+				data = httpService.getResponseError("Cannot find this", "");
 			}
+			
 		} catch (Exception e) {
-			json.setStatus(JsonHttp.ERROR);
-			json.setMessage(e.getMessage());
+			data = httpService.getResponseError("Cannot find this", e.getMessage());
 
 		}
 
-		return ResponseEntity.ok(json);
+		return new ResponseEntity<>(data , data.getHttpCode());
 	}
 
 	@RequestMapping(value = "customers/login", method = RequestMethod.POST)
