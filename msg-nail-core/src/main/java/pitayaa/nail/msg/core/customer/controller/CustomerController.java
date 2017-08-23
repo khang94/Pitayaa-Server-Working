@@ -174,7 +174,6 @@ public class CustomerController {
 		JsonHttp json = new JsonHttp();
 		try {
 			String email = (String) model.get("email");
-			email = email.toLowerCase();
 			String password = (String) model.get("password");
 			String salonId = (String) model.get("salonId");
 

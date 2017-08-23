@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,8 @@ import pitayaa.nail.msg.core.hibernate.SearchCriteria;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(CustomerServiceImpl.class);
 
 	@Autowired
 	CustomerRepository customerRepo;
@@ -203,21 +207,26 @@ public class CustomerServiceImpl implements CustomerService {
 
 		// Get by phone
 		Customer customer = customerRepo.findByPhoneNumber(customerBody.getContact().getMobilePhone());
-
 		if (customer == null) {
+			
+			// Init default info
+			customer = customerServiceBusiness.initDefaultCustomer(customerBody);
 			
 			// Generate qr code for customer
 			String qrCode = UUID.randomUUID().toString();
 			customerBody.setQrCode(qrCode);
+			LOGGER.info("Qr Code 111[" + qrCode + "]");
 
 			// Encrypt password
 			if (customerBody.getContact().getEmail() != null && customerBody.getContact().getEmail().length() > 0) {
 				String encryptionPassword = EncryptionUtils.encodeMD5("123456", customerBody.getContact().getEmail());
 				customerBody.setPassword(encryptionPassword);
 			}
-
-			// Init default info
-			customer = customerServiceBusiness.initDefaultCustomer(customerBody);
+			
+			// Update address
+			if(customer.getAddress() == null ||customer.getAddress().getAddress() == null) {
+				customer.getAddress().setAddress("NONE");
+			}
 
 			// Save
 			customer = customerRepo.save(customer);

@@ -164,6 +164,8 @@ public class AppointmentBusinessImpl implements AppointmentBusiness {
 			if (customer.isPresent()) {			
 				customerInfo = this.updateCustomerPoint(customerInfo);
 				customerInfo = customerService.update(customer.get(), customerInfo);		
+			} else {
+				customerInfo = customerService.signIn(customerInfo);
 			}
 		}else {
 			customerInfo = customerService.signIn(customerInfo);
