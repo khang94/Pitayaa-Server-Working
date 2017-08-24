@@ -145,7 +145,11 @@ public class CustomerServiceImpl implements CustomerService {
 	
 	@Override
 	public Customer update(Customer customerSaved, Customer customerUpdated) throws Exception {
-
+		
+		// Update security information
+		customerUpdated.setQrCode(customerSaved.getQrCode());
+		customerUpdated.setPassword(customerSaved.getPassword());
+		
 		byte[] binaryImg = null;
 		boolean isUpdatedImage = false;
 
@@ -215,7 +219,7 @@ public class CustomerServiceImpl implements CustomerService {
 			// Generate qr code for customer
 			String qrCode = UUID.randomUUID().toString();
 			customerBody.setQrCode(qrCode);
-			LOGGER.info("Qr Code 111[" + qrCode + "]");
+			LOGGER.info("Qr Code 1111[" + qrCode + "]");
 
 			// Encrypt password
 			if (customerBody.getContact().getEmail() != null && customerBody.getContact().getEmail().length() > 0) {
@@ -239,4 +243,5 @@ public class CustomerServiceImpl implements CustomerService {
 
 		return customer;
 	}
+	
 }
