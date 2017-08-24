@@ -215,5 +215,18 @@ public class TimeUtils {
 		
 		return isRightTime;
 	}
+	
+	public static boolean isQueueActive(Date lastTime , SettingSms settingSms){
+		
+		// Get time type
+		long gapNotify = getGapNotify(settingSms);
+		long lastTimeSend = lastTime.getTime();
+		long currentTime = System.currentTimeMillis();
+		
+		if(currentTime - lastTimeSend > gapNotify){
+			return false;
+		}
+		return true;
+	}
 
 }

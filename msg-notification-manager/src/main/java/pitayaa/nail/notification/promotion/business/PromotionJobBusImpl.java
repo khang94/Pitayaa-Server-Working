@@ -47,9 +47,9 @@ public class PromotionJobBusImpl implements PromotionJobBus {
 			
 			JobHelper jobHelper = this.initJobHelper();
 			SmsQueue queue = jobHelper.openQueue(customerSummary.getCustomerRefID(), settingSms); 
-
+			
 			if (queue != null) {
-				lastActionSms = queue.getSendTime();
+				lastActionSms = TimeUtils.isQueueActive(queue.getSendTime(), settingSms) ? queue.getSendTime() : customerSummary.getCustomerDetail().getLastCheckin();
 				isSend = TimeUtils.isRightTimeToSend(settingSms, lastActionSms , NotificationConstant.SCHEDULER_TIME_REPEAT);
 			}
 		}
