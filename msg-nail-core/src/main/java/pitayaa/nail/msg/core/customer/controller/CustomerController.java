@@ -40,9 +40,6 @@ public class CustomerController {
 	private CustomerService customerService;
 
 	@Autowired
-	private CustomerRepository customerRepo;
-
-	@Autowired
 	private JsonHttpService httpService;
 
 	private JsonHttp data;
@@ -60,19 +57,20 @@ public class CustomerController {
 			@RequestParam(value = "operation", required = false, defaultValue = "") String operation) throws Exception {
 
 		Customer customer = null;
-		if (CoreConstant.OPERATION_SIGN_IN.equalsIgnoreCase(operation)) {
-			customer = customerService.signIn(customerBody);
-		} else {
+		try {
 			customer = customerService.save(customerBody);
+			data = httpService.getResponseSuccess(customer, "Create customer successfully...");
+		} catch (Exception ex){
+			data = httpService.getResponseError("Error", ex.getMessage());
 		}
 
-		return new ResponseEntity<>(customer, HttpStatus.OK);
+		return new ResponseEntity<>(data, data.getHttpCode());
 	}
 
 	@RequestMapping(value = "customers/{ID}", method = RequestMethod.PUT)
 	public @ResponseBody ResponseEntity<?> createCustomer(@RequestBody Customer customerUpdate,
 			@PathVariable("ID") UUID id,
-			@RequestParam(name = "oldPass", defaultValue = "") String oldPass) throws Exception {
+			@RequestParam(name = "oldPass", defaultValue = "",required = false) String oldPass) throws Exception {
 
 		Optional<Customer> savedCustomer = customerService.findOne(id);
 		//String oldPass = null;
@@ -83,7 +81,7 @@ public class CustomerController {
 
 		try {
 			Customer customer = null;
-			if(oldPass != null){
+			if(!"".equalsIgnoreCase(oldPass)){
 				customer = customerService.updatePassword(savedCustomer.get(), customerUpdate, oldPass);
 			} else {
 				customer = customerService.update(savedCustomer.get(), customerUpdate);
