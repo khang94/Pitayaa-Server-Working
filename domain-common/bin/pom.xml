@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<!-- <parent> Your own application should inherit from spring-boot-starter-parent 
+		<groupId>org.springframework.boot</groupId> <artifactId>spring-boot-samples</artifactId> 
+		<version>2.0.0.BUILD-SNAPSHOT</version> </parent> -->
+	<!-- <parent> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-starter-parent</artifactId> 
+		<version>1.4.2.RELEASE</version> </parent> -->
+	<groupId>pitaya.nail.domain.common</groupId>
+	<artifactId>domain-common</artifactId>
+	<name>Microservice Nail Common Group</name>
+	<version>1.0.0</version>
+
+
+	<properties>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+
+		<!-- Lombok -->
+		<project-lombok.version>1.16.10</project-lombok.version>
+
+		<!-- Logger -->
+		<slf4j.version>1.7.21</slf4j.version>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>${project-lombok.version}</version>
+		</dependency>
+	<dependency>
+		<groupId>org.slf4j</groupId>
+		<artifactId>slf4j-api</artifactId>
+		<version>${slf4j.version}</version>
+	</dependency>
+
+	</dependencies>
+	<build>
+		<plugins>
+			<!-- <plugin> <groupId>org.springframework.boot</groupId> <artifactId>spring-boot-maven-plugin</artifactId> 
+				</plugin> -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+			</plugin>
+			<!-- <configuration> ... </configuration> -->
+		</plugins>
+	</build>
+</project>

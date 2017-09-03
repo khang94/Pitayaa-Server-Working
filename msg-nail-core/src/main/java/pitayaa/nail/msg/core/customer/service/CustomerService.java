@@ -1,5 +1,6 @@
 package pitayaa.nail.msg.core.customer.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -30,4 +31,9 @@ public interface CustomerService {
 	Customer update(Customer customerSaved, Customer customerUpdated) throws Exception;
 
 	Customer updatePassword(Customer customerSaved, Customer customerUpdated, String oldPass) throws Exception;
+
+	List<Customer> findCustomerByCondition(String salonId, Date from , Date to) throws Exception;
+
+	List<Customer> findCustomerByCondition(String salonId, String customerType, Date from , Date to)
+			throws Exception;
 }

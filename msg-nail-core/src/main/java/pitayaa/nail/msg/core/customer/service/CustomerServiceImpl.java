@@ -1,6 +1,7 @@
 package pitayaa.nail.msg.core.customer.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -21,7 +22,7 @@ import pitayaa.nail.msg.core.hibernate.SearchCriteria;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(CustomerServiceImpl.class);
 
 	@Autowired
@@ -70,10 +71,9 @@ public class CustomerServiceImpl implements CustomerService {
 		try {
 			String email = customerBody.getContact().getEmail().toLowerCase();
 			customerBody.getContact().setEmail(email);
-		}catch (Exception ex){
+		} catch (Exception ex) {
 			ex.getMessage();
 		}
-
 
 		// Generate qr code for customer
 		String qrCode = UUID.randomUUID().toString();
@@ -95,6 +95,17 @@ public class CustomerServiceImpl implements CustomerService {
 		}
 
 		return customerBody;
+	}
+
+	@Override
+	public List<Customer> findCustomerByCondition(String salonId, Date from, Date to) throws Exception {
+		return customerRepo.findAllCustomer(salonId, from, to);
+	}
+
+	@Override
+	public List<Customer> findCustomerByCondition(String salonId, String customerType, Date from, Date to)
+			throws Exception {
+		return customerRepo.findAllCustomer(salonId, customerType, from, to);
 	}
 
 	@Override
@@ -142,14 +153,14 @@ public class CustomerServiceImpl implements CustomerService {
 
 		return customerUpdated;
 	}
-	
+
 	@Override
 	public Customer update(Customer customerSaved, Customer customerUpdated) throws Exception {
-		
+
 		// Update security information
 		customerUpdated.setQrCode(customerSaved.getQrCode());
 		customerUpdated.setPassword(customerSaved.getPassword());
-		
+
 		byte[] binaryImg = null;
 		boolean isUpdatedImage = false;
 
@@ -212,10 +223,10 @@ public class CustomerServiceImpl implements CustomerService {
 		// Get by phone
 		Customer customer = customerRepo.findByPhoneNumber(customerBody.getContact().getMobilePhone());
 		if (customer == null) {
-			
+
 			// Init default info
 			customer = customerServiceBusiness.initDefaultCustomer(customerBody);
-			
+
 			// Generate qr code for customer
 			String qrCode = UUID.randomUUID().toString();
 			customerBody.setQrCode(qrCode);
@@ -226,9 +237,9 @@ public class CustomerServiceImpl implements CustomerService {
 				String encryptionPassword = EncryptionUtils.encodeMD5("123456", customerBody.getContact().getEmail());
 				customerBody.setPassword(encryptionPassword);
 			}
-			
+
 			// Update address
-			if(customer.getAddress() == null ||customer.getAddress().getAddress() == null) {
+			if (customer.getAddress() == null || customer.getAddress().getAddress() == null) {
 				customer.getAddress().setAddress("NONE");
 			}
 
@@ -243,5 +254,5 @@ public class CustomerServiceImpl implements CustomerService {
 
 		return customer;
 	}
-	
+
 }

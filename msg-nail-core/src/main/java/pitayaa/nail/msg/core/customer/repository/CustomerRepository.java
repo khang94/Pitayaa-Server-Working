@@ -1,5 +1,6 @@
 package pitayaa.nail.msg.core.customer.repository;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,6 +29,12 @@ public interface CustomerRepository extends
 	
 	@Query("select c from Customer c where c.salonId = :salonId and c.customerDetail.customerType = :customerType")
 	List<Customer> findAllCustomer(@Param("salonId") String salonId , @Param("customerType") String customerType);
+	
+	@Query("select c from Customer c where c.salonId = :salonId and c.createdDate between :from and :to")
+	List<Customer> findAllCustomer(@Param("salonId") String salonId , @Param("from") Date from , @Param("to") Date to);
+	
+	@Query("select c from Customer c where c.salonId = :salonId and c.customerDetail.customerType = :customerType and c.createdDate between :from and :to")
+	List<Customer> findAllCustomer(@Param("salonId") String salonId,@Param("customerType") String customerType , @Param("from") Date from , @Param("to") Date to);
 	
 	@Query("select c from Customer c where c.contact.mobilePhone = :phoneNumber")
 	Customer findByPhoneNumber(@Param("phoneNumber") String phoneNumber);

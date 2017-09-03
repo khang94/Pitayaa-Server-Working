@@ -138,6 +138,7 @@ public class CoreHelper {
 		ZonedDateTime now = ZonedDateTime.now( ZoneOffset.systemDefault());
 		return now.toString();
 	}
+
 	
 	public String getTimeFolder(Date date){
 		DateFormat df = new SimpleDateFormat("MM-dd-yyyy_hh-mm-ss");   

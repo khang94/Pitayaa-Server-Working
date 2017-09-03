@@ -62,6 +62,7 @@ public class CoreConstant {
 	public static final String CUSTOMER_TYPE_NEW = "NEW";
 	public static final String CUSTOMER_TYPE_RETURN = "RETURN";
 	public static final String CUSTOMER_TYPE_APPOINTMENT = "APPOINTMENT";
+	public static final String CUSTOMER_TYPE_CANCEL = "CANCEL";
 	
 	public static final String OPERATION_SIGN_IN = "SIGN_IN";
 	
@@ -71,5 +72,8 @@ public class CoreConstant {
 	public static final String PROMOTION_CODE_SEND_OUT = "SEND_OUT";
 	public static final String PROMOTION_CODE_EXPIRED = "EXPIRED";
 	public static final String PROMOTION_CODE_USED = "USED";
+	
+	/* PERCENTAGE */
+	public static final String PERCENTAGE = "%";
 	
 }
