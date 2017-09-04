@@ -9,7 +9,6 @@ public class ServiceData {
 	String serviceId;
 	Integer number;
 	Double rate;
-	String percentage;
+	Double percentage;
 	Integer ranking;
-	Integer totalServices;
 }

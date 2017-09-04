@@ -8,6 +8,6 @@ public class CustomerData {
 	String customerType;
 	Integer number;
 	Double rate;
-	Integer percentage;
+	Double percentage;
 	
 }

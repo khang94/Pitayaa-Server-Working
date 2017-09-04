@@ -9,5 +9,6 @@ import pitayaa.nail.domain.report.detail.PackageData;
 public class ReportPackageData {
 
 	private List<PackageData> packagesData;
+	Integer totalPackages;
 	private String salonId;
 }

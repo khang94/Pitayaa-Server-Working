@@ -9,7 +9,7 @@ public class PackageData {
 	String packageId;
 	Integer number;
 	Double rate;
-	String percentage;
+	Double percentage;
 	Integer ranking;
-	Integer totalPackages;
+
 }

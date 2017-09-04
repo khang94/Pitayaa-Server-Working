@@ -22,11 +22,12 @@ public class ServiceBusImpl implements ServiceBus {
 		// TODO Auto-generated method stub
 		List<ServiceModel> lst = new ArrayList<>();
 		ServiceModel model = new ServiceModel();
-		ServiceModel modelStructure = (ServiceModel) busHelper.createModelStructure(new ServiceModel());
+		//ServiceModel modelStructure = (ServiceModel) busHelper.createModelStructure(new ServiceModel());
 
-		model = modelStructure;
+		// service 1
+		model =  (ServiceModel) busHelper.createModelStructure(new ServiceModel());
+		model.getView().setPathImage("");
 		model.getView().setPathImageServer("");
-		model.setDuration(0);
 		Price price1 = new Price();
 		price1.setPrice(20.0);
 		model.setPrice1(price1);;
@@ -40,13 +41,15 @@ public class ServiceBusImpl implements ServiceBus {
 		lst.add(model);
 
 		// service 2
-		model = modelStructure;
+		model =  (ServiceModel) busHelper.createModelStructure(new ServiceModel());
+		model.getView().setPathImage("");
+		model.getView().setPathImageServer("");
 		model.setDuration(0);
 
 		price1 = new Price();
 		price1.setPrice(40.0);
-		model.setPrice1(price1);;
-		//
+		model.setPrice1(price1);
+		
 		price2 = new Price();
 		price2.setPrice(20.0);
 		model.setPrice2(price2);;
@@ -54,11 +57,12 @@ public class ServiceBusImpl implements ServiceBus {
 		model.setServiceName("Jelly pedicure");
 
 		model.setSalonId(salonId);
-
 		lst.add(model);
 
 		// service 3
-		model = modelStructure;
+		model =  (ServiceModel) busHelper.createModelStructure(new ServiceModel());
+		model.getView().setPathImage("");
+		model.getView().setPathImageServer("");
 		model.setDuration(0);
 
 		price1 = new Price();
@@ -69,6 +73,40 @@ public class ServiceBusImpl implements ServiceBus {
 		price2.setPrice(60.0);
 		model.setPrice2(price2);;
 		model.setServiceName("Body massage");
+		model.setSalonId(salonId);
+		lst.add(model);
+		
+		// service 4
+		model =  (ServiceModel) busHelper.createModelStructure(new ServiceModel());
+		model.getView().setPathImage("");
+		model.getView().setPathImageServer("");
+		model.setDuration(0);
+
+		price1 = new Price();
+		price1.setPrice(40.0);
+		model.setPrice1(price1);;
+		//
+		price2 = new Price();
+		price2.setPrice(60.0);
+		model.setPrice2(price2);;
+		model.setServiceName("Skin Care 111");
+		model.setSalonId(salonId);
+		lst.add(model);
+		
+		// service 5
+		model =  (ServiceModel) busHelper.createModelStructure(new ServiceModel());
+		model.getView().setPathImage("");
+		model.getView().setPathImageServer("");
+		model.setDuration(0);
+
+		price1 = new Price();
+		price1.setPrice(20.0);
+		model.setPrice1(price1);;
+		//
+		price2 = new Price();
+		price2.setPrice(25.0);
+		model.setPrice2(price2);;
+		model.setServiceName("Foot massage");
 
 		model.setSalonId(salonId);
 		lst.add(model);

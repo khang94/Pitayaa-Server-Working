@@ -1,5 +1,6 @@
 package pitayaa.nail.msg.core.appointment.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -21,5 +22,7 @@ public interface AppointmentService {
 	List<Appointment> findAllAppointmentByStatus(String status) throws Exception;
 
 	List<Appointment> findAllAppointmentBySalon(String salonId) throws Exception;
+
+	List<Appointment> findAllAppointmentByConditions(String salonId, Date from, Date to) throws Exception;
 
 }

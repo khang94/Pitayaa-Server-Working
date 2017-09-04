@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -260,12 +261,44 @@ public class CoreHelper {
 		boolean result = false;
 		if(file.delete()){
 			result = true;
-			LOGGER.info("Delete file [" + fileName + "] succes");
+			LOGGER.info("Delete file [" + fileName + "] success");
 		} else {
 			LOGGER.info("Delete file [" + fileName + "] failed");
 		}
 		return result;
 	}
+	
+	public Double getPercentage(Double value){
+		value = this.roundDoubleValue(value, 2);
+		
+		value = value * 100;
+		
+		DecimalFormat df1 = new DecimalFormat("##.##"); 
+		DecimalFormat df2 = new DecimalFormat("#.##"); 
+		
+		if(value < 10){
+			value = Double.valueOf(df2.format(value));
+		} else {
+			value = Double.valueOf(df1.format(value));
+		}
+		
+		return value;
+	}
+	
+	public Double roundDoubleValue(Double value, int digits) {
+		
+		// Get result
+		Double scale = Math.pow(10, digits);
+		Double result = Math.round(value * scale) / scale;
+		
+		// Format
+		DecimalFormat dtime = new DecimalFormat("#.####"); 
+		result = Double.valueOf(dtime.format(value));
+		
+	    return result;
+	}
+	
+	
 
 
 
