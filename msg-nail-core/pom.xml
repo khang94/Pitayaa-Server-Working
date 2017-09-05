@@ -112,6 +112,11 @@
 			<version>1.0.0</version>
 		</dependency>
 		<dependency>
+			<groupId>pitaya.nail.domain.notification</groupId>
+			<artifactId>domain-notification</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+		<dependency>
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
 			<version>1.3.1</version>

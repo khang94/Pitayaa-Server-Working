@@ -19,11 +19,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import pitayaa.nail.msg.business.util.common.RestTemplateHelper;
 import pitayaa.nail.notification.common.NotificationHelper;
 import pitayaa.nail.notification.promotion.business.PromotionJobBus;
 import pitayaa.nail.notification.promotion.business.PromotionJobBusImpl;
 import pitayaa.nail.notification.scheduler.JobHelper;
-import pitayaa.nail.notification.scheduler.RestTemplateHelper;
 import pitayaa.nail.notification.sms.api.nexmo.SendSmsNexmo;
 import pitayaa.nail.notification.sms.repository.SmsRepository;
 import pitayaa.nail.notification.sms.service.ISmsService;

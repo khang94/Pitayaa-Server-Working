@@ -17,7 +17,6 @@ import pitayaa.nail.json.http.JsonHttp;
 import pitayaa.nail.notification.common.NotificationHelper;
 import pitayaa.nail.notification.scheduler.service.SmsQueueService;
 import pitayaa.nail.notification.sms.config.SmsConstant;
-import pitayaa.nail.notification.sms.service.ISmsService;
 
 @Controller
 public class SmsQueueController {
@@ -50,6 +49,18 @@ public class SmsQueueController {
 		
 		return new ResponseEntity<>(smsQueue , HttpStatus.OK);
 	}
+	
+	@RequestMapping(value = "smsQueue/reports" ,method = RequestMethod.GET)
+	public ResponseEntity<?> getReportSms (@RequestParam("salonId") String salonId,
+			@RequestParam(name = "from" , required = false ,defaultValue = "") String from,
+			@RequestParam(name = "to" , required = false ,defaultValue = "") String to) throws Exception{
+	
+		List<SmsQueue> smsQueue = queueService.getSmsReport(salonId, from, to);
+	
+		return new ResponseEntity<>(smsQueue , HttpStatus.OK);
+	}
+	
+	
 	
 	@RequestMapping(value = "smsQueue/action" , method = RequestMethod.POST)
 	public ResponseEntity<?> deliverMessage(@RequestBody SettingSms settingSms , @RequestParam("operation") String operation) throws Exception{

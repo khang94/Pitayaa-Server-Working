@@ -17,4 +17,6 @@ public interface SmsQueueService {
 
 	SmsQueue getTopQueue(String customerId, String settingSmsId, String customerType);
 
+	List<SmsQueue> getSmsReport(String salonId, String from, String to) throws Exception;
+
 }

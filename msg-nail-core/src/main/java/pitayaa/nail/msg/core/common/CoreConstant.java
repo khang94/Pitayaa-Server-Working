@@ -63,6 +63,7 @@ public class CoreConstant {
 	public static final String CUSTOMER_TYPE_RETURN = "RETURN";
 	public static final String CUSTOMER_TYPE_APPOINTMENT = "APPOINTMENT";
 	public static final String CUSTOMER_TYPE_CANCEL = "CANCEL";
+	public static final String CUSTOMER_TYPE_REFERRAL = "REFERRAL";
 	
 	public static final String OPERATION_SIGN_IN = "SIGN_IN";
 	

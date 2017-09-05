@@ -237,6 +237,31 @@ public class AppointmentBusinessImpl implements AppointmentBusiness {
 		
 		appmBody.setPromotion(promotion);
 		
+		// Update customer infor when using promotion code
+		this.updateCustomerInfor(promotion.getCustomerId(), appmBody);
+		
+		return appmBody;
+	}
+	
+	private Appointment updateCustomerInfor(String customerId , Appointment appmBody) throws Exception{
+		
+		Optional<Customer> customerGetPromotion = customerService.findOne(UUID.fromString(customerId));
+		
+		if(customerGetPromotion.isPresent()){
+			// Update infor for customer sign in
+			Customer customerSignIn = appmBody.getCustomer();
+			if(!customerId.equalsIgnoreCase(customerSignIn.getUuid().toString())){
+				
+
+				customerSignIn.setReferralBy(customerGetPromotion.get().getCustomerDetail().getFirstName() + 
+						" " + customerGetPromotion.get().getCustomerDetail().getLastName());
+				customerSignIn.setReferralById(customerGetPromotion.get().getUuid().toString());
+				customerSignIn.getCustomerDetail().setCustomerType(CoreConstant.CUSTOMER_TYPE_REFERRAL);
+				customerService.update(customerSignIn, customerSignIn);	
+				appmBody.setCustomer(customerSignIn);
+			}
+		}
+		
 		return appmBody;
 	}
 

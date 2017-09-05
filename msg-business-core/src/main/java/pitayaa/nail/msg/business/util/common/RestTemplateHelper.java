@@ -1,4 +1,4 @@
-package pitayaa.nail.notification.scheduler;
+package pitayaa.nail.msg.business.util.common;
 
 import java.util.Map;
 
@@ -10,7 +10,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Service
 public class RestTemplateHelper {
 
-	public final static Logger LOGGER = LoggerFactory.getLogger(AppointmentJob.class);
+	public final static Logger LOGGER = LoggerFactory.getLogger(RestTemplateHelper.class);
 
 	public String buildUrlRequestParam(Map<String, String> params, String url) {
 

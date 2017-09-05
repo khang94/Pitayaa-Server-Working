@@ -57,6 +57,9 @@ public class Customer {
 
 	private String username;
 	private String password;
+	
+	private String referralBy;
+	private String referralById;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdDate;

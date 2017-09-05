@@ -1,5 +1,6 @@
 package pitayaa.nail.notification.scheduler.repository;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,10 +21,10 @@ public interface SmsQueueRepository extends PagingAndSortingRepository<SmsQueue,
 	public List<SmsQueue> getQueue(@Param("customerId") String customerId , @Param("settingSmsId") String settingSmsId,
 			@Param("customerType") String customerType);
 	
-	/*@Query("SELECT queue from SmsQueue queue where queue.customerId = :customerId and "
-			+ "queue.settingSmsId = :settingSmsId and queue.customerType = :customerType order by updatedDate DESC")
-	public List<SmsQueue> getTopQueue(@Param("customerId") String customerId , @Param("settingSmsId") String settingSmsId,
-			@Param("customerType") String customerType);*/
+	@Query("Select queue from SmsQueue queue where queue.salonId = :salonId and queue.createdDate between :from and :to")
+	public List<SmsQueue> getQueueByConditions(@Param("salonId") String salonId , @Param("from") Date from,
+			@Param("to") Date to);
+	
 	
 
 }

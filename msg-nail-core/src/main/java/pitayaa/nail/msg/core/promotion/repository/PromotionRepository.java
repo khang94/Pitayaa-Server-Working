@@ -1,5 +1,6 @@
 package pitayaa.nail.msg.core.promotion.repository;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,6 +31,15 @@ public interface PromotionRepository extends PagingAndSortingRepository<Promotio
 	
 	@Query("Select p from Promotion p where "
 			+ 						"		p.salonId = :salonId "
+			+ 						"	and p.status = :status"
+			+ 						" 	and p.updatedDate between :from and :to")
+	List<Promotion> findPromotionByConditions( @Param("salonId") String salonId, 
+									   		 @Param("status") String status,
+									   		@Param("from") Date from,
+									   		@Param("to") Date to);
+	
+	@Query("Select p from Promotion p where "
+			+ 						"		p.salonId = :salonId "
 			+ 						"	and p.codeValue = :codeValue ")
 	List<Promotion> findByCode( @Param("salonId") String salonId, 
 									   @Param("codeValue") String codeValue);
@@ -39,4 +49,7 @@ public interface PromotionRepository extends PagingAndSortingRepository<Promotio
 			+ 						"	and p.codeValue = :codeValue ")
 	List<Promotion> findPromotionCode( @Param("salonId") String salonId, 
 								@Param("codeValue") String codeValue);
+	
+	
+	
 }

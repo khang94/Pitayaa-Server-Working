@@ -1,6 +1,7 @@
 package pitayaa.nail.msg.core.promotion.service;
 
 import java.util.HashMap;
+import java.util.List;
 
 import pitayaa.nail.domain.promotion.Promotion;
 
@@ -17,5 +18,9 @@ public interface PromotionService {
 	Promotion signInPromotion(String salonId, String codeValue) throws Exception;
 
 	Promotion findPromotion(String salonId, String codeValue) throws Exception;
+
+	List<Promotion> findPromotionByConditions(String salonId, String status, String from, String to) throws Exception;
+
+	List<Promotion> findPromotionActive(String salonId) throws Exception;
 
 }

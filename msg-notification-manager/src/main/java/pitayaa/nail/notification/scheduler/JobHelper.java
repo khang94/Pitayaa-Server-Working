@@ -12,7 +12,6 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.hateoas.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -30,7 +29,7 @@ import pitayaa.nail.domain.promotion.Promotion;
 import pitayaa.nail.domain.salon.Salon;
 import pitayaa.nail.domain.setting.SettingSms;
 import pitayaa.nail.domain.setting.sms.CustomerSummary;
-import pitayaa.nail.json.http.JsonHttp;
+import pitayaa.nail.msg.business.util.common.RestTemplateHelper;
 import pitayaa.nail.notification.common.NotificationConstant;
 import pitayaa.nail.notification.common.SchedulerConstant;
 
@@ -96,13 +95,13 @@ public class JobHelper {
 
 		return response.getBody();
 	}
-	
+
 	/**
 	 * Load Get All Customer by Type & Salon
 	 * 
 	 * @return
 	 */
-	public List<CustomerSummary> loadCustomersByType(String salonId , String customerType) {
+	public List<CustomerSummary> loadCustomersByType(String salonId, String customerType) {
 
 		LOGGER.info("Call rest template .....Load list customers .........");
 
@@ -134,12 +133,12 @@ public class JobHelper {
 		if (response.getStatusCode().is2xxSuccessful()) {
 			LOGGER.info("Get response successully from URL [" + url + "]");
 		}
-		
+
 		// Transform customers list to customer list summary
 		List<Customer> customers = response.getBody();
 		List<CustomerSummary> customersSummary = new ArrayList<CustomerSummary>();
-		
-		customers.stream().forEach(customer ->{
+
+		customers.stream().forEach(customer -> {
 			CustomerSummary customerSummary = new CustomerSummary();
 			customerSummary.setCustomerDetail(customer.getCustomerDetail());
 			customerSummary.setContact(customer.getContact());
@@ -150,16 +149,17 @@ public class JobHelper {
 
 		return customersSummary;
 	}
-	
+
 	/**
 	 * Add sms to queue
+	 * 
 	 * @param customer
 	 * @param settingSms
 	 * @return
 	 */
-	public SmsQueue addSmsQueue (CustomerSummary customer , SettingSms settingSms){
+	public SmsQueue addSmsQueue(CustomerSummary customer, SettingSms settingSms) {
 		SmsQueue queue = new SmsQueue();
-		
+
 		// Execute business
 		queue.setCustomerId(customer.getCustomerRefID());
 		queue.setSettingSmsId(settingSms.getUuid().toString());
@@ -169,7 +169,7 @@ public class JobHelper {
 		queue.setTimeUpdateSetting(settingSms.getUpdatedDate());
 		queue.setSalonId(settingSms.getSalonId());
 		queue.setSendTime(new Date());
-			
+
 		// Call API Function
 		Map<String, String> headersMap = new HashMap<String, String>();
 		HttpHeaders headers = new HttpHeaders();
@@ -197,14 +197,15 @@ public class JobHelper {
 		}
 		return response.getBody();
 	}
-	
+
 	/**
 	 * Open queue sms
+	 * 
 	 * @param customerId
 	 * @param settingSms
 	 * @return
 	 */
-	public SmsQueue openQueue (String customerId, SettingSms settingSms){
+	public SmsQueue openQueue(String customerId, SettingSms settingSms) {
 
 		// Call API Function
 		Map<String, String> headersMap = new HashMap<String, String>();
@@ -235,21 +236,22 @@ public class JobHelper {
 		if (response.getStatusCode().is2xxSuccessful()) {
 			LOGGER.info("Get response successully from URL [" + url + "]");
 		}
-		
+
 		List<SmsQueue> queues = response.getBody();
-		
-		if(queues.size() > 0){
+
+		if (queues.size() > 0) {
 			return response.getBody().get(0);
 		}
-		
+
 		return null;
 	}
-	
+
 	/**
 	 * Load list salon data
+	 * 
 	 * @return
 	 */
-	public List<Salon> loadListSalon(){
+	public List<Salon> loadListSalon() {
 		LOGGER.info("Call rest template .....Load list appointment .........");
 
 		Map<String, String> headersMap = new HashMap<String, String>();
@@ -280,17 +282,18 @@ public class JobHelper {
 
 		return response.getBody();
 	}
-	
+
 	/**
 	 * Load list customer by salon
+	 * 
 	 * @param salonId
 	 * @return
 	 */
-	public List<Customer> loadListCustomerBySalon(String salonId){
+	public List<Customer> loadListCustomerBySalon(String salonId) {
 		LOGGER.info("Call rest template .....Load list customer ......... by salon id [" + salonId + "]");
 
 		List<Customer> customerList = new ArrayList<Customer>();
-		
+
 		Map<String, String> headersMap = new HashMap<String, String>();
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
@@ -317,12 +320,12 @@ public class JobHelper {
 				});
 		if (response.getStatusCode().is2xxSuccessful() && response.getStatusCodeValue() == 200) {
 			LOGGER.info("Get response successully from URL [" + url + "]");
-			//customerList = (List<Customer>) response.getBody().getObject();
+			// customerList = (List<Customer>) response.getBody().getObject();
 		}
 
 		return response.getBody();
 	}
-	
+
 	/**
 	 * Load list setting sms
 	 * 
@@ -344,14 +347,12 @@ public class JobHelper {
 		Map<String, String> urlParameters = new HashMap<String, String>();
 		urlParameters.put(NotificationConstant.SALON_ID, salonId);
 		urlParameters.put(NotificationConstant.OPERATION, NotificationConstant.OPERATION_REFRESH);
-		
-		
-		// url Variable
-		Map<String,String> urlPathVariable = new HashMap<String, String>();
 
+		// url Variable
+		Map<String, String> urlPathVariable = new HashMap<String, String>();
 
 		String url = this.getValueProperties(NotificationConstant.SETTING_SMS_SALON);
-		
+
 		RestTemplateHelper restTemplateHelper = new RestTemplateHelper();
 		url = restTemplateHelper.buildUrlRequestParam(urlParameters, url);
 		LOGGER.info("Get URL Load List Appointment : [" + url + "] to send request !");
@@ -367,7 +368,7 @@ public class JobHelper {
 
 		return response.getBody();
 	}
-	
+
 	/**
 	 * Load list setting sms
 	 * 
@@ -387,18 +388,16 @@ public class JobHelper {
 
 		// urlParameters
 		Map<String, String> urlParameters = new HashMap<String, String>();
-		
-		
-		// url Variable
-		Map<String,String> urlPathVariable = new HashMap<String, String>();
 
+		// url Variable
+		Map<String, String> urlPathVariable = new HashMap<String, String>();
 
 		String url = this.getValueProperties(NotificationConstant.SMS_SEND);
-		
-		//RestTemplateHelper restTemplateHelper = new RestTemplateHelper();
+
+		// RestTemplateHelper restTemplateHelper = new RestTemplateHelper();
 
 		HttpEntity<SmsModel> bodyRequest = new HttpEntity<>(smsBody, headers);
-		
+
 		LOGGER.info("Get URL Send Sms : [" + url + "] to send request !");
 
 		// Execute Request By Rest Template
@@ -412,7 +411,7 @@ public class JobHelper {
 
 		return response.getBody();
 	}
-	
+
 	/*
 	 * Load list promotion code
 	 */
@@ -535,9 +534,9 @@ public class JobHelper {
 
 		return response;
 	}
-	
-	public Promotion getPromotionDeliver(String salonId , String type , String customerId) throws Exception{
-		
+
+	public Promotion getPromotionDeliver(String salonId, String type, String customerId) throws Exception {
+
 		LOGGER.info("Get Promotion Deliver by salon Id [" + salonId + "]");
 
 		Map<String, String> headersMap = new HashMap<String, String>();
@@ -557,7 +556,6 @@ public class JobHelper {
 		// Path variables
 		Map<String, String> pathVars = new HashMap<String, String>();
 
-
 		// HttpEntity<String> request = new HttpEntity<>(input, createHeader());
 		String url = this.getValueProperties(NotificationConstant.PROMOTION_DELIVER);
 		RestTemplateHelper restTemplateHelper = new RestTemplateHelper();
@@ -575,9 +573,10 @@ public class JobHelper {
 
 		return response.getBody();
 	}
-	
+
 	/**
 	 * Bind data sms appointment
+	 * 
 	 * @param smsModel
 	 * @param salon
 	 * @param appointment
@@ -630,45 +629,44 @@ public class JobHelper {
 		return smsModel;
 
 	}
-	
-	public SmsModel bindDataPromotionSms(SmsModel smsModel , Promotion promotion , CustomerSummary customer){
-		
+
+	public SmsModel bindDataPromotionSms(SmsModel smsModel, Promotion promotion, CustomerSummary customer) {
+
 		String content = smsModel.getHeader().getMessage();
-		
+
 		// Bind base infor
-		
+
 		// Customer Name
-		if(content.contains(SchedulerConstant.CUSTOMER_NAME_WORD)){
-			String fullname = customer.getCustomerDetail().getFirstName() + " "  + customer.getCustomerDetail().getLastName();
+		if (content.contains(SchedulerConstant.CUSTOMER_NAME_WORD)) {
+			String fullname = customer.getCustomerDetail().getFirstName() + " "
+					+ customer.getCustomerDetail().getLastName();
 			content = content.replaceAll(SchedulerConstant.CUSTOMER_NAME_WORD, fullname);
 		}
-		
+
 		// Promotion Code
-		if(content.contains(SchedulerConstant.PROMOTION_CODE_WORD)){
+		if (content.contains(SchedulerConstant.PROMOTION_CODE_WORD)) {
 			content = content.replaceAll(SchedulerConstant.PROMOTION_CODE_WORD, promotion.getCodeValue());
 		}
-		
+
 		smsModel.getHeader().setMessage(content);
 		return smsModel;
-		
+
 	}
-	
-	public SmsModel fulFillBodySms (SmsModel smsModel , CustomerSummary customer) throws Exception{
-		
+
+	public SmsModel fulFillBodySms(SmsModel smsModel, CustomerSummary customer) throws Exception {
+
 		// Get content
 		String content = smsModel.getHeader().getMessage();
-		
+
 		// Init promotion & smsModel
 		Promotion promotion = null;
-		
-		if(content.contains(SchedulerConstant.CUSTOMER_NAME_WORD)
-				|| content.contains(SchedulerConstant.PROMOTION_CODE_WORD)){
+
+		if (content.contains(SchedulerConstant.CUSTOMER_NAME_WORD)
+				|| content.contains(SchedulerConstant.PROMOTION_CODE_WORD)) {
 			promotion = this.getPromotionDeliver(smsModel.getSalonId(), "", smsModel.getModuleId());
 			smsModel = this.bindDataPromotionSms(smsModel, promotion, customer);
 		}
 		return smsModel;
 	}
-	
-	
 
 }

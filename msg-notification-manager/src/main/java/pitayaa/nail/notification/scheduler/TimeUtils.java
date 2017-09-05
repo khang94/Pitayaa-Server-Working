@@ -11,14 +11,50 @@ import java.util.TimeZone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import pitayaa.nail.domain.customer.Customer;
 import pitayaa.nail.domain.setting.SettingSms;
-import pitayaa.nail.domain.setting.sms.CustomerSummary;
 import pitayaa.nail.notification.common.NotificationConstant;
 
 public class TimeUtils {
 	
 	public final static Logger LOGGER = LoggerFactory.getLogger(TimeUtils.class);
+	
+	
+	public static String FORMAT_TIME = "MM-dd-yyyy hh-mm-ss";
+	
+	public static String START_TIME = "00-00-00";
+	public static String END_TIME = "23-59-59";
+	
+	public static String SPACE = " ";
+	
+	public static Date getStartDate(String date) throws Exception{
+		
+		DateFormat df = new SimpleDateFormat(FORMAT_TIME); 
+		
+		String time = date + SPACE + START_TIME;
+		Date startDate = new Date();
+		try {
+		    startDate = df.parse(time);
+		    LOGGER.info("Start date [{}]" , startDate);
+		} catch (ParseException e) {
+		    e.printStackTrace();
+		}
+		return startDate;
+	} 
+	
+	public static Date getEndDate(String date) throws Exception{
+		
+		DateFormat df = new SimpleDateFormat(FORMAT_TIME); 
+		
+		String time = date + SPACE + END_TIME;
+		Date endDate = new Date();
+		try {
+			endDate = df.parse(time);
+			LOGGER.info("End date [{}]" , endDate);
+		} catch (ParseException e) {
+		    e.printStackTrace();
+		}
+		return endDate;
+	} 
 	
 	public static Date getCurrentUTCTime(){
 		

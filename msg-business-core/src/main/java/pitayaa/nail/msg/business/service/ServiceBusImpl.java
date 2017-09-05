@@ -89,7 +89,7 @@ public class ServiceBusImpl implements ServiceBus {
 		price2 = new Price();
 		price2.setPrice(60.0);
 		model.setPrice2(price2);;
-		model.setServiceName("Skin Care 111");
+		model.setServiceName("Skin Care");
 		model.setSalonId(salonId);
 		lst.add(model);
 		

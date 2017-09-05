@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import pitayaa.nail.domain.promotion.Promotion;
 import pitayaa.nail.msg.core.common.CoreConstant;
+import pitayaa.nail.msg.core.common.TimeUtils;
 import pitayaa.nail.msg.core.promotion.repository.PromotionRepository;
 
 @Service
@@ -41,6 +42,11 @@ public class PromotionServiceImpl implements PromotionService {
 	@Override
 	public Promotion save(Promotion promotion) {
 		return promotionRepo.save(promotion);
+	}
+	
+	@Override
+	public List<Promotion> findPromotionActive(String salonId) throws Exception {
+		return promotionRepo.findActivePromotionCode(salonId, CoreConstant.PROMOTION_CODE_ACTIVE);
 	}
 	
 	@Override
@@ -122,6 +128,16 @@ public class PromotionServiceImpl implements PromotionService {
 		p = promotionRepo.save(p);
 		
 		return p;
+	}
+	
+	@Override
+	public List<Promotion> findPromotionByConditions(String salonId ,String status,String from , String to) throws Exception{
+		
+		// Get convert string to date
+		Date fromDate = TimeUtils.getStartDate(from);
+		Date toDate = TimeUtils.getEndDate(to);
+		
+		return promotionRepo.findPromotionByConditions(salonId, status, fromDate, toDate);
 	}
 
 }

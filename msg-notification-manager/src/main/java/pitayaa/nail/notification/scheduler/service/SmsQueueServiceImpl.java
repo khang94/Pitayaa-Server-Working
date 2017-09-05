@@ -1,6 +1,7 @@
 package pitayaa.nail.notification.scheduler.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -8,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import pitayaa.nail.domain.customer.Customer;
 import pitayaa.nail.domain.notification.scheduler.SmsQueue;
 import pitayaa.nail.domain.notification.sms.SmsModel;
 import pitayaa.nail.domain.setting.SettingSms;
@@ -19,6 +19,7 @@ import pitayaa.nail.msg.business.json.JsonHttpService;
 import pitayaa.nail.notification.common.NotificationConstant;
 import pitayaa.nail.notification.common.NotificationHelper;
 import pitayaa.nail.notification.scheduler.JobHelper;
+import pitayaa.nail.notification.scheduler.TimeUtils;
 import pitayaa.nail.notification.scheduler.repository.SmsQueueRepository;
 import pitayaa.nail.notification.sms.config.SmsConstant;
 import pitayaa.nail.notification.sms.service.ISmsService;
@@ -71,6 +72,7 @@ public class SmsQueueServiceImpl implements SmsQueueService {
 			smsSend = smsService.sendSms(smsSend);
 
 			if (smsSend.getMeta().getStatus().equalsIgnoreCase(SmsConstant.STATUS_SMS_DELIVERED)) {
+				saveMessageToQueue(smsSend , settingSms);
 				LOGGER.info("Message send to phone [" + smsSend.getHeader().getToPhone() + "] successfully.");
 			} else {
 				LOGGER.info("Message send to phone [" + smsSend.getHeader().getToPhone() + "] failed.");
@@ -80,6 +82,24 @@ public class SmsQueueServiceImpl implements SmsQueueService {
 		JsonHttp jsonHttp = httpService.getResponseSuccess("", "Deliver all message success");
 		
 		return jsonHttp;
+	}
+	
+	private SmsQueue saveMessageToQueue(SmsModel smsModel , SettingSms settingSms) {
+		
+		SmsQueue queue = new SmsQueue();
+		
+		// Execute business
+		queue.setSmsType(NotificationConstant.SMS_PROMOTION);
+		queue.setCustomerId(smsModel.getModuleId());
+		queue.setSettingSmsId(settingSms.getUuid().toString());
+		queue.setIsSend(true);
+		queue.setSmsType(settingSms.getKey());
+		queue.setCustomerType(settingSms.getKey());
+		queue.setTimeUpdateSetting(settingSms.getUpdatedDate());
+		queue.setSalonId(settingSms.getSalonId());
+		queue.setSendTime(new Date());
+		
+		return queueRepo.save(queue);
 	}
 	
 	protected List<CustomerSummary> getListCustomer(SettingSms settingSms) throws Exception{
@@ -128,5 +148,15 @@ public class SmsQueueServiceImpl implements SmsQueueService {
 			}
 		}
 		return listMessageDeliver;
+	}
+	
+	@Override
+	public List<SmsQueue> getSmsReport(String salonId , String from , String to) throws Exception{
+		
+		// Get period date
+		Date fromDate = TimeUtils.getStartDate(from);
+		Date toDate = TimeUtils.getEndDate(to);
+		
+		return queueRepo.getQueueByConditions(salonId, fromDate, toDate);
 	}
 }

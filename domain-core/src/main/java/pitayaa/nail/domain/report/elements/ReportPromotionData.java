@@ -12,6 +12,7 @@ public class ReportPromotionData {
 	private Integer total;
 	private Integer totalAvailable;
 	private Integer totalUsed;
+	private Integer totalSentOut;
 	private Integer totalRemained;
 	private String salonId;
 }

@@ -31,7 +31,7 @@ public class ObjectHibernateListener extends ObjectHibernateListenerHelper{
 	}	
 	@PreUpdate
 	public void ObjectPreUpdate(Object ob) {
-		//LOGGER.info("Listening Object Pre Update : " + ob.toString());
+		LOGGER.info("Listening Object Pre Update : " + ob.toString());
 		this.setDateUpdate(ob);
 	}
 	@PostUpdate

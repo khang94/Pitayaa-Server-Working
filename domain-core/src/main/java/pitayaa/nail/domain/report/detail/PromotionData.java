@@ -11,5 +11,5 @@ public class PromotionData {
 	Double rate; // Rating
 	String percentage;
 	Integer ranking; // Raking
-	Integer totalPromotions;
+	
 }
