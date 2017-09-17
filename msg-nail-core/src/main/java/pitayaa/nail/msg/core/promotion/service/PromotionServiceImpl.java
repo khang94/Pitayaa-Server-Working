@@ -3,6 +3,7 @@ package pitayaa.nail.msg.core.promotion.service;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,6 +52,22 @@ public class PromotionServiceImpl implements PromotionService {
 		return pg;
 	}
 	
+	@Override
+	public PromotionGroup updatePromotionGroup(UUID uid , PromotionGroup pg) throws Exception{
+		
+		pg.setUuid(uid);
+		pg = promotionGroupRepo.save(pg);
+		
+		// Build promotion to generate
+		Promotion promotion = this.buildCodeForGroup(pg);
+		boolean isGenerateSuccess = this.generateCode(promotion, pg.getTotal());
+		
+		String message = (isGenerateSuccess) ? "Generate promotion code success " : "Generate promotion code failed....";
+		LOGGER.info(message);
+		
+		return pg;
+	}
+	
 	private Promotion buildCodeForGroup(PromotionGroup pg){
 		Promotion promotion = new Promotion();
 		
@@ -61,6 +78,7 @@ public class PromotionServiceImpl implements PromotionService {
 		promotion.setStatus(CoreConstant.PROMOTION_CODE_ACTIVE);
 		promotion.setSalonId(pg.getSalonId());
 		promotion.setPromotionDiscount(pg.getPromotionDiscount());
+		promotion.setGroupId(pg.getUuid().toString());
 		
 		return promotion;
 	}

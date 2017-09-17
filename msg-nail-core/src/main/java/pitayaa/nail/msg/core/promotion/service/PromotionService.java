@@ -2,6 +2,7 @@ package pitayaa.nail.msg.core.promotion.service;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import pitayaa.nail.domain.promotion.Promotion;
 import pitayaa.nail.domain.promotion.PromotionGroup;
@@ -27,5 +28,7 @@ public interface PromotionService {
 	PromotionGroup createPromotionGroup(PromotionGroup pg) throws Exception;
 
 	List<PromotionGroup> getPromotionGroupBySalonId(String salonId) throws Exception;
+
+	PromotionGroup updatePromotionGroup(UUID uid, PromotionGroup pg) throws Exception;
 
 }

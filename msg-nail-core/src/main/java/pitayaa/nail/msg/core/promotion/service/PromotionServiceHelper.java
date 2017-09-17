@@ -35,6 +35,7 @@ public class PromotionServiceHelper {
 			promoCode.setCodeValue(codeValue);
 			promoCode.setStatus(codeExpect.getStatus());
 			promoCode.setPromotionDiscount(codeExpect.getPromotionDiscount());
+			promoCode.setGroupId(codeExpect.getGroupId());
 			promotionLst.add(promoCode);
 		}
 

@@ -2,12 +2,14 @@ package pitayaa.nail.msg.core.promotion.controller;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -64,7 +66,24 @@ public class PromotionController {
 		return new ResponseEntity<>(jsonHttp, jsonHttp.getHttpCode());
 	}
 	
-	@RequestMapping(value = "promotions", method = RequestMethod.GET)
+	@RequestMapping(value = "promotions/{Id}", method = RequestMethod.PUT)
+	public @ResponseBody ResponseEntity<?> generateCode(
+			@PathVariable("Id") UUID id,
+			@RequestBody PromotionGroup promotionGroup) {
+		
+		JsonHttp jsonHttp = new JsonHttp();
+		
+		try {
+			promotionGroup = promotionService.updatePromotionGroup(id, promotionGroup);
+			jsonHttp = httpService.getResponseSuccess(promotionGroup, "Update promotion success....");
+		} catch (Exception ex){
+			jsonHttp = httpService.getResponseError("ERROR", ex.getMessage());
+		}
+
+		return new ResponseEntity<>(jsonHttp, jsonHttp.getHttpCode());
+	}
+	
+	@RequestMapping(value = "promotions/salons", method = RequestMethod.GET)
 	public @ResponseBody ResponseEntity<?> generateCode(@RequestParam("salonId") String salonId) {
 		
 		JsonHttp jsonHttp = new JsonHttp();

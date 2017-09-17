@@ -7,6 +7,7 @@ import java.util.UUID;
 import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -18,11 +19,13 @@ import org.hibernate.annotations.Type;
 
 import lombok.Data;
 import pitayaa.nail.domain.common.Discount;
+import pitayaa.nail.domain.hibernate.transaction.ObjectHibernateListener;
 import pitayaa.nail.domain.promotion.elements.PackagePromotion;
 import pitayaa.nail.domain.promotion.elements.ServicePromotion;
 
 @Entity
 @Data
+@EntityListeners(ObjectHibernateListener.class)
 public class PromotionGroup {
 
 	@Id

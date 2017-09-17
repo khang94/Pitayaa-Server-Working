@@ -45,6 +45,8 @@ public class Promotion {
 	private String message;
 	private String status; // Active or not active or EXPIRED
 	
+	private String groupId;
+	
 
 	@Embedded
 	private Discount promotionDiscount;

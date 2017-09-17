@@ -14,6 +14,7 @@ import pitayaa.nail.domain.license.License;
 import pitayaa.nail.domain.license.elements.Price;
 import pitayaa.nail.domain.packages.PackageModel;
 import pitayaa.nail.domain.promotion.Promotion;
+import pitayaa.nail.domain.promotion.PromotionGroup;
 import pitayaa.nail.domain.salon.Salon;
 import pitayaa.nail.domain.salon.elements.SalonLicense;
 import pitayaa.nail.domain.service.ServiceModel;
@@ -67,6 +68,11 @@ public class ObjectHibernateListenerHelper {
 
 		} else if (ob.getClass().equals(Promotion.class)) {
 			Promotion promotion = (Promotion) ob;
+			promotion.setCreatedDate(new Date());
+			promotion.setUpdatedDate(new Date());
+
+		} else if (ob.getClass().equals(PromotionGroup.class)) {
+			PromotionGroup promotion = (PromotionGroup) ob;
 			promotion.setCreatedDate(new Date());
 			promotion.setUpdatedDate(new Date());
 
@@ -137,6 +143,10 @@ public class ObjectHibernateListenerHelper {
 
 			} else if (ob.getClass().equals(Promotion.class)) {
 				Promotion promotion = (Promotion) ob;
+				promotion.setUpdatedDate(new Date());
+
+			} else if (ob.getClass().equals(PromotionGroup.class)) {
+				PromotionGroup promotion = (PromotionGroup) ob;
 				promotion.setUpdatedDate(new Date());
 
 			} else if (ob.getClass().equals(Salon.class)) {
