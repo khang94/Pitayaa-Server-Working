@@ -1,6 +1,7 @@
 package pitayaa.nail.msg.core.promotion.controller;
 
 import java.util.HashMap;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import pitayaa.nail.domain.promotion.Promotion;
+import pitayaa.nail.domain.promotion.PromotionGroup;
 import pitayaa.nail.json.http.JsonHttp;
 import pitayaa.nail.msg.business.json.JsonHttpService;
 import pitayaa.nail.msg.core.common.CoreHelper;
@@ -38,6 +40,46 @@ public class PromotionController {
 
 		return ResponseEntity.ok(promotion);
 	}
+	
+	@RequestMapping(value = "promotionsGroup/model", method = RequestMethod.GET)
+	public @ResponseBody ResponseEntity<?> getPromotionGroupModel() throws Exception {
+
+		PromotionGroup promotion = (PromotionGroup) coreHelper.createModelStructure(new PromotionGroup());
+
+		return ResponseEntity.ok(promotion);
+	}
+	
+	@RequestMapping(value = "promotions", method = RequestMethod.POST)
+	public @ResponseBody ResponseEntity<?> generateCode(@RequestBody PromotionGroup promotionGroup) {
+		
+		JsonHttp jsonHttp = new JsonHttp();
+		
+		try {
+			promotionGroup = promotionService.createPromotionGroup(promotionGroup);
+			jsonHttp = httpService.getResponseSuccess(promotionGroup, "Saving promotion success....");
+		} catch (Exception ex){
+			jsonHttp = httpService.getResponseError("ERROR", ex.getMessage());
+		}
+
+		return new ResponseEntity<>(jsonHttp, jsonHttp.getHttpCode());
+	}
+	
+	@RequestMapping(value = "promotions", method = RequestMethod.GET)
+	public @ResponseBody ResponseEntity<?> generateCode(@RequestParam("salonId") String salonId) {
+		
+		JsonHttp jsonHttp = new JsonHttp();
+		
+		try {
+			List<PromotionGroup> promotions = promotionService.getPromotionGroupBySalonId(salonId);
+			jsonHttp = httpService.getResponseSuccess(promotions, "get promotion success....");
+		} catch (Exception ex){
+			jsonHttp = httpService.getResponseError("ERROR", ex.getMessage());
+		}
+
+		return new ResponseEntity<>(jsonHttp, jsonHttp.getHttpCode());
+	}
+	
+	
 
 	@RequestMapping(value = "promotions/generate", method = RequestMethod.POST)
 	public @ResponseBody ResponseEntity<?> generateCode(@RequestParam("number") int number,

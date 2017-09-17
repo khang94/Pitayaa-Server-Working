@@ -42,7 +42,7 @@ public class Promotion {
 	private String salonId;
 	private String customerId;
 	private String objectType;
-	private String promotionEvent;
+	private String message;
 	private String status; // Active or not active or EXPIRED
 	
 

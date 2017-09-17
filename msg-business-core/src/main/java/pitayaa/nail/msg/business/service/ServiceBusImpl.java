@@ -113,4 +113,13 @@ public class ServiceBusImpl implements ServiceBus {
 		return lst;
 	}
 
+	/*public static void main(String[] args){
+		String hi = "1011011010010110001011101000011001110110100001101100011000000010111001101011011010000110100101100011011001110100110001101111011010110110";
+		String a = new StringBuilder(hi).reverse().toString();
+		System.out.println(a);
+		
+		String mail = "moc.liamg@canatim";
+		a = new StringBuilder(mail).reverse().toString();
+		System.out.println(a);
+	}*/
 }

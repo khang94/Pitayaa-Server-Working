@@ -7,7 +7,7 @@ spring:
      database: POSTGRESQL
      show-sql: true
      hibernate:
-       ddl-auto: create
+       ddl-auto: none
   datasource:
      platform: postgres
      driverClassName: org.postgresql.Driver

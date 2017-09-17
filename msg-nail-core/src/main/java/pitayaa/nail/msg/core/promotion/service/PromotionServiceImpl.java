@@ -4,27 +4,69 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import pitayaa.nail.domain.promotion.Promotion;
+import pitayaa.nail.domain.promotion.PromotionGroup;
 import pitayaa.nail.msg.core.common.CoreConstant;
 import pitayaa.nail.msg.core.common.TimeUtils;
+import pitayaa.nail.msg.core.promotion.repository.PromotionGroupRepository;
 import pitayaa.nail.msg.core.promotion.repository.PromotionRepository;
 
 @Service
 public class PromotionServiceImpl implements PromotionService {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(PromotionServiceImpl.class);
 
 	@Autowired
 	public PromotionServiceHelper serviceHelper;
 
 	@Autowired
 	public PromotionRepository promotionRepo;
+	
+	@Autowired
+	public PromotionGroupRepository promotionGroupRepo;
+	
+	@Override
+	public List<PromotionGroup> getPromotionGroupBySalonId(String salonId) throws Exception {
+		
+		return promotionGroupRepo.findBySalonId(salonId);
+	}
+	
+	@Override
+	public PromotionGroup createPromotionGroup(PromotionGroup pg) throws Exception{
+		
+		pg = promotionGroupRepo.save(pg);
+		
+		// Build promotion to generate
+		Promotion promotion = this.buildCodeForGroup(pg);
+		boolean isGenerateSuccess = this.generateCode(promotion, pg.getTotal());
+		
+		String message = (isGenerateSuccess) ? "Generate promotion code success " : "Generate promotion code failed....";
+		LOGGER.info(message);
+		
+		return pg;
+	}
+	
+	private Promotion buildCodeForGroup(PromotionGroup pg){
+		Promotion promotion = new Promotion();
+		
+		// Basic info
+		promotion.setExpireFrom(pg.getExpireFrom());
+		promotion.setExpireTo(pg.getExpireTo());
+		promotion.setMessage(pg.getMessage());
+		promotion.setStatus(CoreConstant.PROMOTION_CODE_ACTIVE);
+		promotion.setSalonId(pg.getSalonId());
+		promotion.setPromotionDiscount(pg.getPromotionDiscount());
+		
+		return promotion;
+	}
 
 	@Override
 	public boolean generateCode(Promotion codeExpect, int number) {
-		
-		codeExpect.setStatus(CoreConstant.PROMOTION_CODE_ACTIVE);
 		
 		List<Promotion> lstCode = serviceHelper.generateCode(codeExpect, number);
 		

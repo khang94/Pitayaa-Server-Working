@@ -50,6 +50,7 @@ public class CoreHelper {
 			} else {
 				fields = loopObject.getClass().getDeclaredFields();
 				methods = loopObject.getClass().getDeclaredMethods();
+				
 			}
 			
 			for(Field field : fields){

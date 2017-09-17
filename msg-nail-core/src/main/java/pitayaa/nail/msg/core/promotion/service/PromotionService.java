@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import pitayaa.nail.domain.promotion.Promotion;
+import pitayaa.nail.domain.promotion.PromotionGroup;
 
 public interface PromotionService {
 
@@ -22,5 +23,9 @@ public interface PromotionService {
 	List<Promotion> findPromotionByConditions(String salonId, String status, String from, String to) throws Exception;
 
 	List<Promotion> findPromotionActive(String salonId) throws Exception;
+
+	PromotionGroup createPromotionGroup(PromotionGroup pg) throws Exception;
+
+	List<PromotionGroup> getPromotionGroupBySalonId(String salonId) throws Exception;
 
 }

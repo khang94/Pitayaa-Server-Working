@@ -20,7 +20,7 @@ public interface AppointmentRepository extends
 	@Query("Select appm from Appointment appm where appm.status = :status")
 	List<Appointment> findAllAppmByStatus(@Param("status") String status);
 	
-	@Query("Select appm from Appointment appm where appm.salonId= :salonId")
+	@Query("Select appm from Appointment appm where appm.salonId= :salonId order by appm.createdDate DESC")
 	List<Appointment> findAllAppmBySalon(@Param("salonId") String salonId);
 	
 	@Query("Select appm from Appointment appm where appm.salonId= :salonId and appm.createdDate between :from and :to")

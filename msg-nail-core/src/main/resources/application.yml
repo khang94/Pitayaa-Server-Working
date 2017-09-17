@@ -8,7 +8,7 @@ spring:
      show-sql: true
      hibernate:
       #ddl-auto: none
-      ddl-auto: none
+      ddl-auto: create
       
   datasource:
      platform: postgres
@@ -27,6 +27,10 @@ security:
    client:
      clientId: my-trusted-client
      clientSecret: secret
+     
+services:
+  notification:
+    report: http://localhost:7171/smsQueue/reports
 #server.port =  6969
 #server.display-name = Microservice Group Document Center
 

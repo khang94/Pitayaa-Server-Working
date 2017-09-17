@@ -29,12 +29,12 @@ public class PromotionServiceHelper {
 			
 			promoCode.setExpireFrom(codeExpect.getExpireFrom());
 			promoCode.setExpireTo(codeExpect.getExpireTo());
-			promoCode.setObjectType(codeExpect.getObjectType());
 			promoCode.setSalonId(codeExpect.getSalonId());
-			promoCode.setPromotionEvent(codeExpect.getPromotionEvent());
+			promoCode.setMessage(codeExpect.getMessage());
 			
 			promoCode.setCodeValue(codeValue);
 			promoCode.setStatus(codeExpect.getStatus());
+			promoCode.setPromotionDiscount(codeExpect.getPromotionDiscount());
 			promotionLst.add(promoCode);
 		}
 
