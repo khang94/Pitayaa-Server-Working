@@ -31,6 +31,20 @@ public interface PromotionRepository extends PagingAndSortingRepository<Promotio
 	
 	@Query("Select p from Promotion p where "
 			+ 						"		p.salonId = :salonId "
+			+ 						"	and p.groupId = :groupId ")
+	List<Promotion> findPromotionByGroup (@Param("salonId") String salonId,
+											@Param("groupId") String groupId);
+	
+	@Query("Select p from Promotion p where "
+			+ 						"		p.salonId = :salonId "
+			+ 						"	and p.groupId = :groupId "
+			+ 						"	and p.status = :status ")
+	List<Promotion> findPromotionByGroupAndStatus (@Param("salonId") String salonId,
+											@Param("groupId") String groupId,
+											@Param("status") String status);
+	
+	@Query("Select p from Promotion p where "
+			+ 						"		p.salonId = :salonId "
 			+ 						"	and p.status = :status"
 			+ 						" 	and p.updatedDate between :from and :to")
 	List<Promotion> findPromotionByConditions( @Param("salonId") String salonId, 

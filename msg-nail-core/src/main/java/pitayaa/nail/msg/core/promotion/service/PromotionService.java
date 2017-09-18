@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import pitayaa.nail.domain.promotion.Promotion;
 import pitayaa.nail.domain.promotion.PromotionGroup;
+import pitayaa.nail.domain.promotion.sms.PromotionDataSms;
 
 public interface PromotionService {
 
@@ -30,5 +31,7 @@ public interface PromotionService {
 	List<PromotionGroup> getPromotionGroupBySalonId(String salonId) throws Exception;
 
 	PromotionGroup updatePromotionGroup(UUID uid, PromotionGroup pg) throws Exception;
+
+	PromotionDataSms buildPromoionData(PromotionDataSms promotionData) throws Exception;
 
 }

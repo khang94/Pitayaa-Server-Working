@@ -3,6 +3,7 @@ package pitayaa.nail.msg.core.promotion.service;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -10,12 +11,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import pitayaa.nail.domain.base.KeyValueModel;
 import pitayaa.nail.domain.promotion.Promotion;
 import pitayaa.nail.domain.promotion.PromotionGroup;
+import pitayaa.nail.domain.promotion.sms.PromotionDataSms;
+import pitayaa.nail.domain.salon.Salon;
 import pitayaa.nail.msg.core.common.CoreConstant;
 import pitayaa.nail.msg.core.common.TimeUtils;
 import pitayaa.nail.msg.core.promotion.repository.PromotionGroupRepository;
 import pitayaa.nail.msg.core.promotion.repository.PromotionRepository;
+import pitayaa.nail.msg.core.salon.service.SalonService;
 
 @Service
 public class PromotionServiceImpl implements PromotionService {
@@ -31,6 +36,9 @@ public class PromotionServiceImpl implements PromotionService {
 	@Autowired
 	public PromotionGroupRepository promotionGroupRepo;
 	
+	@Autowired 
+	public SalonService salonService;
+	
 	@Override
 	public List<PromotionGroup> getPromotionGroupBySalonId(String salonId) throws Exception {
 		
@@ -39,6 +47,9 @@ public class PromotionServiceImpl implements PromotionService {
 	
 	@Override
 	public PromotionGroup createPromotionGroup(PromotionGroup pg) throws Exception{
+		
+		pg.setTotalAvailable(pg.getTotal());
+		pg.setTotalUsed(0);
 		
 		pg = promotionGroupRepo.save(pg);
 		
@@ -55,18 +66,44 @@ public class PromotionServiceImpl implements PromotionService {
 	@Override
 	public PromotionGroup updatePromotionGroup(UUID uid , PromotionGroup pg) throws Exception{
 		
+		// Get total number generate
+		int number = pg.getTotal();
+		
 		pg.setUuid(uid);
-		pg = promotionGroupRepo.save(pg);
+		pg = this.updatePromotionGroupData(pg);
+
 		
 		// Build promotion to generate
 		Promotion promotion = this.buildCodeForGroup(pg);
-		boolean isGenerateSuccess = this.generateCode(promotion, pg.getTotal());
+		boolean isGenerateSuccess = this.generateCode(promotion, number);
+		
 		
 		String message = (isGenerateSuccess) ? "Generate promotion code success " : "Generate promotion code failed....";
 		LOGGER.info(message);
 		
 		return pg;
 	}
+	
+	private PromotionGroup updatePromotionGroupData(PromotionGroup promotionGroup) throws Exception {
+		
+ 		List<Promotion> promotions = promotionRepo.findPromotionByGroup(promotionGroup.getSalonId(), promotionGroup.getUuid().toString());
+		
+		List<Promotion> promotionAvailable = promotionRepo.findPromotionByGroupAndStatus(promotionGroup.getSalonId(),
+					promotionGroup.getUuid().toString(), CoreConstant.PROMOTION_CODE_ACTIVE);
+		
+		int total = promotionGroup.getTotal();
+		
+		promotionGroup.setTotal(total + promotions.size());
+		promotionGroup.setTotalUsed(promotions.size() - promotionAvailable.size());
+		promotionGroup.setTotalAvailable(promotionAvailable.size() + total);
+		
+		promotionGroup = promotionGroupRepo.save(promotionGroup);
+		
+		return promotionGroup;
+	}
+	
+	
+	
 	
 	private Promotion buildCodeForGroup(PromotionGroup pg){
 		Promotion promotion = new Promotion();
@@ -199,5 +236,41 @@ public class PromotionServiceImpl implements PromotionService {
 		
 		return promotionRepo.findPromotionByConditions(salonId, status, fromDate, toDate);
 	}
-
+	
+	@Override
+	public PromotionDataSms buildPromoionData(PromotionDataSms promotionData) throws Exception {
+		
+		return null;
+	}
+	
+	private PromotionDataSms getFullySalonData(PromotionDataSms promotionData) throws Exception {
+		
+		Optional<Salon> salonData = salonService.findOne(UUID.fromString(promotionData.getSalonId()));
+		if(salonData.isPresent()){
+			for(KeyValueModel keyValue : promotionData.getKeyValues()){
+				if(CoreConstant.KEYWORD_SALON_NAME.equalsIgnoreCase(keyValue.getKey())){
+					keyValue.setValue(salonData.get().getSalonDetail().getBusinessName());
+					continue;
+				}
+				if(CoreConstant.KEYWORD_SALON_EMAIL.equalsIgnoreCase(keyValue.getKey())){
+					keyValue.setValue(salonData.get().getContact().getEmail());
+					continue;
+				}
+				if(CoreConstant.KEYWORD_SALON_PHONE.equalsIgnoreCase(keyValue.getKey())){
+					keyValue.setValue(salonData.get().getContact().getMobilePhone());
+					continue;
+				}
+			}
+		}
+		return promotionData;
+	}
+	
+	private PromotionDataSms getFullyDataPromotion(PromotionDataSms promotionData) throws Exception {
+		
+		List<Promotion> promotions = promotionRepo.findPromotionByGroupAndStatus(promotionData.getSalonId(), promotionData.getPromoKeyValue().getGroupId() , CoreConstant.PROMOTION_CODE_ACTIVE);
+		Promotion promotion = promotions.get(0);
+		
+		return null;
+		
+	}
 }

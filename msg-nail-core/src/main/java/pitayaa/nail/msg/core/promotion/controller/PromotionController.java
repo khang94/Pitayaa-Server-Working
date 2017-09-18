@@ -73,6 +73,7 @@ public class PromotionController {
 		
 		JsonHttp jsonHttp = new JsonHttp();
 		
+		
 		try {
 			promotionGroup = promotionService.updatePromotionGroup(id, promotionGroup);
 			jsonHttp = httpService.getResponseSuccess(promotionGroup, "Update promotion success....");
