@@ -1,11 +1,11 @@
 package pitayaa.nail.notification.common;
 
 public class SchedulerConstant {
-
-	/* Key word for binding sms */
-	public static final String SMS_PROMOTION = "SmsPromotion";
-	public static final String SALON_NAME_WORD = "#SalonName";
-	public static final String SALON_PHONE_WORD = "#SalonPhone";
-	public static final String CUSTOMER_NAME_WORD = "#CustomerName";
-	public static final String PROMOTION_CODE_WORD = "#PromotionCode";
+	
+	/* Promotion Keyword */
+	public static final String KEYWORD_SALON_NAME = "#SalonName";
+	public static final String KEYWORD_SALON_PHONE = "#SalonPhone";
+	public static final String KEYWORD_SALON_EMAIL = "#SalonEmail";
+	public static final String KEYWORD_CUSTOMER_NAME = "#CustomerName";
+	public static final String KEYWORD_PROMOTION_CODE = "#PromotionCode";
 }

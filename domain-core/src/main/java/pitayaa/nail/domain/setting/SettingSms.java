@@ -59,6 +59,8 @@ public class SettingSms {
 	@OneToMany(cascade = {CascadeType.ALL})
 	private List<SmsAppointmentReminder> timeReminder;
 	
+	private String promotionGroupId;
+	
 	private boolean autoSend;
 	private boolean autoSendEmployee;
 	

@@ -1,4 +1,4 @@
-package pitayaa.nail.domain.promotion.sms;
+package pitayaa.nail.domain.promotion;
 
 import lombok.Data;
 

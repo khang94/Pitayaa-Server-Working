@@ -92,4 +92,6 @@ public class NotificationConstant {
 	/* CHECK TIME SEND SMS */
 	public static final String TIME_REPEAT = "TIME_REPEAT"; 
 	public static final String SCHEDULER_TIME_REPEAT = "SCHEDULER_TIME_REPEAT";
+	
+
 }

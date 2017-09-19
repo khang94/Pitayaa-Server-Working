@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import pitayaa.nail.domain.promotion.Promotion;
+import pitayaa.nail.domain.promotion.PromotionDataSms;
 import pitayaa.nail.domain.promotion.PromotionGroup;
 import pitayaa.nail.json.http.JsonHttp;
 import pitayaa.nail.msg.business.json.JsonHttpService;
@@ -134,6 +135,23 @@ public class PromotionController {
 		
 		return new ResponseEntity<>(promotionDeliver , HttpStatus.OK);
 	}
+	
+	@RequestMapping(value = "promotions/sms" , method = RequestMethod.POST)
+	public @ResponseBody ResponseEntity<?> getPromotionCode (@RequestBody PromotionDataSms promotionData) throws Exception{
+		
+		JsonHttp jsonHttp = new JsonHttp();
+		
+		try {
+			promotionData = promotionService.buildPromotionData(promotionData);
+			jsonHttp = httpService.getResponseSuccess(promotionService.buildPromotionData(promotionData), "Build promotion data success.....");
+		} catch (Exception ex){
+			jsonHttp = httpService.getResponseError("ERROR", ex.getMessage());
+		}
+		
+		return new ResponseEntity<>(promotionData , jsonHttp.getHttpCode());
+	}
+	
+	
 	
 	
 	

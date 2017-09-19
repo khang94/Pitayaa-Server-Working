@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.UUID;
 
 import pitayaa.nail.domain.promotion.Promotion;
+import pitayaa.nail.domain.promotion.PromotionDataSms;
 import pitayaa.nail.domain.promotion.PromotionGroup;
-import pitayaa.nail.domain.promotion.sms.PromotionDataSms;
 
 public interface PromotionService {
 
@@ -32,6 +32,6 @@ public interface PromotionService {
 
 	PromotionGroup updatePromotionGroup(UUID uid, PromotionGroup pg) throws Exception;
 
-	PromotionDataSms buildPromoionData(PromotionDataSms promotionData) throws Exception;
+	PromotionDataSms buildPromotionData(PromotionDataSms promotionData) throws Exception;
 
 }

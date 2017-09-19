@@ -11,13 +11,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import pitayaa.nail.domain.base.KeyValueModel;
+import pitayaa.nail.domain.base.KeyValue;
+import pitayaa.nail.domain.customer.Customer;
 import pitayaa.nail.domain.promotion.Promotion;
+import pitayaa.nail.domain.promotion.PromotionDataSms;
 import pitayaa.nail.domain.promotion.PromotionGroup;
-import pitayaa.nail.domain.promotion.sms.PromotionDataSms;
 import pitayaa.nail.domain.salon.Salon;
 import pitayaa.nail.msg.core.common.CoreConstant;
 import pitayaa.nail.msg.core.common.TimeUtils;
+import pitayaa.nail.msg.core.customer.service.CustomerService;
 import pitayaa.nail.msg.core.promotion.repository.PromotionGroupRepository;
 import pitayaa.nail.msg.core.promotion.repository.PromotionRepository;
 import pitayaa.nail.msg.core.salon.service.SalonService;
@@ -38,6 +40,9 @@ public class PromotionServiceImpl implements PromotionService {
 	
 	@Autowired 
 	public SalonService salonService;
+	
+	@Autowired
+	private CustomerService customerService;
 	
 	@Override
 	public List<PromotionGroup> getPromotionGroupBySalonId(String salonId) throws Exception {
@@ -167,7 +172,7 @@ public class PromotionServiceImpl implements PromotionService {
 			if(CoreConstant.PROMOTION_CODE_SEND_OUT.equalsIgnoreCase(p.getStatus())){
 				if(currentDay.after(p.getExpireFrom()) && currentDay.before(p.getExpireTo())){
 					isCodeValid = true;
-					message = "Promotion code is valided.";
+					message = p.getMessage();
 				} else {
 					message = "Code has been expired or not active . Cannot use this!";
 				}
@@ -238,16 +243,22 @@ public class PromotionServiceImpl implements PromotionService {
 	}
 	
 	@Override
-	public PromotionDataSms buildPromoionData(PromotionDataSms promotionData) throws Exception {
+	public PromotionDataSms buildPromotionData(PromotionDataSms promotionData) throws Exception {
 		
-		return null;
+		if(CoreConstant.KEYWORD_PROMOTION_CODE.equalsIgnoreCase(promotionData.getPromoKeyValue().getPromotionKey())){
+			this.getFullyPromotionData(promotionData);
+		}		
+		this.getFullySalonData(promotionData);
+		this.getFullyCustomerData(promotionData);
+		
+		return promotionData;
 	}
 	
 	private PromotionDataSms getFullySalonData(PromotionDataSms promotionData) throws Exception {
 		
 		Optional<Salon> salonData = salonService.findOne(UUID.fromString(promotionData.getSalonId()));
 		if(salonData.isPresent()){
-			for(KeyValueModel keyValue : promotionData.getKeyValues()){
+			for(KeyValue keyValue : promotionData.getKeyValues()){
 				if(CoreConstant.KEYWORD_SALON_NAME.equalsIgnoreCase(keyValue.getKey())){
 					keyValue.setValue(salonData.get().getSalonDetail().getBusinessName());
 					continue;
@@ -265,12 +276,56 @@ public class PromotionServiceImpl implements PromotionService {
 		return promotionData;
 	}
 	
-	private PromotionDataSms getFullyDataPromotion(PromotionDataSms promotionData) throws Exception {
+	private PromotionDataSms getFullyPromotionData(PromotionDataSms promotionData) throws Exception {
 		
 		List<Promotion> promotions = promotionRepo.findPromotionByGroupAndStatus(promotionData.getSalonId(), promotionData.getPromoKeyValue().getGroupId() , CoreConstant.PROMOTION_CODE_ACTIVE);
 		Promotion promotion = promotions.get(0);
 		
-		return null;
+		// DELIVER Promotion
+		this.deliverPromotionCode(promotion, promotionData ,promotionData.getPromoKeyValue().getGroupId());
+		
+		promotionData.getPromoKeyValue().setPromotionCode(promotion.getCodeValue());
+		promotionData.getPromoKeyValue().setMessage(promotion.getMessage());
+		
+		return promotionData;
+		
+	}
+	
+	private Promotion deliverPromotionCode(Promotion promotionDeliver , PromotionDataSms promotionData , String promotionGroupId){
+		
+
+		
+		// Update status
+		promotionDeliver.setStatus(CoreConstant.PROMOTION_CODE_SEND_OUT);
+		
+		// Update objective
+		promotionDeliver.setCustomerId(promotionData.getCustomerId());
+		
+		// Update promotion
+		promotionDeliver = promotionRepo.save(promotionDeliver);
+		
+		// Update promotion group
+		PromotionGroup pg = promotionGroupRepo.findOne(UUID.fromString(promotionGroupId));
+		
+		pg.setTotalUsed(pg.getTotalUsed() + 1);
+		pg.setTotalAvailable(pg.getTotalAvailable() - 1);
+		
+		return promotionDeliver;
+	}
+	
+	private PromotionDataSms getFullyCustomerData(PromotionDataSms promotionData) throws Exception {
+		
+		Optional<Customer> customer = customerService.findOne(UUID.fromString(promotionData.getCustomerId()));
+		
+		for(KeyValue keyValue : promotionData.getKeyValues()){
+			if(CoreConstant.KEYWORD_CUSTOMER_NAME.equalsIgnoreCase(keyValue.getKey()) && customer.isPresent()){
+				keyValue.setValue(customer.get().getCustomerDetail().getFirstName() + " " 
+						+ customer.get().getCustomerDetail().getLastName());
+				break;
+			}
+		}
+		
+		return promotionData;
 		
 	}
 }

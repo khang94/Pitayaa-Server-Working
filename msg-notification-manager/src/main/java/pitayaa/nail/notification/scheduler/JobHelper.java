@@ -21,11 +21,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import pitayaa.nail.domain.appointment.Appointment;
+import pitayaa.nail.domain.base.KeyValue;
 import pitayaa.nail.domain.customer.Customer;
 import pitayaa.nail.domain.notification.common.KeyValueModel;
 import pitayaa.nail.domain.notification.scheduler.SmsQueue;
 import pitayaa.nail.domain.notification.sms.SmsModel;
 import pitayaa.nail.domain.promotion.Promotion;
+import pitayaa.nail.domain.promotion.PromotionDataSms;
+import pitayaa.nail.domain.promotion.PromotionKeyValue;
 import pitayaa.nail.domain.salon.Salon;
 import pitayaa.nail.domain.setting.SettingSms;
 import pitayaa.nail.domain.setting.sms.CustomerSummary;
@@ -630,22 +633,22 @@ public class JobHelper {
 
 	}
 
-	public SmsModel bindDataPromotionSms(SmsModel smsModel, Promotion promotion, CustomerSummary customer) {
+	/*public SmsModel bindDataPromotionSms(SmsModel smsModel, Promotion promotion, CustomerSummary customer) {
 
 		String content = smsModel.getHeader().getMessage();
 
 		// Bind base infor
 
 		// Customer Name
-		if (content.contains(SchedulerConstant.CUSTOMER_NAME_WORD)) {
+		if (content.contains(SchedulerConstant.KEYWORD_CUSTOMER_NAME)) {
 			String fullname = customer.getCustomerDetail().getFirstName() + " "
 					+ customer.getCustomerDetail().getLastName();
-			content = content.replaceAll(SchedulerConstant.CUSTOMER_NAME_WORD, fullname);
+			content = content.replaceAll(SchedulerConstant.KEYWORD_CUSTOMER_NAME, fullname);
 		}
 
 		// Promotion Code
-		if (content.contains(SchedulerConstant.PROMOTION_CODE_WORD)) {
-			content = content.replaceAll(SchedulerConstant.PROMOTION_CODE_WORD, promotion.getCodeValue());
+		if (content.contains(SchedulerConstant.KEYWORD_PROMOTION_CODE)) {
+			content = content.replaceAll(SchedulerConstant.KEYWORD_PROMOTION_CODE, promotion.getCodeValue());
 		}
 
 		smsModel.getHeader().setMessage(content);
@@ -661,12 +664,135 @@ public class JobHelper {
 		// Init promotion & smsModel
 		Promotion promotion = null;
 
-		if (content.contains(SchedulerConstant.CUSTOMER_NAME_WORD)
-				|| content.contains(SchedulerConstant.PROMOTION_CODE_WORD)) {
+		if (content.contains(SchedulerConstant.KEYWORD_CUSTOMER_NAME)
+				|| content.contains(SchedulerConstant.KEYWORD_PROMOTION_CODE)) {
 			promotion = this.getPromotionDeliver(smsModel.getSalonId(), "", smsModel.getModuleId());
 			smsModel = this.bindDataPromotionSms(smsModel, promotion, customer);
 		}
 		return smsModel;
+	}*/
+	
+	private PromotionDataSms getPromotionSmsMessage(PromotionDataSms promotionData) throws Exception {
+
+
+		Map<String, String> headersMap = new HashMap<String, String>();
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		for (String header : headers.keySet()) {
+			headersMap.put(header, headers.getFirst(header));
+		}
+		
+		
+		HttpEntity<PromotionDataSms> bodyRequest = new HttpEntity<>(promotionData, headers);
+
+
+		String url = this.getValueProperties(NotificationConstant.PROMOTION_DELIVER);
+		
+
+		LOGGER.info("Get Promotion SMS by URL : [" + url + "] to send request !");
+
+		// Execute Request By Rest Template
+		RestTemplate restTemplate = new RestTemplate();
+		ResponseEntity<PromotionDataSms> response = restTemplate.exchange(url, HttpMethod.POST, bodyRequest,
+				new ParameterizedTypeReference<PromotionDataSms>() {
+				});
+		if (response.getStatusCode().is2xxSuccessful()) {
+			LOGGER.info("Get response successully from URL [" + url + "]");
+		}
+
+		return response.getBody();
+	}
+	
+	/**
+	 * Bind data with keyword promotion
+	 * @param promotionData
+	 * @param content
+	 * @return
+	 */
+	private String bindDataForSmsPromotion(PromotionDataSms promotionData , String content){
+		
+		for(KeyValue promoSms : promotionData.getKeyValues()){
+			content = content.replaceAll(promoSms.getKey(), promoSms.getValue());
+		}
+		
+		if(SchedulerConstant.KEYWORD_PROMOTION_CODE.equalsIgnoreCase(promotionData.getPromoKeyValue().getPromotionKey())){
+			content = content.replaceAll(promotionData.getPromoKeyValue().getPromotionKey(), promotionData.getPromoKeyValue().getPromotionCode());
+		}
+		return content;
+	}
+	
+	/**
+	 * Fulfill all information need in the SMS
+	 * @param smsModel
+	 * @param customer
+	 * @param settingSms
+	 * @return
+	 * @throws Exception
+	 */
+	public SmsModel fulFillBodySmsPromo(SmsModel smsModel , CustomerSummary customer, SettingSms settingSms) throws Exception{
+		
+		// Get content
+		String content = smsModel.getHeader().getMessage();
+		
+		PromotionDataSms promotionData = this.initPromotionMessage(content, settingSms.getPromotionGroupId());
+		promotionData.setSalonId(settingSms.getSalonId());
+		promotionData.setCustomerId(customer.getCustomerRefID());
+		
+		promotionData = this.getPromotionSmsMessage(promotionData);
+		
+		content = this.bindDataForSmsPromotion(promotionData, content);
+		smsModel.getHeader().setMessage(content);
+		
+		return smsModel;
+	}
+	
+	
+
+	/**
+	 * Init promotion message
+	 * @param message
+	 * @param promotionGroupId
+	 * @return
+	 */
+	private PromotionDataSms initPromotionMessage(String message , String promotionGroupId){
+		KeyValue keyValue = null;
+		PromotionKeyValue promoKeyValue = null;
+		PromotionDataSms promotionData = new PromotionDataSms();;
+		
+		List<KeyValue> lstKey = new ArrayList<>();
+		
+		if(message.contains(SchedulerConstant.KEYWORD_CUSTOMER_NAME)){
+			keyValue = new KeyValue();
+			keyValue.setKey(SchedulerConstant.KEYWORD_CUSTOMER_NAME);
+			lstKey.add(keyValue);
+		}
+		if(message.contains(SchedulerConstant.KEYWORD_SALON_NAME)){
+			keyValue = new KeyValue();
+			keyValue.setKey(SchedulerConstant.KEYWORD_SALON_NAME);
+			lstKey.add(keyValue);
+		}
+		if(message.contains(SchedulerConstant.KEYWORD_SALON_EMAIL)){
+			keyValue = new KeyValue();
+			keyValue.setKey(SchedulerConstant.KEYWORD_SALON_EMAIL);
+			lstKey.add(keyValue);
+		}
+		if(message.contains(SchedulerConstant.KEYWORD_PROMOTION_CODE)){
+			promoKeyValue = new PromotionKeyValue();
+			promoKeyValue.setPromotionKey(SchedulerConstant.KEYWORD_PROMOTION_CODE);
+			promoKeyValue.setGroupId(promotionGroupId);
+		}
+		if(message.contains(SchedulerConstant.KEYWORD_SALON_PHONE)){
+			keyValue = new KeyValue();
+			keyValue.setKey(SchedulerConstant.KEYWORD_SALON_PHONE);
+			lstKey.add(keyValue);
+		}
+		
+		promotionData.setKeyValues(lstKey);
+		promotionData.setPromoKeyValue(promoKeyValue);
+		
+		return promotionData;
+		
 	}
 
 }

@@ -376,7 +376,7 @@ public class PromotionJob implements Job {
 			smsBody.setMessageFor(NotificationConstant.SMS_FOR_CUSTOMER);
 			
 			// Fullfill with word binding
-			smsBody = jobHelper.fulFillBodySms(smsBody, customer);
+			smsBody = jobHelper.fulFillBodySmsPromo(smsBody, customer , settingSms);
 
 			LOGGER.info("Finish building SMS Body ....");
 		} catch (Exception ex) {
