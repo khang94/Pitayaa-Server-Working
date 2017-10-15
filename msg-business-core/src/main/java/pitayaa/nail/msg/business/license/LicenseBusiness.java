@@ -4,7 +4,7 @@ import pitayaa.nail.domain.license.License;
 
 
 
-public interface ILicenseBusiness {
+public interface LicenseBusiness {
 
 	License saveLicense(License licenseBody);
 

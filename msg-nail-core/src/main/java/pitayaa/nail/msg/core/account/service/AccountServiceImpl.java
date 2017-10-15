@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import pitayaa.nail.domain.account.Account;
@@ -27,7 +29,7 @@ import pitayaa.nail.msg.core.account.repository.AccountLicenseRepository;
 import pitayaa.nail.msg.core.account.repository.AccountRepository;
 import pitayaa.nail.msg.core.category.repository.CategoryRepository;
 import pitayaa.nail.msg.core.common.HttpHelper;
-import pitayaa.nail.msg.core.license.service.ILicenseService;
+import pitayaa.nail.msg.core.license.service.LicenseService;
 import pitayaa.nail.msg.core.salon.service.SalonService;
 import pitayaa.nail.msg.core.serviceEntity.repository.ServiceRepository;
 import pitayaa.nail.msg.core.setting.promotion.service.SettingPromotionService;
@@ -59,7 +61,7 @@ public class AccountServiceImpl implements AccountService {
 	SystemConfBus systemConfBus;
 	
 	@Autowired
-	ILicenseService licenseService;
+	LicenseService licenseService;
 
 	@Autowired
 	AccountBus accountBusiness;
@@ -158,6 +160,11 @@ public class AccountServiceImpl implements AccountService {
 	public Account findAccount(UUID id) {
 
 		return accountRepository.findOne(id);
+	}
+	
+	@Override
+	public Page<Account> findAll(Pageable pageable) throws Exception {
+		return accountRepository.findAll(pageable);
 	}
 
 	@Override

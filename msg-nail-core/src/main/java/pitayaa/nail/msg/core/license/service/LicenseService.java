@@ -5,7 +5,7 @@ import java.util.UUID;
 
 import pitayaa.nail.domain.license.License;
 
-public interface ILicenseService {
+public interface LicenseService {
 
 	License getLicenseTrial();
 

@@ -8,9 +8,8 @@ import lombok.Data;
 @Data
 public class Term {
 
-	private String termType; // DAY , MONTH & YEARS
+	private int termType; // DAY (0), MONTH(1) & YEARS(2) 
 
 	private int lengthTime;
 
-	private String extendTime;
 }

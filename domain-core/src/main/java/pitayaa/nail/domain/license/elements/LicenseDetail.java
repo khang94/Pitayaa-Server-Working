@@ -30,7 +30,5 @@ public class LicenseDetail {
 	@Embedded
 	private Term licenseTerm; // Detail of Term
 
-	private String licenseType; // For salon , customer or account
-
 	private String note;
 }
