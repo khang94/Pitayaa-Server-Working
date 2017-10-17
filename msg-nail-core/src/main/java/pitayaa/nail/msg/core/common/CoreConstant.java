@@ -37,7 +37,10 @@ public class CoreConstant {
 	public static final String VIEW_PACKAGE = "packages";
 	public static final String VIEW_SERVICE = "services";
 	public static final String VIEW_CATEGORY = "categories";
-	
+	public static final String VIEW_LOGO = "logo";
+	public static final String VIEW_BANNER = "banners";
+	public static final String VIEW_PRODUCT = "products";
+
 	/* SubFOlder salon */
 	public static final String SALON_SUB_FOLDER = "salon_sub_folder_0";
 	

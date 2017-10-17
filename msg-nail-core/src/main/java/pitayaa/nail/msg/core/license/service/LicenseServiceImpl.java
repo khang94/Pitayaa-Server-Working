@@ -7,17 +7,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import pitayaa.nail.domain.license.License;
-import pitayaa.nail.msg.business.license.ILicenseBusiness;
+import pitayaa.nail.msg.business.license.LicenseBusiness;
 import pitayaa.nail.msg.core.license.repository.LicenseRepository;
 
 @Service
-public class LicenseServiceImpl implements ILicenseService {
+public class LicenseServiceImpl implements LicenseService {
 
 	@Autowired
 	private LicenseRepository licenseRepo;
 
 	@Autowired
-	private ILicenseBusiness licenseBusiness;
+	private LicenseBusiness licenseBusiness;
 
 	@Override
 	public License getLicenseTrial() {

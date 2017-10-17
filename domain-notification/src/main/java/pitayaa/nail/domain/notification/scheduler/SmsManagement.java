@@ -1,34 +1,33 @@
-package pitayaa.nail.domain.license.elements;
+package pitayaa.nail.domain.notification.scheduler;
 
 import java.util.UUID;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.Version;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
 import lombok.Data;
+import pitayaa.nail.domain.notification.hibernate.transaction.ObjectListener;
 
 @Data
 @Entity
-public class LicenseDetail {
-
+@EntityListeners(ObjectListener.class)
+public class SmsManagement {
+	
 	@Id
 	@GenericGenerator(name = "uuid-gen", strategy = "uuid2")
 	@GeneratedValue(generator = "uuid-gen")
 	@Type(type = "pg-uuid")
 	private UUID uuid;
 
-	@OneToOne(cascade = CascadeType.ALL)
-	private Price licensePrice;
+	@Version
+	Long version;
+	
+	
 
-	@Embedded
-	private Term licenseTerm; // Detail of Term
-
-	private String note;
 }

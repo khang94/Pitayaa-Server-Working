@@ -11,7 +11,7 @@ import pitayaa.nail.msg.business.helper.BusinessHelper;
 
 
 @Service
-public class LicenseBusinessImpl implements ILicenseBusiness {
+public class LicenseBusinessImpl implements LicenseBusiness {
 	
 	@Autowired
 	BusinessHelper businessHelper;
@@ -24,7 +24,7 @@ public class LicenseBusinessImpl implements ILicenseBusiness {
 		licenseBody.setCreatedDate(timeNow);
 		licenseBody.setUpdatedDate(timeNow);
 		
-		licenseBody.setStatus(LicenseConstant.STATUS_LICENSE_ACTIVE);
+		licenseBody.setStatus(1);
 		
 		return licenseBody;
 	}

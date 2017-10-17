@@ -16,7 +16,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import pitayaa.nail.domain.salon.Salon;
-import pitayaa.nail.msg.core.common.CoreHelper;
+import pitayaa.nail.json.http.JsonHttp;
+import pitayaa.nail.msg.business.json.JsonHttpService;
 import pitayaa.nail.msg.core.salon.service.SalonService;
 
 @Controller
@@ -24,6 +25,11 @@ public class SalonController {
 	
 	@Autowired
 	private SalonService salonService;
+	
+	@Autowired
+	private JsonHttpService jsonService;
+	
+	private JsonHttp data;
 	
 	@RequestMapping(value = "salons/model", method = RequestMethod.GET)
 	public @ResponseBody ResponseEntity<?> initAccountModel() throws Exception {
@@ -68,5 +74,18 @@ public class SalonController {
 		List<Salon> salons = new ArrayList<Salon>();
 		salons = salonService.getAllSalon();
 		return new ResponseEntity<>(salons , HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "salons/extend", method = RequestMethod.POST)
+	public @ResponseBody ResponseEntity<?> extendLicense(@PathVariable("ID") UUID uid, @RequestBody Salon salon) throws Exception {
+		Optional<Salon> oldSalon=salonService.findOne(uid);
+		if(oldSalon.isPresent()){
+			salon=salonService.update(salon, oldSalon.get());
+			data=jsonService.getResponseSuccess(salon, "extend success");
+		}else{
+			data=jsonService.getResponseError("cannot find salon", null);
+		}
+
+		return ResponseEntity.ok(data);
 	}
 }

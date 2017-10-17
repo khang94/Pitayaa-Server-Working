@@ -1,10 +1,10 @@
 package pitayaa.nail.msg.core.account.controller;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -19,7 +19,6 @@ import pitayaa.nail.json.account.JsonAccount;
 import pitayaa.nail.json.account.JsonAccountLogin;
 import pitayaa.nail.json.http.JsonHttp;
 import pitayaa.nail.msg.business.json.JsonHttpService;
-import pitayaa.nail.msg.business.util.security.EncryptionUtils;
 import pitayaa.nail.msg.core.account.repository.AccountRepository;
 import pitayaa.nail.msg.core.account.service.AccountService;
 import pitayaa.nail.msg.core.common.CoreHelper;
@@ -32,10 +31,10 @@ public class AccountController {
 
 	@Autowired
 	private AccountService accountService;
-	
+
 	@Autowired
 	AccountRepository accountRepository;
-	
+
 	@Autowired
 	JsonHttpService httpService;
 
@@ -49,24 +48,26 @@ public class AccountController {
 	@RequestMapping(value = "/accounts/model", method = RequestMethod.GET)
 	public @ResponseBody ResponseEntity<?> initAccountModel() throws Exception {
 
-		Account jsonAccountLogin = (Account) coreHelper
-				.createModelStructure(new Account());
+		Account jsonAccountLogin = (Account) coreHelper.createModelStructure(new Account());
 
 		return ResponseEntity.ok(jsonAccountLogin);
 	}
-	@RequestMapping(value = "/accounts", method = RequestMethod.GET)
-	public @ResponseBody ResponseEntity<?> getAllAccount() throws Exception {
 
-		List<Account> listAccount = new ArrayList<Account>();
-		
-		listAccount = (List<Account>) accountRepository.findAll();
-			
-		return ResponseEntity.ok(listAccount);
+	@RequestMapping(value = "/accounts", method = RequestMethod.GET)
+	public @ResponseBody ResponseEntity<?> getAllAccount(Pageable pageable) throws Exception {
+
+		JsonHttp json = new JsonHttp();
+		try {
+			Page<Account> listAccount = accountService.findAll(pageable);
+			json = httpService.getResponseSuccess(listAccount, "Get all account success");
+		} catch (Exception e) {
+			json = httpService.getResponseError("ERROR", e.getMessage());
+		}
+		return ResponseEntity.ok(json);
 	}
 
 	@RequestMapping(value = "/accounts/{ID}", method = RequestMethod.GET)
-	public @ResponseBody ResponseEntity<?> getAccount(
-			@PathVariable("ID") UUID id) throws Exception {
+	public @ResponseBody ResponseEntity<?> getAccount(@PathVariable("ID") UUID id) throws Exception {
 
 		Account account = accountService.findAccount(id);
 
@@ -74,44 +75,40 @@ public class AccountController {
 	}
 
 	@RequestMapping(value = "/accounts/register", method = RequestMethod.POST)
-	public @ResponseBody ResponseEntity<?> registerAccount(
-			@RequestBody Account accountBody) throws Exception {
+	public @ResponseBody ResponseEntity<?> registerAccount(@RequestBody Account accountBody) throws Exception {
 
-		JsonHttp jsonHttp =new JsonHttp();
-		try{
+		JsonHttp jsonHttp = new JsonHttp();
+		try {
 			JsonAccount account = accountService.registerAccount(accountBody);
 			jsonHttp = httpService.getResponseSuccess(account, "Register this account successfully");
-		}catch(Exception e){
+		} catch (Exception e) {
 			jsonHttp = httpService.getResponseError("Register failed", e.getMessage());
 		}
-		return new ResponseEntity<>(jsonHttp , jsonHttp.getHttpCode());
+		return new ResponseEntity<>(jsonHttp, jsonHttp.getHttpCode());
 	}
 
 	@RequestMapping(value = "/accounts/login", method = RequestMethod.POST)
-	public @ResponseBody ResponseEntity<?> login(
-			@RequestBody JsonAccountLogin jsonAccountLogin) throws Exception {
+	public @ResponseBody ResponseEntity<?> login(@RequestBody JsonAccountLogin jsonAccountLogin) throws Exception {
 
 		JsonHttp jsonHttp = new JsonHttp();
-		try{
-			JsonAccount accountLogin = accountService
-					.loginProcess(jsonAccountLogin);
-			
+		try {
+			JsonAccount accountLogin = accountService.loginProcess(jsonAccountLogin);
+
 			if (accountLogin == null) {
-				throw new Exception ("Can't find account with email!");
+				throw new Exception("Can't find account with email!");
 			}
 			jsonHttp = httpService.getResponseSuccess(accountLogin, "Login success");
 
-		}catch(Exception e){
+		} catch (Exception e) {
 			jsonHttp = httpService.getResponseError("Login failed", e.getMessage());
 		}
-	
-		return new ResponseEntity<>(jsonHttp , jsonHttp.getHttpCode());
+
+		return new ResponseEntity<>(jsonHttp, jsonHttp.getHttpCode());
 
 	}
 
 	@RequestMapping(value = "/accounts", method = RequestMethod.POST)
-	public @ResponseBody ResponseEntity<?> saveAccount(
-			@RequestBody Account account) throws Exception {
+	public @ResponseBody ResponseEntity<?> saveAccount(@RequestBody Account account) throws Exception {
 
 		account = accountService.saveAccount(account);
 
@@ -121,11 +118,9 @@ public class AccountController {
 	@RequestMapping(value = "/accounts/login/model", method = RequestMethod.GET)
 	public @ResponseBody ResponseEntity<?> getLoginModel() throws Exception {
 
-		JsonAccountLogin jsonAccountLogin = (JsonAccountLogin) coreHelper
-				.createModelStructure(new JsonAccountLogin());
+		JsonAccountLogin jsonAccountLogin = (JsonAccountLogin) coreHelper.createModelStructure(new JsonAccountLogin());
 
-		return new ResponseEntity<JsonAccountLogin>(jsonAccountLogin,
-				HttpStatus.OK);
+		return new ResponseEntity<JsonAccountLogin>(jsonAccountLogin, HttpStatus.OK);
 	}
 
 }

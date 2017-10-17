@@ -1,7 +1,10 @@
 package pitayaa.nail.msg.core.salon.service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +20,7 @@ import pitayaa.nail.msg.core.setting.service.SettingService;
 import pitayaa.nail.msg.core.view.service.ViewService;
 
 @Service
-public class SalonViewService implements ViewService {
+public class SalonViewService {
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(SalonViewService.class);
 

@@ -1,6 +1,9 @@
 package pitayaa.nail.msg.core.category.service;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +19,7 @@ import pitayaa.nail.msg.core.setting.service.SettingService;
 import pitayaa.nail.msg.core.view.service.ViewService;
 
 @Service
-public class CategoryViewService implements ViewService {
+public class CategoryViewService{
 	private static final Logger LOGGER = LoggerFactory.getLogger(CategoryViewService.class);
 
 	@Autowired
@@ -65,5 +68,7 @@ public class CategoryViewService implements ViewService {
 		return category;
 
 	}
+
+	
 
 }

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import pitayaa.nail.domain.license.License;
 import pitayaa.nail.msg.core.common.CoreHelper;
-import pitayaa.nail.msg.core.license.service.ILicenseService;
+import pitayaa.nail.msg.core.license.service.LicenseService;
 
 @Controller
 public class LicenseController {
@@ -24,7 +24,7 @@ public class LicenseController {
 	private CoreHelper coreHelper;
 
 	@Autowired
-	private ILicenseService licenseService;
+	private LicenseService licenseService;
 
 	@RequestMapping(value = "licenses/model", method = RequestMethod.GET)
 	public @ResponseBody ResponseEntity<?> initAccountModel() throws Exception {
