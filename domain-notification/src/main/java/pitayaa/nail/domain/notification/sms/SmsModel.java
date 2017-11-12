@@ -13,15 +13,15 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Version;
 
-import lombok.Data;
-
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
+import lombok.Data;
 import pitayaa.nail.domain.notification.common.KeyValueModel;
 import pitayaa.nail.domain.notification.common.Metadata;
 import pitayaa.nail.domain.notification.hibernate.transaction.ObjectListener;
 import pitayaa.nail.domain.notification.sms.elements.HeaderSms;
+import pitayaa.nail.domain.notification.sms.elements.InteractionData;
 
 @Data
 @Entity
@@ -53,6 +53,8 @@ public class SmsModel {
 	private Metadata meta;
 	
 	@OneToOne(cascade = CascadeType.ALL)
-	private SmsReceive smsReceive;
+	private InteractionData interactionData;
+	
+	
 
 }

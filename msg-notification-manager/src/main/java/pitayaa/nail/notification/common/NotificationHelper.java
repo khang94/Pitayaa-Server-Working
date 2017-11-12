@@ -39,17 +39,21 @@ public class NotificationHelper {
 					ParameterizedType listType = (ParameterizedType) field.getGenericType();
 					Class<?> member = (Class<?>) listType.getActualTypeArguments()[0];
 					Object memberObject = member.newInstance();
+					
+					boolean specialObjectWrapper = (memberObject instanceof String) || (memberObject instanceof Integer)
+												|| (memberObject instanceof Double);
+					
 					list.add(memberObject);
 					Method setMethod = getMethodByName(NotificationConstant.SET+ field.getName(),methods);
 					setMethod.invoke(loopObject,list);
+					
+					if (specialObjectWrapper){
+						continue;
+					}
 					objects.add(memberObject);
-				}/*else if(Date.class.isAssignableFrom(clazzField)){
-					Method setMethod = getMethodByName(EmailConstant.SET+ field.getName(),methods);
-					Date date = new Date();
-					setMethod.invoke(loopObject, date);
-				}*/else if(String.class.isAssignableFrom(clazzField) || Long.class.isAssignableFrom(clazzField)
+				}else if(String.class.isAssignableFrom(clazzField) || Long.class.isAssignableFrom(clazzField)
 						|| byte[].class.isAssignableFrom(clazzField) || Date.class.isAssignableFrom(clazzField)
-						|| UUID.class.isAssignableFrom(clazzField)){
+						|| UUID.class.isAssignableFrom(clazzField) || Boolean.class.isAssignableFrom(clazzField)){
 					continue;
 				}else if(Object.class.isAssignableFrom(clazzField)){
 					// handle object
@@ -57,8 +61,6 @@ public class NotificationHelper {
 					Object fieldObject = clazzField.newInstance();
 					setMethod.invoke(loopObject, fieldObject);
 					objects.add(fieldObject);
-					
-					
 				}
 			}
 			//Filed in Supper Class

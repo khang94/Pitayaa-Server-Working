@@ -1,5 +1,6 @@
 package pitayaa.nail.msg.core.account.service;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -22,5 +23,7 @@ public interface AccountService {
 	JsonAccount loginProcess(JsonAccountLogin jsonAccountLogin) throws Exception;
 
 	Page<Account> findAll(Pageable pageable) throws Exception;
+
+	List<Account> findAllByQuery(String query, Pageable pageable) throws Exception;
 
 }

@@ -18,20 +18,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import lombok.Data;
+import pitayaa.nail.domain.customer.Customer;
 import pitayaa.nail.domain.notification.common.KeyValueModel;
 import pitayaa.nail.domain.notification.sms.SmsModel;
 import pitayaa.nail.domain.notification.sms.SmsReceive;
+import pitayaa.nail.msg.business.util.common.ValidatePhoneNumber;
 import pitayaa.nail.notification.common.NotificationHelper;
+import pitayaa.nail.notification.scheduler.JobHelper;
 import pitayaa.nail.notification.scheduler.QuartJob;
 import pitayaa.nail.notification.sms.api.nexmo.SendSmsNexmo;
-import pitayaa.nail.notification.sms.api.plivo.SendSmsPlivo;
 import pitayaa.nail.notification.sms.config.SmsConstant;
 import pitayaa.nail.notification.sms.repository.SmsReceiveRepository;
 import pitayaa.nail.notification.sms.repository.SmsRepository;
 
 @Service
 @Data
-public class SmsServiceImpl implements ISmsService {
+public class SmsServiceImpl implements SmsService {
 
 	@Autowired
 	NotificationHelper notificationHelper;
@@ -44,6 +46,12 @@ public class SmsServiceImpl implements ISmsService {
 
 	@Autowired
 	public SendSmsNexmo smsNexmoAPI;
+	
+	@Autowired
+	public InteractionService interactionService;
+	
+	@Autowired
+	public JobHelper jobHelper;
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SmsServiceImpl.class);
 
@@ -56,67 +64,67 @@ public class SmsServiceImpl implements ISmsService {
 
 		return emailModel;
 	}
-
+	
 	@Override
-	public SmsReceive saveSmsReceive(SmsReceive smsReceive) throws Exception {
-		LOGGER.info("Handle Sms Receive with Message ID [" + smsReceive.getMessageId() + "]");
-		SmsModel smsOriginal = smsRepository.findByMessageId(smsReceive.getMessageId());
+	public SmsReceive processResponseFromCustomer(SmsReceive smsReceive) throws Exception {
+		LOGGER.info("Handle Sms Receive with Message ID [" + smsReceive.getMessage() + "]");
+		SmsModel smsOriginal = interactionService.findSmsByResponseKeyAndPhoneNumber(smsReceive);
 		
 		// Check is customer reply to this sms
-		boolean isReply = this.isReceiveSmsID(smsOriginal);
-
-		// Update smsOriginal
-		if (smsOriginal == null) {
-			LOGGER.info("This sms with Message ID [" + smsReceive.getMessageId() + "] does not exist !");
-			return null;
-		} 
-		else if(smsOriginal != null){
-			
-			// Response To Customer
-			this.responseToCustomer(smsReceive);
-			
-			// Get Sms Receive Body to Sms original
-			smsOriginal.setSmsReceive(smsReceive);
-		}
-		smsOriginal = smsRepository.save(smsOriginal);
-		LOGGER.info("Update sms receive with Message ID [" + smsReceive.getMessageId() + "] successfully .");
+		boolean isSmsReply = interactionService.isMessageReplyByCustomer(smsOriginal);
 		
-		return smsOriginal.getSmsReceive();
+		if(smsOriginal == null){
+			return null;
+		}
+		
+		if (isSmsReply){
+			LOGGER.info("This message with id [{}] has been already reply . This reply is invalid and cannot process ...", smsOriginal.getUuid());
+			return null;
+		}
+		
+		// Auto response to customer
+		autoResponseToCustomer(smsReceive);
+		
+		// Collect response & update to customer
+		collectResponseFromCustomerAndUpdate(smsReceive.getMessage() , smsOriginal);
+		
+		// Update original sms
+		smsOriginal.getInteractionData().setSmsReceive(smsReceive);
+		
+		// Update sms
+		smsOriginal = smsRepository.save(smsOriginal);
+		
+		return smsOriginal.getInteractionData().getSmsReceive();
 	}
 	
-	private boolean isReceiveSmsID(SmsModel smsBody){
-		if(smsBody.getSmsReceive().getMessageId() != null
-				&& !smsBody.getSmsReceive().getMessageId().equalsIgnoreCase("")){
-			return true;
+	private void collectResponseFromCustomerAndUpdate(String messageRespond , SmsModel smsOriginal) throws Exception {
+		
+		String getKeyResponse = "";
+		if(messageRespond.contains(SmsConstant.VALUE_DELIVER_STOP) && !messageRespond.contains(SmsConstant.VALUE_DELIVER_UNSTOP)){
+			getKeyResponse = SmsConstant.VALUE_DELIVER_STOP;
+		} else if (messageRespond.contains(SmsConstant.VALUE_DELIVER_UNSTOP)){
+			getKeyResponse = SmsConstant.VALUE_DELIVER_UNSTOP;
+		} else if (messageRespond.contains(SmsConstant.VALUE_DELIVER_CONFIRM)){
+			getKeyResponse = SmsConstant.VALUE_DELIVER_CONFIRM;
+		} else if (messageRespond.contains(SmsConstant.VALUE_DELIVER_CANCEL)){
+			getKeyResponse = SmsConstant.VALUE_DELIVER_CANCEL;
 		}
-		return false;
+		Customer customerBody = jobHelper.findCustomerByUUID(smsOriginal.getModuleId());
+		customerBody.getCustomerDetail().setRespond(getKeyResponse);
+		jobHelper.updateCustomerByUid(customerBody.getUuid().toString(), customerBody);
 	}
+
 	
 	@Override
-	public SmsModel responseToCustomer(SmsReceive smsReceive) throws Exception{
+	public SmsModel autoResponseToCustomer(SmsReceive smsReceive) throws Exception{
 		
-		// Execute business by option of customer
-		
-		// Response to customer
-		SmsModel smsResponse = (SmsModel)notificationHelper.createModelStructure(new SmsModel());
-		
-		String message = smsReceive.getMessage().trim();
-		
-		if (message.equalsIgnoreCase(SmsConstant.FEEDBACK_STOP)){
-			smsResponse.getMeta().setTemplateId(SmsConstant.SMS_RESPONSE_STOP);
-		} else if  (message.equalsIgnoreCase(SmsConstant.FEEDBACK_UNSTOP)){
-			smsResponse.getMeta().setTemplateId(SmsConstant.SMS_RESPONSE_UNSTOP);
-		} else {
-			smsResponse.getMeta().setTemplateId(SmsConstant.SMS_RESPONSE);
-		}
-		smsResponse.getHeader().setToPhone(smsReceive.getFromPhone());
-		smsResponse.setMessageId(smsReceive.getMessageId());
+		// Build body response
+		SmsModel smsResponse = interactionService.buildSmsAutoResponseToCustomer(smsReceive);
 		
 		// Response to Customer
 		smsResponse = this.sendSms(smsResponse);
+		
 		return smsResponse;
-		
-		
 	}
 	
 	
@@ -124,8 +132,8 @@ public class SmsServiceImpl implements ISmsService {
 	@Override
 	public SmsModel createSms(SmsModel smsModel) throws Exception {
 
-		// Get current date & update date
-		smsModel.setSmsReceive(null);
+		// Default empty sms receive management
+		smsModel.getInteractionData().setSmsReceive(null);
 
 		// Save POJO
 		return smsRepository.save(smsModel);
@@ -189,7 +197,7 @@ public class SmsServiceImpl implements ISmsService {
 				: smsModel.getHeader().getMessage();
 
 		// Binding data
-		smsModel = this.buildSmsModel(templateId, smsModel, templateMessage);
+		smsModel.getHeader().setMessage(templateMessage);
 
 		// Get phone number
 		smsModel.getHeader().setFromPhone(properties.getProperty(SmsConstant.SOURCE_PHONE));
@@ -198,17 +206,31 @@ public class SmsServiceImpl implements ISmsService {
 		if (smsNexmoAPI == null) {
 			smsNexmoAPI = QuartJob.applicationContext.getBean(SendSmsNexmo.class);
 		}
+
+		// Validate phone number
+		appendCodeAreaToPhone(smsModel);
+		
 		smsModel = smsNexmoAPI.sendSmsAPI(smsModel, properties.getProperty(SmsConstant.API_KEY),
 				properties.getProperty(SmsConstant.API_SECRET));
 
-		//sendSmsPlivo.sendSmsAPI(smsModel, properties);
 
 		// Update sms to db log
 		if (smsRepository == null) {
 			smsRepository = QuartJob.applicationContext.getBean(SmsRepository.class);
 		}
+		
+
+		
 		smsModel = smsRepository.save(smsModel);
 
+		return smsModel;
+	}
+	
+	private SmsModel appendCodeAreaToPhone(SmsModel smsModel) {
+		String to = smsModel.getHeader().getToPhone();
+		to = ValidatePhoneNumber.appendCodeAreaToPhone(to);
+		smsModel.getHeader().setToPhone(to);
+		
 		return smsModel;
 	}
 	
@@ -267,14 +289,14 @@ public class SmsServiceImpl implements ISmsService {
 			templateFileName = this.getSmsTemplateConfig(SmsConstant.SMS_APPOINTMENT_TEMPLATE);
 			path = SmsConstant.PATH_SMS_TEMPLATE + SmsConstant.SLASH + templateFileName
 					+ SmsConstant.TEMPLATE_FILE_SMS_EXTENSION;
-		} else if (SmsConstant.SMS_RESPONSE.equalsIgnoreCase(templateId)){
+		} else if (SmsConstant.TEMPLATE_SMS_RESPONSE.equalsIgnoreCase(templateId)){
 			templateFileName = this.getSmsTemplateConfig(SmsConstant.SMS_RESPONSE_TEMPLATE);
 			path = SmsConstant.PATH_SMS_TEMPLATE + SmsConstant.SLASH + templateFileName
 					+ SmsConstant.TEMPLATE_FILE_SMS_EXTENSION;
-		} else if (SmsConstant.SMS_RESPONSE_STOP.equalsIgnoreCase(templateId)){
+		} else if (SmsConstant.TEMPLATE_SMS_RESPONSE_STOP.equalsIgnoreCase(templateId)){
 			path = SmsConstant.PATH_SMS_TEMPLATE + SmsConstant.SLASH + templateId
 					+ SmsConstant.TEMPLATE_FILE_SMS_EXTENSION;
-		} else if (SmsConstant.SMS_RESPONSE_UNSTOP.equalsIgnoreCase(templateId)){
+		} else if (SmsConstant.TEMPLATE_SMS_RESPONSE_UNSTOP.equalsIgnoreCase(templateId)){
 			templateFileName = this.getSmsTemplateConfig(SmsConstant.SMS_RESPONSE_TEMPLATE);
 			path = SmsConstant.PATH_SMS_TEMPLATE + SmsConstant.SLASH + templateId
 					+ SmsConstant.TEMPLATE_FILE_SMS_EXTENSION;
@@ -324,12 +346,14 @@ public class SmsServiceImpl implements ISmsService {
 		return contentTemplate;
 	}
 
-	private SmsModel buildSmsModel(String templateId, SmsModel smsBody, String smsContent) {
+	private SmsModel buildSmsModel(String templateId, SmsModel smsBody) throws IOException {
+		String smsContent = "";
 		if (SmsConstant.SMS_APPOINTMENT.equalsIgnoreCase(templateId)) {
-			// smsBody = this.initAppointmentSms(smsBody);
 			smsContent = this.bindingDataSms(smsBody, smsContent);
 			smsBody.getHeader().setMessage(smsContent);
+			
 		} else {
+			smsContent = this.findTemplateInClasspath(templateId);
 			smsBody.getHeader().setMessage(smsContent);
 		}
 		return smsBody;

@@ -1,5 +1,6 @@
 package pitayaa.nail.msg.core.account.controller;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import pitayaa.nail.domain.account.Account;
@@ -22,6 +24,7 @@ import pitayaa.nail.msg.business.json.JsonHttpService;
 import pitayaa.nail.msg.core.account.repository.AccountRepository;
 import pitayaa.nail.msg.core.account.service.AccountService;
 import pitayaa.nail.msg.core.common.CoreHelper;
+import pitayaa.nail.msg.core.hibernate.QueryCriteria;
 
 @Controller
 public class AccountController {
@@ -53,12 +56,12 @@ public class AccountController {
 		return ResponseEntity.ok(jsonAccountLogin);
 	}
 
-	@RequestMapping(value = "/accounts", method = RequestMethod.GET)
-	public @ResponseBody ResponseEntity<?> getAllAccount(Pageable pageable) throws Exception {
+	@RequestMapping(value = "/accounts/search", method = RequestMethod.POST)
+	public @ResponseBody ResponseEntity<?> getAllAccount(@RequestBody(required = false) QueryCriteria query,Pageable pageable) throws Exception {
 
 		JsonHttp json = new JsonHttp();
 		try {
-			Page<Account> listAccount = accountService.findAll(pageable);
+			List<Account> listAccount = accountService.findAllByQuery(query.getQuery(), pageable);
 			json = httpService.getResponseSuccess(listAccount, "Get all account success");
 		} catch (Exception e) {
 			json = httpService.getResponseError("ERROR", e.getMessage());

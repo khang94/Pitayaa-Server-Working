@@ -169,15 +169,13 @@ public class CoreHelper {
 		String fileName = "";
 		String pathExtracted = "";
 		String nameImage = this.getTimeFolder(new Date());
-		if(view.getFileName() != null && view.getExtension() != null){
-			//Date dateDefault = new Date();
-			//String nameImage = dateDefault.toString();
-			fileName = nameImage + CoreConstant.DOT + view.getExtension();
+		if(view.getFileName() != null){
+			String extension = (view.getExtension() == null) ? CoreConstant.DEFAULT_IMAGE_EXTENSION : view.getExtension();
+			fileName = nameImage + extension;
 			fileName = CoreConstant.SLASH + fileName;
 			pathExtracted = path + fileName;
 		} else {
-			//Date dateDefault = new Date();
-			//String nameImage = dateDefault.toString();
+
 			pathExtracted = path + CoreConstant.SLASH + view.getModuleId() + "_" + 
 					nameImage + CoreConstant.DEFAULT_IMAGE_EXTENSION;
 		}

@@ -35,6 +35,33 @@ public class SystemConfBusImpl implements SystemConfBus{
 		conf.setSalonId(salonId);
 		lstSetting.add(conf);
 		//---------------
+		
+		lstSetting = this.buildSystemConfigPreferences(salonId, lstSetting);
+		
+		return lstSetting;
+	}
+	
+	@Override
+	public List<SystemConf> buildSystemConfigPreferences(String salonId , List<SystemConf> lstSetting){
+		
+		if(lstSetting.isEmpty()){
+			lstSetting = new ArrayList<>();
+		}
+		
+		SystemConf systemConf = new SystemConf();
+		systemConf.setKey("TIME_BACK_SCREEN_SAVER");
+		systemConf.setType("HOME_SCREEN");
+		systemConf.setValue("1");
+		systemConf.setSalonId(salonId);
+		lstSetting.add(systemConf);
+		
+		systemConf = new SystemConf();
+		systemConf.setKey("MAIN_HOME");
+		systemConf.setType("HOME_SCREEN");
+		systemConf.setValue("0");
+		systemConf.setSalonId(salonId);
+		lstSetting.add(systemConf);
+		
 		return lstSetting;
 	}
 }

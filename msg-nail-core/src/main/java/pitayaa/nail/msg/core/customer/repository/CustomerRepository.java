@@ -36,6 +36,7 @@ public interface CustomerRepository extends
 	@Query("select c from Customer c where c.salonId = :salonId and c.customerDetail.customerType = :customerType and c.createdDate between :from and :to")
 	List<Customer> findAllCustomer(@Param("salonId") String salonId,@Param("customerType") String customerType , @Param("from") Date from , @Param("to") Date to);
 	
-	@Query("select c from Customer c where c.contact.mobilePhone = :phoneNumber")
-	Customer findByPhoneNumber(@Param("phoneNumber") String phoneNumber);
+	@Query("select c from Customer c where c.contact.mobilePhone = :phoneNumber and c.salonId = :salonId")
+	Customer findByPhoneNumber(@Param("phoneNumber") String phoneNumber,@Param("salonId") String salonId);
+	
 }

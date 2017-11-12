@@ -21,22 +21,6 @@ import org.springframework.web.multipart.support.MultipartFilter;
  *
  */
 
-/*
- * @EnableJpaRepositories
- * 
- * @SpringBootApplication
- * 
- * @ComponentScan(basePackages = {"pitayaa.nail.domain.account"})
- * 
- * @EnableAutoConfiguration
- * 
- * @EntityScan(basePackages = {"pitayaa.nail.domain.account"})
- * 
- * @Configuration
- */
-//@EnableResourceServer
-
-//@EnableResourceServer
 @EnableAutoConfiguration()
 @SpringBootApplication
 @ComponentScan(basePackages = { "pitayaa.nail" })

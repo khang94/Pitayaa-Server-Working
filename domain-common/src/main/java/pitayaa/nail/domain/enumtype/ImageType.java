@@ -13,7 +13,8 @@ public enum ImageType {
 	LOGO(6),
 	SMALL_BANNER(7),
 	LARGE_BANNER(8),
-	CATEGORY(9)
+	CATEGORY(9),
+	MAIN_HOME_SCREEN(10)
 
 	;
 

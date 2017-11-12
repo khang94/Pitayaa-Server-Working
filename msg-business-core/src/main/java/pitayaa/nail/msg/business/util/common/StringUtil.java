@@ -113,7 +113,7 @@ public final class StringUtil {
 	 * @return true, if is null or empty
 	 */
 	public static boolean isNullOrEmpty(final String s) {
-		return (s == null || s.trim().length() == 0);
+		return (s == null || "".equalsIgnoreCase(s) || s.trim().length() == 0);
 	}
 
 	/**
@@ -857,68 +857,13 @@ public final class StringUtil {
 		// strHTML.rep
 	}
 
-	/**
-	 * Checks if is valid email address.
-	 * 
-	 * @param emailAddress
-	 *            the email address
-	 * 
-	 * @return true, if is valid email address
-	 */
-	/*public static boolean isValidEmailAddress(String emailAddress) {
-		// a null string is invalid
-		if (emailAddress == null) {
-			return false;
-		}
-		// a string without a "@" is an invalid email address
-		if (emailAddress.indexOf("@") < 0) {
-			return false;
-		}
 
-		// a string without a "." is an invalid email address
-		if (emailAddress.indexOf(".") < 0) {
-			return false;
-		}
-		if (lastEmailFieldTwoCharsOrMore(emailAddress) == false) {
-			return false;
-		}
-		try {
-			// InternetAddress internetAddress = new
-			// InternetAddress(emailAddress);
-			return true;
-		} catch (Exception ae) {
-			// log exception
-			return false;
-		}
-	}*/
 	
 	public static boolean isValidEmail(String emailAddress) {
 		Matcher matcher = EMAIL_PATTERN.matcher(emailAddress);
 		return matcher.matches();
 	}
 
-	/**
-	 * Last email field two chars or more.
-	 * 
-	 * @param emailAddress
-	 *            the email address
-	 * 
-	 * @return true, if successful
-	 */
-	/*private static boolean lastEmailFieldTwoCharsOrMore(String emailAddress) {
-		if (emailAddress == null)
-			return false;
-		StringTokenizer st = new StringTokenizer(emailAddress, ".");
-		String lastToken = null;
-		while (st.hasMoreTokens()) {
-			lastToken = st.nextToken();
-		}
-		if (lastToken.length() >= 2) {
-			return true;
-		} else {
-			return false;
-		}
-	}*/
 
 	/**
 	 * Gets the random string.
@@ -1563,10 +1508,9 @@ public final class StringUtil {
 			//}
 		}
 		
-		return out;
-		
-		
+		return out;	
 	}
+	
 /*	public static void main(String[] arg) throws Exception {
 //		System.out.println(generateHash("1234", "bcbcaa@gmail.com"));
 		

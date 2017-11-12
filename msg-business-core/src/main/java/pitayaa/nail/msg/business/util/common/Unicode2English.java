@@ -413,9 +413,9 @@ public class Unicode2English {
 	// }
 	// ?>
 	// Reply
-	public static void main(String[] args) {
+	/*public static void main(String[] args) {
 		init();
 		String s = Unicode2English.removeDau("Đinh á à");
 		System.out.println(s);
-	}
+	}*/
 }

@@ -61,14 +61,14 @@ public class SmsConstant extends NotificationConstant {
 	public static final String TEMPLATE_SMS_PATH = "sms_template/";
 	
 	/* Sms Template Format */
-	public static final String SMS_APPOINTMENT = "SmsAppointment";
-	public static final String SMS_RESPONSE = "SmsResponse";
-	public static final String SMS_RESPONSE_STOP = "SmsResponseStop";
-	public static final String SMS_RESPONSE_UNSTOP = "SmsResponseUnstop";
+	public static final String TEMPLATE_SMS_APPOINTMENT = "SmsAppointment";
+	public static final String TEMPLATE_SMS_RESPONSE = "SmsResponse";
+	public static final String TEMPLATE_SMS_RESPONSE_STOP = "SmsResponseStop";
+	public static final String TEMPLATE_SMS_RESPONSE_UNSTOP = "SmsResponseUnstop";
 	
 	/* Sms Feedback from customers */
-	public static final String FEEDBACK_STOP = "STOP";
-	public static final String FEEDBACK_UNSTOP = "UNSTOP";
+	public static final String RESPONSE_STOP = "STOP";
+	public static final String RESPONSE_UNSTOP = "UNSTOP";
 	
 	/* RECEIVE SMS */
 	public static final String PHONE_SENDER = "msisdn"; 
@@ -77,6 +77,19 @@ public class SmsConstant extends NotificationConstant {
 	public static final String CONTENT_MESSAGE = "text";
 	public static final String TYPE_MESSAGE = "type";
 	public static final String TIMESTAMP_MESSAGE = "message-timestamp";
+	
+	/* Keyword to deliver */
+	public static final String KEY_DELIVER_STOP = "#STOP";
+	public static final String KEY_DELIVER_UNSTOP = "#UNSTOP";
+	public static final String KEY_DELIVER_CONFIRM = "#CONFIRM";
+	public static final String KEY_DELIVER_CANCEL = "#CANCEL";
+	
+	/** VALUE of Keyword to deliver */
+	public static final String VALUE_DELIVER_STOP = "STOP";
+	public static final String VALUE_DELIVER_UNSTOP = "UNSTOP";
+	public static final String VALUE_DELIVER_CONFIRM = "CONFIRM";
+	public static final String VALUE_DELIVER_CANCEL = "CANCEL";
+	
 	
 	
 

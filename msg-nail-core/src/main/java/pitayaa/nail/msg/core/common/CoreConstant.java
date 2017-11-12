@@ -40,6 +40,7 @@ public class CoreConstant {
 	public static final String VIEW_LOGO = "logo";
 	public static final String VIEW_BANNER = "banners";
 	public static final String VIEW_PRODUCT = "products";
+	public static final String VIEW_MAIN_HOME = "mainhome";
 
 	/* SubFOlder salon */
 	public static final String SALON_SUB_FOLDER = "salon_sub_folder_0";
@@ -86,4 +87,15 @@ public class CoreConstant {
 	public static final String KEYWORD_SALON_EMAIL = "#SalonEmail";
 	public static final String KEYWORD_CUSTOMER_NAME = "#CustomerName";
 	public static final String KEYWORD_PROMOTION_CODE = "#PromotionCode";
+	
+	/* Query Empty */
+	public static final String QUERY_EMPTY = "Empty";
+	
+	/* Setting Preferences */
+	public static final String TIME_BACK_SCREEN_SAVER = "TimeScreenSaver";
+	public static final String HOME_SCREEN = "HOME_SCREEN";
+	
+	/* Action REdeem point */
+	public static final String ADD_POINTS = "Add";
+	public static final String SUBTRACT_POINTS = "Subtract";
 }

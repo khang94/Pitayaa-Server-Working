@@ -13,7 +13,7 @@ spring:
      driverClassName: org.postgresql.Driver
      url: jdbc:postgresql://localhost:5432/pitayaa_notification
      username: postgres
-     password: Postgres@2017
+     password: postgres
 appointment:
   loadlist: http://localhost:7070/appointments/getAll
   update: http://localhost:7070/appointments/{Id}

@@ -25,4 +25,13 @@ public interface SmsRepository extends
 	@Query("Select sms from SmsModel sms where sms.moduleId = :moduleId and sms.messageFor = :messageFor "
 			+ "order by sms.meta.updatedDate DESC")
 	List<SmsModel> findAllSms(@Param("moduleId") String moduleId ,@Param("messageFor") String messageFor);
+	
+	@Query("Select sms from SmsModel sms where :keyResponseDeliver in elements(sms.interactionData.keyResponseDelivers) ")
+	List<SmsModel> findSmsByResponseKey(@Param("keyResponseDeliver") String keyResponseDeliver);
+	
+	@Query("Select sms from SmsModel sms where :keyResponseDeliver in elements(sms.interactionData.keyResponseDelivers) and sms.header.toPhone = :phoneNumber order by sms.meta.updatedDate DESC ")
+	List<SmsModel> findSmsByResponseKeyAndPhoneNumber(@Param("keyResponseDeliver") String keyResponseDeliver ,@Param("phoneNumber") String phoneNumber);
+
+	@Query("Select sms from SmsModel sms where sms.header.toPhone = :phoneNumber and sms.interactionData.smsReceive.message = :response order by sms.meta.updatedDate DESC ")
+	List<SmsModel> isCustomerResponseWithKeyWord(@Param("phoneNumber") String phoneNumber , @Param("response") String response);
 }

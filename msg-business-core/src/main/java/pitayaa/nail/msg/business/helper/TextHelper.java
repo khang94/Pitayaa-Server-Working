@@ -15,11 +15,8 @@ public class TextHelper {
 			
 		return phone;
 	}
-	
 	public static void main(String[] args){
-		String phone = "((301)) 979 2555";
-		String result = formatPhoneNumber(phone);
-		System.out.println(result);
+		
 	}
 
 }

@@ -21,12 +21,10 @@ public class FileUploadImpl implements FileUpload {
 	@Autowired
 	CoreHelper coreHelper;
 	
-	
 
 	@Override
 	public String saveFile(View view) throws Exception {
-		// TODO Auto-generated method stub
-		//get timestamp is name of image
+
 		String fileName=(new Date()).getTime()+"";
 		view.setFileName(fileName);
 		String pathConfig = settingService
@@ -58,8 +56,10 @@ public class FileUploadImpl implements FileUpload {
 
 		}else if(ImageType.CATEGORY==ImageType.parseValue(view.getImgType())){
 			imageType=CoreConstant.VIEW_CATEGORY;
-
+		}else if(ImageType.MAIN_HOME_SCREEN == ImageType.parseValue(view.getImgType())){
+			imageType = CoreConstant.VIEW_MAIN_HOME;
 		}
+		
 		staticPath = staticPath + '/' + imageType;
 		dynamicPath = dynamicPath + '/' + imageType;
 		coreHelper.createFolder(staticPath);

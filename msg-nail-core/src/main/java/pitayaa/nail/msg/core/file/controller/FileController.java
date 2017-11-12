@@ -18,16 +18,17 @@ public class FileController {
 
 	@Autowired
 	FileUpload fileUpload;
+	
 	@Autowired
 	ViewService viewService;
+
 	@RequestMapping(value = "file/upload", method = RequestMethod.POST)
-	public @ResponseBody ResponseEntity<?> upload(
-			@RequestBody View view) throws Exception {
+	public @ResponseBody ResponseEntity<?> upload(@RequestBody View view) throws Exception {
 		JsonHttp data = new JsonHttp();
 		try {
 			String path = fileUpload.saveFile(view);
 			view.setPathImageServer(path);
-			view=viewService.save(view);
+			view = viewService.save(view);
 			view.setImgData(null);
 			data.setStatus("success");
 			data.setObject(view);

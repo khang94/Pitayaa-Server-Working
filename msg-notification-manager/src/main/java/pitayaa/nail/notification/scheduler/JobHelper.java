@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +33,7 @@ import pitayaa.nail.domain.promotion.PromotionKeyValue;
 import pitayaa.nail.domain.salon.Salon;
 import pitayaa.nail.domain.setting.SettingSms;
 import pitayaa.nail.domain.setting.sms.CustomerSummary;
-import pitayaa.nail.msg.business.util.common.RestTemplateHelper;
+import pitayaa.nail.msg.business.util.common.RestTemplateHelperCommon;
 import pitayaa.nail.notification.common.NotificationConstant;
 import pitayaa.nail.notification.common.SchedulerConstant;
 
@@ -83,7 +84,7 @@ public class JobHelper {
 
 		// String url = this.urlLoadListAppm();
 		String url = this.getValueProperties(NotificationConstant.LOAD_LIST_APPOINTMENT);
-		RestTemplateHelper restTemplateHelper = new RestTemplateHelper();
+		RestTemplateHelperCommon restTemplateHelper = new RestTemplateHelperCommon();
 		url = restTemplateHelper.buildUrlRequestParam(urlParameters, url);
 		LOGGER.info("Get URL Load List Setting Sms : [" + url + "] to send request !");
 
@@ -124,7 +125,7 @@ public class JobHelper {
 
 		// String url = this.urlLoadListAppm();
 		String url = this.getValueProperties(NotificationConstant.CUSTOMER_URI_SALON);
-		RestTemplateHelper restTemplateHelper = new RestTemplateHelper();
+		RestTemplateHelperCommon restTemplateHelper = new RestTemplateHelperCommon();
 		url = restTemplateHelper.buildUrlRequestParam(urlParameters, url);
 		LOGGER.info("Get URL Load List List customers : [" + url + "] to send request !");
 
@@ -147,6 +148,7 @@ public class JobHelper {
 			customerSummary.setContact(customer.getContact());
 			customerSummary.setAddress(customer.getAddress());
 			customerSummary.setCustomerRefID(customer.getUuid().toString());
+			customerSummary.getCustomerDetail().setRespond(customer.getCustomerDetail().getRespond());
 			customersSummary.add(customerSummary);
 		});
 
@@ -227,7 +229,7 @@ public class JobHelper {
 
 		// String url = this.urlLoadListAppm();
 		String url = this.getValueProperties(NotificationConstant.SMS_QUEUE);
-		RestTemplateHelper restTemplateHelper = new RestTemplateHelper();
+		RestTemplateHelperCommon restTemplateHelper = new RestTemplateHelperCommon();
 		url = restTemplateHelper.buildUrlRequestParam(urlParameters, url);
 		LOGGER.info("Get URL Load List Setting Sms : [" + url + "] to send request !");
 
@@ -270,7 +272,7 @@ public class JobHelper {
 
 		// String url = this.urlLoadListAppm();
 		String url = this.getValueProperties(NotificationConstant.SALON_URL);
-		RestTemplateHelper restTemplateHelper = new RestTemplateHelper();
+		RestTemplateHelperCommon restTemplateHelper = new RestTemplateHelperCommon();
 		url = restTemplateHelper.buildUrlRequestParam(urlParameters, url);
 		LOGGER.info("Get URL Load List Appointment : [" + url + "] to send request !");
 
@@ -312,7 +314,7 @@ public class JobHelper {
 
 		// String url = this.urlLoadListAppm();
 		String url = this.getValueProperties(NotificationConstant.CUSTOMER_URI_SALON);
-		RestTemplateHelper restTemplateHelper = new RestTemplateHelper();
+		RestTemplateHelperCommon restTemplateHelper = new RestTemplateHelperCommon();
 		url = restTemplateHelper.buildUrlRequestParam(urlParameters, url);
 		LOGGER.info("Get URL Load List Appointment : [" + url + "] to send request !");
 
@@ -356,7 +358,7 @@ public class JobHelper {
 
 		String url = this.getValueProperties(NotificationConstant.SETTING_SMS_SALON);
 
-		RestTemplateHelper restTemplateHelper = new RestTemplateHelper();
+		RestTemplateHelperCommon restTemplateHelper = new RestTemplateHelperCommon();
 		url = restTemplateHelper.buildUrlRequestParam(urlParameters, url);
 		LOGGER.info("Get URL Load List Appointment : [" + url + "] to send request !");
 
@@ -436,7 +438,7 @@ public class JobHelper {
 
 		// String url = this.urlLoadListAppm();
 		String url = this.getValueProperties(NotificationConstant.LOAD_LIST_APPOINTMENT);
-		RestTemplateHelper restTemplateHelper = new RestTemplateHelper();
+		RestTemplateHelperCommon restTemplateHelper = new RestTemplateHelperCommon();
 		url = restTemplateHelper.buildUrlRequestParam(urlParameters, url);
 		LOGGER.info("Get URL Load List Appointment : [" + url + "] to send request !");
 
@@ -479,7 +481,7 @@ public class JobHelper {
 
 		// Get URL
 		String url = this.getValueProperties(NotificationConstant.UPDATE_APPOINTMENT);
-		RestTemplateHelper restTemplateHelper = new RestTemplateHelper();
+		RestTemplateHelperCommon restTemplateHelper = new RestTemplateHelperCommon();
 		url = restTemplateHelper.buildUrlPathVariable(pathVars, url);
 		LOGGER.info("Get URL Update Appointment : [" + url + "] to send request !");
 
@@ -522,7 +524,7 @@ public class JobHelper {
 
 		// HttpEntity<String> request = new HttpEntity<>(input, createHeader());
 		String url = this.getValueProperties(NotificationConstant.SALON_URI_ID);
-		RestTemplateHelper restTemplateHelper = new RestTemplateHelper();
+		RestTemplateHelperCommon restTemplateHelper = new RestTemplateHelperCommon();
 		url = restTemplateHelper.buildUrlPathVariable(pathVars, url);
 		LOGGER.info("Get Salon by URL : [" + url + "] to send request !");
 
@@ -561,7 +563,7 @@ public class JobHelper {
 
 		// HttpEntity<String> request = new HttpEntity<>(input, createHeader());
 		String url = this.getValueProperties(NotificationConstant.PROMOTION_DELIVER);
-		RestTemplateHelper restTemplateHelper = new RestTemplateHelper();
+		RestTemplateHelperCommon restTemplateHelper = new RestTemplateHelperCommon();
 		url = restTemplateHelper.buildUrlRequestParam(urlParameters, url);
 		LOGGER.info("Get Salon by URL : [" + url + "] to send request !");
 
@@ -633,44 +635,6 @@ public class JobHelper {
 
 	}
 
-	/*public SmsModel bindDataPromotionSms(SmsModel smsModel, Promotion promotion, CustomerSummary customer) {
-
-		String content = smsModel.getHeader().getMessage();
-
-		// Bind base infor
-
-		// Customer Name
-		if (content.contains(SchedulerConstant.KEYWORD_CUSTOMER_NAME)) {
-			String fullname = customer.getCustomerDetail().getFirstName() + " "
-					+ customer.getCustomerDetail().getLastName();
-			content = content.replaceAll(SchedulerConstant.KEYWORD_CUSTOMER_NAME, fullname);
-		}
-
-		// Promotion Code
-		if (content.contains(SchedulerConstant.KEYWORD_PROMOTION_CODE)) {
-			content = content.replaceAll(SchedulerConstant.KEYWORD_PROMOTION_CODE, promotion.getCodeValue());
-		}
-
-		smsModel.getHeader().setMessage(content);
-		return smsModel;
-
-	}
-
-	public SmsModel fulFillBodySms(SmsModel smsModel, CustomerSummary customer) throws Exception {
-
-		// Get content
-		String content = smsModel.getHeader().getMessage();
-
-		// Init promotion & smsModel
-		Promotion promotion = null;
-
-		if (content.contains(SchedulerConstant.KEYWORD_CUSTOMER_NAME)
-				|| content.contains(SchedulerConstant.KEYWORD_PROMOTION_CODE)) {
-			promotion = this.getPromotionDeliver(smsModel.getSalonId(), "", smsModel.getModuleId());
-			smsModel = this.bindDataPromotionSms(smsModel, promotion, customer);
-		}
-		return smsModel;
-	}*/
 	
 	private PromotionDataSms getPromotionSmsMessage(PromotionDataSms promotionData) throws Exception {
 
@@ -716,7 +680,8 @@ public class JobHelper {
 			content = content.replaceAll(promoSms.getKey(), promoSms.getValue());
 		}
 		
-		if(SchedulerConstant.KEYWORD_PROMOTION_CODE.equalsIgnoreCase(promotionData.getPromoKeyValue().getPromotionKey())){
+		if(promotionData.getPromoKeyValue() != null 
+				&& SchedulerConstant.KEYWORD_PROMOTION_CODE.equalsIgnoreCase(promotionData.getPromoKeyValue().getPromotionKey())){
 			content = content.replaceAll(promotionData.getPromoKeyValue().getPromotionKey(), promotionData.getPromoKeyValue().getPromotionCode());
 		}
 		return content;
@@ -794,5 +759,82 @@ public class JobHelper {
 		return promotionData;
 		
 	}
+	
+	public Customer findCustomerByUUID(String uid) throws Exception {
+		
+		Map<String, String> headersMap = new HashMap<String, String>();
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		for (String header : headers.keySet()) {
+			headersMap.put(header, headers.getFirst(header));
+		}
+
+		String url = this.getValueProperties(NotificationConstant.CUSTOMER_URI_BY_ID);
+
+		LOGGER.info("Get Customer by URL : [" + url + "] to send request !");
+		Map<String , String> pathVariables = new HashMap<String , String>();
+		pathVariables.put(NotificationConstant.ID_STRING, uid);
+		
+		// Build path variable
+		RestTemplateHelperCommon restTemplateHelperCommon = new RestTemplateHelperCommon();
+		url = restTemplateHelperCommon.buildUrlPathVariable(pathVariables, url);
+		
+		
+		// Execute Request By Rest Template
+		RestTemplate restTemplate = new RestTemplate();
+		ResponseEntity<Customer> response = restTemplate.exchange(url, HttpMethod.GET, null,
+				new ParameterizedTypeReference<Customer>() {
+				});
+		if (response.getStatusCode().is2xxSuccessful()) {
+			LOGGER.info("Get response successully from URL [" + url + "]");
+		}
+
+		return response.getBody();
+	}
+	
+	public Customer updateCustomerByUid(String uid , Customer customerBody) throws Exception {
+		
+		LOGGER.info("Update customer ID [{}] " , uid);
+
+		Map<String, String> headersMap = new HashMap<String, String>();
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		for (String header : headers.keySet()) {
+			headersMap.put(header, headers.getFirst(header));
+		}
+		
+		// Get URL
+		String url = this.getValueProperties(NotificationConstant.CUSTOMER_URI_BY_ID);
+
+		// Path variables
+		Map<String, String> pathVariables = new HashMap<String, String>();
+		pathVariables.put(NotificationConstant.ID_STRING, uid);
+		
+		// Build path variable
+		RestTemplateHelperCommon restTemplateHelperCommon = new RestTemplateHelperCommon();
+		url = restTemplateHelperCommon.buildUrlPathVariable(pathVariables, url);
+
+		HttpEntity<Customer> request = new HttpEntity<>(customerBody , headers);
+
+
+		RestTemplateHelperCommon restTemplateHelper = new RestTemplateHelperCommon();
+		url = restTemplateHelper.buildUrlPathVariable(pathVariables , url);
+		LOGGER.info("Get URL Update Appointment : [" + url + "] to send request !");
+
+		// Execute Request By Rest Template
+		RestTemplate restTemplate = new RestTemplate();
+		ResponseEntity<Customer> response = restTemplate.exchange(url, HttpMethod.PUT, request, Customer.class,
+				new ParameterizedTypeReference<Customer>() {
+				});
+		if (response.getStatusCode().is2xxSuccessful()) {
+			LOGGER.info("Get response successully from URL [" + url + "]");
+		}
+		LOGGER.info("Update appointment success !");
+
+		return response.getBody();
+	}
+	
+	
 
 }

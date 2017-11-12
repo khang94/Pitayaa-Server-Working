@@ -12,9 +12,11 @@ import pitayaa.nail.domain.customer.Customer;
 import pitayaa.nail.domain.employee.Employee;
 import pitayaa.nail.domain.license.License;
 import pitayaa.nail.domain.license.elements.Price;
+import pitayaa.nail.domain.membership.MembershipManagement;
 import pitayaa.nail.domain.packages.PackageModel;
 import pitayaa.nail.domain.promotion.Promotion;
 import pitayaa.nail.domain.promotion.PromotionGroup;
+import pitayaa.nail.domain.redeem.TransactionRedeem;
 import pitayaa.nail.domain.salon.Salon;
 import pitayaa.nail.domain.salon.elements.SalonLicense;
 import pitayaa.nail.domain.service.ServiceModel;
@@ -103,6 +105,14 @@ public class ObjectHibernateListenerHelper {
 			SettingSms settingSms = (SettingSms) ob;
 			settingSms.setCreatedDate(new Date());
 			settingSms.setUpdatedDate(new Date());
+		} else if (ob.getClass().equals(MembershipManagement.class)){
+			MembershipManagement membershipManagement = (MembershipManagement) ob;
+			membershipManagement.setCreatedDate(new Date());
+			membershipManagement.setUpdatedDate(new Date());
+		} else if (ob.getClass().equals(TransactionRedeem.class)){
+			TransactionRedeem transactionRedeem = (TransactionRedeem) ob;
+			transactionRedeem.setCreatedDate(new Date());
+			transactionRedeem.setUpdatedDate(new Date());
 		}
 		return ob;
 	}
@@ -170,6 +180,12 @@ public class ObjectHibernateListenerHelper {
 			} else if (ob.getClass().equals(SettingSms.class)){
 				SettingSms settingSms = (SettingSms) ob;
 				settingSms.setUpdatedDate(new Date());
+			} else if (ob.getClass().equals(MembershipManagement.class)){
+				MembershipManagement membershipManagement = (MembershipManagement) ob;
+				membershipManagement.setUpdatedDate(new Date());
+			} else if (ob.getClass().equals(TransactionRedeem.class)){
+				TransactionRedeem transactionRedeem = (TransactionRedeem) ob;
+				transactionRedeem.setUpdatedDate(new Date());
 			}
 			return ob;
 		}

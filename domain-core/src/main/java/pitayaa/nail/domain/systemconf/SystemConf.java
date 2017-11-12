@@ -30,6 +30,9 @@ public class SystemConf {
 	private String type;
 	private String value;
 	private String salonId;
+	private String pathImage;
+	private String viewId;
+	
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createdDate;
 

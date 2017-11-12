@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import pitayaa.nail.domain.setting.SettingPromotion;
+import pitayaa.nail.json.http.JsonHttp;
+import pitayaa.nail.msg.business.json.JsonHttpService;
 import pitayaa.nail.msg.core.setting.promotion.service.SettingPromotionService;
 
 @Controller
@@ -22,6 +24,9 @@ public class SettingPromotionController {
 
 	@Autowired
 	SettingPromotionService promotionService;
+	
+	@Autowired
+	private JsonHttpService httpService;
 
 	@RequestMapping(value = "settingPromotion/model", method = RequestMethod.GET)
 	public @ResponseBody ResponseEntity<?> initPromotionSetting() throws Exception {
@@ -64,26 +69,32 @@ public class SettingPromotionController {
 	@RequestMapping(value = "settingPromotion/salons", method = RequestMethod.GET)
 	public @ResponseBody ResponseEntity<?> getBySalonId(@RequestParam("salonId") String salonId) throws Exception {
 
-		SettingPromotion savedSettingPromote = promotionService.getSettingPromoteBySalonId(salonId);
-		if (savedSettingPromote == null) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		JsonHttp jsonHttp = new JsonHttp();
+		
+		try {
+			SettingPromotion savedSettingPromote = promotionService.getSettingPromoteBySalonId(salonId);
+			jsonHttp = httpService.getResponseSuccess(savedSettingPromote, "Get setting promotion successfully");			
+		} catch (Exception ex){
+			jsonHttp = httpService.getResponseError("ERROR", ex.getMessage());
 		}
 
-		return ResponseEntity.ok(savedSettingPromote);
+		return new ResponseEntity<>(jsonHttp , jsonHttp.getHttpCode());
 	}
 	
 	@RequestMapping(value = "settingPromotion/salons", method = RequestMethod.PUT)
 	public @ResponseBody ResponseEntity<?> update(@RequestParam("salonId") String salonId,
 			@RequestBody SettingPromotion promotionBody) throws Exception {
 
-		SettingPromotion savedSettingPromote = promotionService.getSettingPromoteBySalonId(salonId);
-		if (savedSettingPromote == null) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		JsonHttp jsonHttp = new JsonHttp();
+		try {
+			SettingPromotion savedSettingPromote = promotionService.getSettingPromoteBySalonId(salonId);
+			savedSettingPromote = promotionService.update(savedSettingPromote, promotionBody);
+			jsonHttp = httpService.getResponseSuccess(savedSettingPromote, "Get setting promotion successfully...");
+		} catch (Exception ex){
+			jsonHttp = httpService.getResponseError("ERROR", ex.getMessage());
 		}
-		
-		savedSettingPromote = promotionService.update(savedSettingPromote, promotionBody);
 
-		return ResponseEntity.ok(savedSettingPromote);
+		return new ResponseEntity<>(jsonHttp , jsonHttp.getHttpCode());
 	}
 
 }

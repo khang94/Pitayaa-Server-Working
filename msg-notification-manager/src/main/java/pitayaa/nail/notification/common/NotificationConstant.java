@@ -57,6 +57,7 @@ public class NotificationConstant {
 	
 	/* Customer URI */
 	public static final String CUSTOMER_URI_SALON = "customer.bysalon";
+	public static final String CUSTOMER_URI_BY_ID = "customerUriById";
 	
 	public static final String SALON_ID = "salonId";
 	

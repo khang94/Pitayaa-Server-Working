@@ -19,6 +19,7 @@ public class DateUtil {
 
 	/** The Constant DATE_FORMAT_NOW. */
 	public static final String DATE_FORMAT_NOW = "dd/MM/yyyy HH:mm:ss";
+	public static final String DATE_FORMAT_DMY = "MM/dd/yyyy HH:mm:ss";
 
 	/** The Constant SECOND. */
 	public static final long SECOND = 1000;
@@ -74,8 +75,9 @@ public class DateUtil {
 	}
 	
 	public static Date parse(String str) throws Exception{
-		return parse(str, DATE_FORMAT_NOW);
+		return parse(str, DATE_FORMAT_DMY);
 	}
+	
 
 	public static int getHour(Date date) {
 		String hour = null;

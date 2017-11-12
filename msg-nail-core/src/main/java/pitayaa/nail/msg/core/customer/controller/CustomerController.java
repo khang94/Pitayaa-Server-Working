@@ -70,29 +70,35 @@ public class CustomerController {
 	@RequestMapping(value = "customers/{ID}", method = RequestMethod.PUT)
 	public @ResponseBody ResponseEntity<?> createCustomer(@RequestBody Customer customerUpdate,
 			@PathVariable("ID") UUID id,
-			@RequestParam(name = "oldPass", defaultValue = "",required = false) String oldPass) throws Exception {
+			@RequestParam(name = "oldPass", defaultValue = "",required = false) String oldPass,
+			@RequestParam(name = "operation" , required = false) String operation) throws Exception {
 
 		Optional<Customer> savedCustomer = customerService.findOne(id);
-		//String oldPass = null;
+		Customer customer = null;
 		
 		if (!savedCustomer.isPresent()) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 
 		try {
-			Customer customer = null;
+			
 			if(!"".equalsIgnoreCase(oldPass)){
 				customer = customerService.updatePassword(savedCustomer.get(), customerUpdate, oldPass);
 			} else {
 				customer = customerService.update(savedCustomer.get(), customerUpdate);
-			}
-					
+			}			
 			data = httpService.getResponseSuccess(customer, "update successful");
-
 		} catch (Exception e) {
-
 			data = httpService.getResponseError(e.getMessage(), "");
 		}
+		
+		if(CoreConstant.OPERATION_REFRESH.equalsIgnoreCase(operation)){
+			return new ResponseEntity<>(customer , HttpStatus.OK);
+		}
+		
+		
+		
+		
 
 		return new ResponseEntity<>(data, data.getHttpCode());
 	}

@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 import pitayaa.nail.domain.appointment.Appointment;
 import pitayaa.nail.domain.hibernate.transaction.QueryCriteria;
+import pitayaa.nail.domain.packages.PackageModel;
+import pitayaa.nail.domain.service.ServiceModel;
 import pitayaa.nail.msg.business.appointment.AppointmentBus;
 import pitayaa.nail.msg.core.appointment.business.AppointmentBusiness;
 import pitayaa.nail.msg.core.appointment.repository.AppointmentRepository;
@@ -60,6 +62,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 		return appmBody;
 	}
 	
+
+	
 	@Override
 	public Appointment update(Appointment appmBody) throws Exception {
 
@@ -71,7 +75,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
 	@Override
 	public List<?> findAllByQuery(QueryCriteria query)
-			throws ClassNotFoundException {
+			throws Exception {
 		SearchCriteria sc = appmCriteria.extractQuery(query.getQuery());
 		sc.setEntity(query.getObject());
 		return appmCriteria.searchCriteria(sc);

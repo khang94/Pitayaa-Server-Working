@@ -30,7 +30,7 @@ import pitayaa.nail.notification.common.SchedulerConstant;
 import pitayaa.nail.notification.promotion.business.PromotionJobBus;
 import pitayaa.nail.notification.promotion.business.PromotionJobBusImpl;
 import pitayaa.nail.notification.sms.config.SmsConstant;
-import pitayaa.nail.notification.sms.service.ISmsService;
+import pitayaa.nail.notification.sms.service.SmsService;
 import pitayaa.nail.notification.sms.service.SmsServiceImpl;
 
 public class PromotionJob implements Job {
@@ -46,7 +46,7 @@ public class PromotionJob implements Job {
 	NotificationHelper notificationHelper;
 
 	@Autowired
-	ISmsService smsService;
+	SmsService smsService;
 
 	@Autowired
 	PromotionJobBus promotionJobBus;
@@ -210,8 +210,11 @@ public class PromotionJob implements Job {
 			} catch (Exception ex){
 				LOGGER.info(ex.getMessage());
 			}
+			
+			// Check whether customer does not want to continue get message or not.
+			Boolean isCustomerBelongStopList = (SmsConstant.RESPONSE_STOP.equalsIgnoreCase(customer.getCustomerDetail().getRespond())) ? true : false;
 
-			if (isCorrectTime) {
+			if (isCorrectTime && !isCustomerBelongStopList) {
 				try {
 					// Build sms body
 					SmsModel smsBody = this.buildSmsBody(customer, settingSms);
@@ -359,7 +362,7 @@ public class PromotionJob implements Job {
 
 			// Create Sms Frame for Send
 			ApplicationContext ctx = QuartJob.applicationContext;
-			ISmsService smsService = ctx.getBean(ISmsService.class);
+			SmsService smsService = ctx.getBean(SmsService.class);
 			smsBody = smsService.initModelSms();
 
 			String to = customer.getContact().getMobilePhone();

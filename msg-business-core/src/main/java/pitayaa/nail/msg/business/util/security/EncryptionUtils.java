@@ -15,13 +15,11 @@ import java.security.KeyPairGenerator;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
-import java.security.spec.RSAPrivateCrtKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.StringTokenizer;
 
@@ -30,6 +28,8 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 import javax.crypto.spec.SecretKeySpec;
+
+import org.apache.tomcat.util.codec.binary.Base64;
 
 public class EncryptionUtils {
 	  public  static String encodeMD5(String pass, String salt) throws Exception
@@ -70,7 +70,7 @@ public class EncryptionUtils {
 			byte[] rawData = cipher.doFinal(data.getBytes());
 			if (rawData != null)
 				// Encode bytes to base64 to get a string
-				rsl = new sun.misc.BASE64Encoder().encode(rawData);
+				rsl = Base64.encodeBase64String(rawData);
 		} catch (Exception e) {
 		}
 		rsl = rsl.replace("\r", "");
@@ -86,7 +86,7 @@ public class EncryptionUtils {
 			Cipher cipher = Cipher.getInstance("Blowfish");
 			cipher.init(Cipher.DECRYPT_MODE, skeySpec);
 			// Decode base64 to get bytes
-			byte[] dec = new sun.misc.BASE64Decoder().decodeBuffer(data);
+			byte[] dec = Base64.decodeBase64(data);
 			byte[] rawData = cipher.doFinal(dec);
 			if (rawData != null)
 				rsl = new String(rawData);
@@ -98,7 +98,7 @@ public class EncryptionUtils {
 	public static final String encryptAES(String data, String key) {
 		String rsl = null;
 		try {
-			byte[] keyData = new sun.misc.BASE64Decoder().decodeBuffer(key);
+			byte[] keyData = Base64.decodeBase64(key);
 			SecretKeySpec skeySpec = new SecretKeySpec(keyData, "AES");
 			// Instantiate the cipher
 			Cipher cipher = Cipher.getInstance("AES");
@@ -106,7 +106,7 @@ public class EncryptionUtils {
 			byte[] rawData = cipher.doFinal(data.getBytes());
 			if (rawData != null) {
 				// Encode bytes to base64 to get a string
-				rsl = new sun.misc.BASE64Encoder().encode(rawData);
+				rsl = Base64.encodeBase64String(rawData);
 			}
 		} catch (Exception e) {
 		}
@@ -117,12 +117,12 @@ public class EncryptionUtils {
 	public static final String decryptAES(String data, String key) {
 		String rsl = null;
 		try {
-			byte[] keyData = new sun.misc.BASE64Decoder().decodeBuffer(key);
+			byte[] keyData = Base64.decodeBase64(key);
 			SecretKeySpec skeySpec = new SecretKeySpec(keyData, "AES");
 			Cipher cipher = Cipher.getInstance("AES");
 			cipher.init(Cipher.DECRYPT_MODE, skeySpec);
 			// Decode base64 to get bytes
-			byte[] dec = new sun.misc.BASE64Decoder().decodeBuffer(data);
+			byte[] dec = Base64.decodeBase64(data);
 			byte[] rawData = cipher.doFinal(dec);
 			if (rawData != null)
 				rsl = new String(rawData);
@@ -131,7 +131,7 @@ public class EncryptionUtils {
 		return rsl;
 	}
 
-	public static final PublicKey loadPublicKey_PEM_X509_RSA(String filePath)
+	/*public static final PublicKey loadPublicKey_PEM_X509_RSA(String filePath)
 			throws GeneralSecurityException, IOException {
 		PEMReader reader = new PEMReader(filePath);
 		byte[] keyBytes = reader.getDerBytes();
@@ -140,7 +140,7 @@ public class EncryptionUtils {
 		KeyFactory factory = KeyFactory.getInstance("RSA");
 		PublicKey pubKey = factory.generatePublic(publicKeySpec);
 		return pubKey;
-	}
+	}*/
 
 	public static RSAPublicKey loadPublicKey_X509_RSA(String fileName)
 			throws GeneralSecurityException, IOException {
@@ -157,7 +157,7 @@ public class EncryptionUtils {
 		return pubKey;
 	}
 
-	public static PrivateKey loadPrivateKey_PKCS1_RSA(String filePath)
+	/*public static PrivateKey loadPrivateKey_PKCS1_RSA(String filePath)
 			throws GeneralSecurityException, IOException {
 		PEMReader reader = new PEMReader(filePath);
 		byte[] keyBytes = reader.getDerBytes();
@@ -167,7 +167,7 @@ public class EncryptionUtils {
 		KeyFactory keyFactory = KeyFactory.getInstance("RSA");
 		PrivateKey privKey = keyFactory.generatePrivate(privSpec);
 		return privKey;
-	}
+	}*/
 
 	public static PrivateKey loadPrivateKey_PKCS8_RSA(String filePath)
 			throws GeneralSecurityException, IOException {
@@ -201,7 +201,7 @@ public class EncryptionUtils {
 			System.arraycopy(dataToEncrypt, maxLength * i, tempBytes, 0,
 					tempBytes.length);
 			byte[] encryptedBytes = cipher.doFinal(tempBytes);
-			sb.append(new sun.misc.BASE64Encoder().encode(encryptedBytes));
+			sb.append(Base64.encodeBase64String(encryptedBytes));
 		}
 
 		String sEncrypted = sb.toString();
@@ -225,7 +225,7 @@ public class EncryptionUtils {
 		for (int i = 0; i < iterations; i++) {
 			String sTemp = dataEncrypted.substring(base64BlockSize * i,
 					base64BlockSize * i + base64BlockSize);
-			byte[] bTemp = new sun.misc.BASE64Decoder().decodeBuffer(sTemp);
+			byte[] bTemp = Base64.decodeBase64(sTemp);
 			byte[] encryptedBytes = cipher.doFinal(bTemp);
 			bb.put(encryptedBytes);
 		}

@@ -17,17 +17,21 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import pitayaa.nail.domain.notification.sms.SmsModel;
 import pitayaa.nail.notification.email.config.EmailConstant;
-import pitayaa.nail.notification.sms.service.ISmsService;
+import pitayaa.nail.notification.sms.service.InteractionService;
+import pitayaa.nail.notification.sms.service.SmsService;
 
 
 @Controller
 public class SmsController {
 
 	@Autowired
-	ISmsService smsService;
+	SmsService smsService;
 	
 	@Autowired
 	SmsControllerImpl controllerImpl;
+	
+	@Autowired
+	InteractionService interactionService;
 
 	@RequestMapping(value = "sms/about", method = RequestMethod.GET)
 	public @ResponseBody HttpEntity<?> about() {
@@ -68,9 +72,9 @@ public class SmsController {
 	}
 
 	@RequestMapping(value = "sms/delivery", method = RequestMethod.POST)
-	public @ResponseBody ResponseEntity<?> deliverySms() {
-		System.out.println("sms-->delivery");
-		return new ResponseEntity<>(HttpStatus.OK);
+	public @ResponseBody ResponseEntity<?> deliverySms(@RequestParam("key") String key) throws Exception {
+		SmsModel smsModel = interactionService.findSmsByResponseKeyTest(key);
+		return new ResponseEntity<>(smsModel , HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "sms/delivery", method = RequestMethod.GET)

@@ -6,4 +6,6 @@ import pitayaa.nail.domain.systemconf.SystemConf;
 
 public interface SystemConfBus {
 	public List<SystemConf> getListSystemConfDefault(String salonId);
+
+	List<SystemConf> buildSystemConfigPreferences(String salonId , List<SystemConf> lstSetting);
 }

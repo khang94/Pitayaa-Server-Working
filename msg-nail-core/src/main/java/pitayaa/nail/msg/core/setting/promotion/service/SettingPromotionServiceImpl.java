@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import pitayaa.nail.domain.setting.SettingPromotion;
+import pitayaa.nail.domain.setting.promotion.LoyaltyPoint;
 import pitayaa.nail.msg.core.common.CoreHelper;
 import pitayaa.nail.msg.core.setting.promotion.repository.SettingPromotionRepository;
 
@@ -51,6 +52,18 @@ public class SettingPromotionServiceImpl implements SettingPromotionService {
 		SettingPromotion savedSettingPromote = settingPromoteRepo.getSettingPromotion(salonId);
 		
 		return savedSettingPromote;
+	}
+	
+	@Override
+	public Double convertRewardToCash(String salonId , Integer point){
+		SettingPromotion savedSettingPromote = settingPromoteRepo.getSettingPromotion(salonId);
+		
+		LoyaltyPoint loyaltyPoint = savedSettingPromote.getLoyaltyPoint();
+		
+		Double rate = (Double.valueOf(loyaltyPoint.getMoneyExchange().toString())/
+						Double.valueOf(loyaltyPoint.getLoyaltyPoint().toString()));
+		return point * rate;
+		
 	}
 
 }

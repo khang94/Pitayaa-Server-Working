@@ -15,7 +15,7 @@ public interface AppointmentService {
 	
 	Appointment update(Appointment appmBody) throws Exception;
 
-	List<?> findAllByQuery(QueryCriteria query) throws ClassNotFoundException;
+	List<?> findAllByQuery(QueryCriteria query) throws Exception;
 
 	Optional<Appointment> findOne(UUID id);
 

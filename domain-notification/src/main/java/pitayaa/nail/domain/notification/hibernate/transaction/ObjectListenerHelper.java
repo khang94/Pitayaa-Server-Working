@@ -29,9 +29,9 @@ public class ObjectListenerHelper {
 			sms.getMeta().setCreatedDate(new Date());
 			sms.getMeta().setUpdatedDate(new Date());
 			
-			if(sms.getSmsReceive() != null){
-				sms.getSmsReceive().setCreatedDate(new Date());
-				sms.getSmsReceive().setUpdatedDate(new Date());
+			if(sms.getInteractionData() != null && sms.getInteractionData().getSmsReceive() != null){
+				sms.getInteractionData().getSmsReceive().setCreatedDate(new Date());
+				sms.getInteractionData().getSmsReceive().setUpdatedDate(new Date());
 			}
 		} else if (ob.getClass().equals(SmsQueue.class)){
 			SmsQueue queue = (SmsQueue) ob;
@@ -55,8 +55,8 @@ public class ObjectListenerHelper {
 				sms.setMeta(new Metadata());
 			}
 			sms.getMeta().setUpdatedDate(new Date());
-			if(sms.getSmsReceive() != null){
-				sms.getSmsReceive().setCreatedDate(new Date());
+			if(sms.getInteractionData() != null && sms.getInteractionData().getSmsReceive() != null){
+				sms.getInteractionData().getSmsReceive().setUpdatedDate(new Date());
 			}
 		} else if (ob.getClass().equals(SmsQueue.class)){
 			SmsQueue queue = (SmsQueue) ob;

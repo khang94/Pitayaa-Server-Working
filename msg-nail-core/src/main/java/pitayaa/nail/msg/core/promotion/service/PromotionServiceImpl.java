@@ -245,7 +245,8 @@ public class PromotionServiceImpl implements PromotionService {
 	@Override
 	public PromotionDataSms buildPromotionData(PromotionDataSms promotionData) throws Exception {
 		
-		if(CoreConstant.KEYWORD_PROMOTION_CODE.equalsIgnoreCase(promotionData.getPromoKeyValue().getPromotionKey())){
+		if(promotionData.getPromoKeyValue() != null
+				&& CoreConstant.KEYWORD_PROMOTION_CODE.equalsIgnoreCase(promotionData.getPromoKeyValue().getPromotionKey())){
 			this.getFullyPromotionData(promotionData);
 		}		
 		this.getFullySalonData(promotionData);

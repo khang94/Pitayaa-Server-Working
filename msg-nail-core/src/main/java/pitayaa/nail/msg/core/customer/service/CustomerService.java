@@ -18,7 +18,7 @@ public interface CustomerService {
 
 	void delete(Customer customer);
 
-	List<?> findAllByQuery(QueryCriteria query) throws ClassNotFoundException;
+	List<?> findAllByQuery(QueryCriteria query) throws Exception;
 
 	List<Customer> findAllCustomer(String salonId, String type);
 
@@ -36,4 +36,12 @@ public interface CustomerService {
 
 	List<Customer> findCustomerByCondition(String salonId, String customerType, Date from , Date to)
 			throws Exception;
+
+	Customer generateQrCode(Customer customerBody) throws Exception;
+
+	Customer generatePassword(Customer customerBody) throws Exception;
+
+	Customer findCustomerByIdOrPhoneNumber(Customer customerBody) throws Exception;
+
+	Customer signInNew(Customer customerBody) throws Exception;
 }

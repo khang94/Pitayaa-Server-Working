@@ -11,31 +11,26 @@ import pitayaa.nail.domain.view.View;
 import pitayaa.nail.msg.core.view.repository.ViewRepository;
 
 @Service
-public class ViewServiceImpl implements ViewService{
-	@Autowired 
+public class ViewServiceImpl implements ViewService {
+	@Autowired
 	ViewRepository repo;
+
 	@Override
-	public List<View> getAllByType(String uuid,int type) throws Exception {
-		// TODO Auto-generated method stub
-		List<View>result = repo.getAllByType(uuid,type);
+	public List<View> getAllByType(String uuid, int type) throws Exception {
+		List<View> result = repo.getAllByType(uuid, type);
 		return result;
 	}
 
 	@Override
 	public View save(View dto) throws Exception {
-		// TODO Auto-generated method stub
-		dto=repo.save(dto);
+		dto = repo.save(dto);
 		return dto;
 	}
-	
-	
-	
+
 	@Override
 	public Optional<View> findOne(UUID id) {
 		return Optional.ofNullable(repo.findOne(id));
 	}
-	
-
 
 	@Override
 	public void delete(View view) {

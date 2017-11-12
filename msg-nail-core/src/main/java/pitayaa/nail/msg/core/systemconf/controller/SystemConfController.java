@@ -1,6 +1,7 @@
 package pitayaa.nail.msg.core.systemconf.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -15,9 +16,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import pitayaa.nail.domain.setting.SettingSms;
 import pitayaa.nail.domain.systemconf.SystemConf;
+import pitayaa.nail.domain.view.View;
 import pitayaa.nail.json.http.JsonHttp;
+import pitayaa.nail.msg.business.json.JsonHttpService;
 import pitayaa.nail.msg.core.common.CoreHelper;
 import pitayaa.nail.msg.core.systemconf.service.SystemConfService;
 
@@ -29,9 +31,11 @@ public class SystemConfController {
 
 	@Autowired
 	private SystemConfService systemConfService;
+	
+	@Autowired
+	private JsonHttpService httpService;
 
-	private JsonHttp jsonHttp;
-
+	
 	@RequestMapping(value = "systemconf/model", method = RequestMethod.GET)
 	public @ResponseBody ResponseEntity<?> initAccountModel() throws Exception {
 
@@ -45,26 +49,22 @@ public class SystemConfController {
 	public @ResponseBody ResponseEntity<?> updateSetting(
 			@PathVariable("Id") UUID uid, @RequestBody SystemConf systemConf)
 			throws Exception {
-		jsonHttp = new JsonHttp();
-
+		
+		JsonHttp jsonHttp = new JsonHttp();
+		Optional<SystemConf> systemConfSave = systemConfService.findOne(uid);
+		
+		if(!systemConfSave.isPresent()){
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		
 		try {
-			Optional<SystemConf> systemConfSave = systemConfService
-					.findOne(uid);
-			if (!systemConfSave.isPresent()) {
-				throw new Exception("Can't find this object");
-			}
 			systemConf = systemConfService.save(systemConf);
-			jsonHttp.setCode(200);
-			jsonHttp.setStatus("success");
-			jsonHttp.setObject(systemConf);
+			jsonHttp = httpService.getResponseSuccess(systemConf, "Update system config successfully...");
 
 		} catch (Exception e) {
-			jsonHttp.setCode(201);
-			jsonHttp.setStatus("error");
-			jsonHttp.setMessage(e.getMessage());
+			jsonHttp = httpService.getResponseError("ERROR", e.getMessage());
 		}
-
-		return ResponseEntity.ok(jsonHttp);
+		return new ResponseEntity<>(jsonHttp , jsonHttp.getHttpCode());
 	}
 
 	@RequestMapping(value = "systemconf/bySalonAndType", method = RequestMethod.GET)
@@ -75,18 +75,18 @@ public class SystemConfController {
 
 		Optional<SystemConf> conf = systemConfService.findModelBy(salonId, type,
 				key);
-		JsonHttp jsonHttp = new JsonHttp();
-
-		if (conf.isPresent()) {
-			jsonHttp.setCode(200);
-			jsonHttp.setObject(conf.get());
-			jsonHttp.setStatus("success");
-			return ResponseEntity.ok(jsonHttp);
-		} else {
-			jsonHttp.setCode(404);
-			jsonHttp.setStatus("error");
-			return ResponseEntity.ok(jsonHttp);
+		if(!conf.isPresent()){
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
+		JsonHttp jsonHttp = new JsonHttp();
+		
+		try {
+			jsonHttp = httpService.getResponseSuccess(conf.get(), "get data successfully");
+		} catch (Exception ex){
+			jsonHttp = httpService.getResponseError("ERROR", ex.getMessage());
+		}
+		
+		return new ResponseEntity<>(jsonHttp , jsonHttp.getHttpCode());
 
 	}
 
@@ -106,6 +106,56 @@ public class SystemConfController {
 		return ResponseEntity.ok(jsonHttp);
 
 	}
+	
+	@RequestMapping(value = "systemconf", method = RequestMethod.GET)
+	public @ResponseBody ResponseEntity<?> findAllSetting(@RequestParam("salonId") String salonId) throws Exception {
+		
+		JsonHttp jsonHttp = new JsonHttp();
+		
+		try {
+			jsonHttp = httpService.getResponseSuccess(systemConfService.getAllConfigPreferences(salonId), "Get all data successfully..");
+		} catch (Exception ex){
+			jsonHttp = httpService.getResponseError("ERROR", "Get all data failed...");
+		}
+		return new ResponseEntity<>(jsonHttp , jsonHttp.getHttpCode());
+	}
+	
+	@RequestMapping(value = "systemconf", method = RequestMethod.POST)
+	public @ResponseBody ResponseEntity<?> updateSetting(@RequestBody List<SystemConf> systemConfs ,@RequestParam("salonId") String salonId) throws Exception {
+		
+		JsonHttp jsonHttp = new JsonHttp();
+		
+		try {
+			jsonHttp = httpService.getResponseSuccess(systemConfService.updateSystemConfiguration(salonId, systemConfs), "Get all data successfully..");
+		} catch (Exception ex){
+			jsonHttp = httpService.getResponseError("ERROR", "Get all data failed...");
+		}
+		return new ResponseEntity<>(jsonHttp , jsonHttp.getHttpCode());
+	}
+	
+	@RequestMapping(value = "systemconf/{Id}/upload", method = RequestMethod.POST)
+	public @ResponseBody ResponseEntity<?> uploadImage(@PathVariable("Id") UUID id , 
+			@RequestBody View viewBody ,@RequestParam("salonId") String salonId) throws Exception {
+		
+		Optional<SystemConf> systemData = systemConfService.findOne(id);
+		if(!systemData.isPresent()){
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		
+		JsonHttp jsonHttp = new JsonHttp();
+		
+		try {
+			jsonHttp = httpService.getResponseSuccess(
+					systemConfService.uploadImageToSetting(viewBody, salonId, systemData.get()), "Get all data successfully..");
+		} catch (Exception ex){
+			jsonHttp = httpService.getResponseError("ERROR", "Get all data failed...");
+		}
+		return new ResponseEntity<>(jsonHttp , jsonHttp.getHttpCode());
+	}
+	
+	
+	
+	
 	
 
 

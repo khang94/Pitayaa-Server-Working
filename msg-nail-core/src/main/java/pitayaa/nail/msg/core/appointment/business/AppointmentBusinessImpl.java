@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import pitayaa.nail.domain.appointment.Appointment;
 import pitayaa.nail.domain.customer.Customer;
 import pitayaa.nail.domain.employee.Employee;
+import pitayaa.nail.domain.membership.MembershipManagement;
 import pitayaa.nail.domain.packages.PackageModel;
 import pitayaa.nail.domain.promotion.Promotion;
 import pitayaa.nail.domain.service.ServiceModel;
@@ -21,6 +22,7 @@ import pitayaa.nail.msg.core.appointment.repository.AppointmentRepository;
 import pitayaa.nail.msg.core.common.CoreConstant;
 import pitayaa.nail.msg.core.customer.service.CustomerService;
 import pitayaa.nail.msg.core.employee.service.EmployeeService;
+import pitayaa.nail.msg.core.membership.service.MembershipService;
 import pitayaa.nail.msg.core.packageEntity.service.PackageService;
 import pitayaa.nail.msg.core.promotion.service.PromotionService;
 import pitayaa.nail.msg.core.serviceEntity.service.ServiceEntityInterface;
@@ -50,7 +52,14 @@ public class AppointmentBusinessImpl implements AppointmentBusiness {
 	@Autowired
 	PromotionService promotionService;
 	
+	@Autowired
+	MembershipService membershipService;
 	
+	/**
+	 * Update point reward for customer
+	 * @param customer
+	 * @return
+	 */
 	private Customer updateCustomerPoint(Customer customer){
 		
 		// Get promotion setting
@@ -58,8 +67,6 @@ public class AppointmentBusinessImpl implements AppointmentBusiness {
 
 		// Get point setting
 		Integer loyalPoint = settingPromotion.getPointRegularTurn();
-		Integer promotionPoint = settingPromotion.getPointReferralCode();
-		Integer referralPoint = settingPromotion.getPointReferralCode();
 		
 		// Get turn for target of customer
 		CustomerTurn customerTurnRegular = null;
@@ -71,14 +78,13 @@ public class AppointmentBusinessImpl implements AppointmentBusiness {
 		}
 		
 		// Get current status & point of customer
-		String currentStatus = customer.getCustomerDetail().getCustomerType();
 		Integer currentPoint = customer.getCustomerMembership().getPoint();
 		if(currentPoint == null){
 			currentPoint = 0;
 		}
 		
 		// Get history of customer
-		List<Appointment> appointments = appointmentRepo.findAllTurnCustomer(customer.getContact().getEmail());
+		List<Appointment> appointments = appointmentRepo.findAllTurnCustomer(customer.getContact().getMobilePhone());
 		
 		// Increase point for customers
 		Integer pointAdd = currentPoint + loyalPoint;
@@ -154,34 +160,67 @@ public class AppointmentBusinessImpl implements AppointmentBusiness {
 	public Appointment executeCustomer(UUID customerId, Appointment appmBody)
 			throws Exception {
 
-		Optional<Customer> customer = null;
+		Customer customerSaved = null;
 		Customer customerInfo = appmBody.getCustomer();
 		
-		// Get customer for appointment
-		if (customerId != null) {		
-			customer = customerService.findOne(customerId);
-			
-			if (customer.isPresent()) {			
-				customerInfo = this.updateCustomerPoint(customerInfo);
-				customerInfo = customerService.update(customer.get(), customerInfo);		
-			} else {
-				customerInfo = customerService.signIn(customerInfo);
-			}
-		}else {
+		// Get total spending of this visit time
+		Double totalSpending = this.getTotalSpendingOfAppointment(appmBody);
+		customerInfo.getCustomerMembership().setSpending(totalSpending);
+		
+		// Update total times visit
+		Integer totalTimesVisit = (customerInfo.getCustomerMembership().getTotalTimeVisit() == null) 
+								? 1 : customerInfo.getCustomerMembership().getTotalTimeVisit() + 1;
+		customerInfo.getCustomerMembership().setTotalTimeVisit(totalTimesVisit);
+		
+		// Find customer to check whether they have visit first time
+		customerSaved = customerService.findCustomerByIdOrPhoneNumber(customerInfo);
+		
+		// Update point
+		customerInfo = this.updateCustomerPoint(customerInfo);
+		
+		if (customerSaved != null){
+			membershipService.updateMembershipForReturnCustomer(customerInfo);
 			customerInfo = customerService.signIn(customerInfo);
+		} else {
+			MembershipManagement membership = membershipService.createMembershipForNewCustomer(customerInfo);
+			customerInfo.getCustomerMembership().setMembershipId(membership.getUuid().toString());
+			customerInfo = customerService.signInNew(customerInfo);
+			
+			// Update 
+			membership.setCustomerId(customerInfo.getUuid().toString());
+			membershipService.save(membership);
 		}
 		
 		// Update last check in
 		customerInfo.getCustomerDetail().setLastCheckin(new Date());
-		
+				
 		// Update last service
 		ServiceModel serviceUsed = appmBody.getServicesGroup().get(0);
 		customerInfo.getCustomerDetail().setLastUsedServiceName(serviceUsed.getServiceName());
 		customerInfo.getCustomerDetail().setLastUsedServiceId(serviceUsed.getUuid().toString());
-		
+				
 		appmBody.setCustomer(customerInfo);
 		appmBody.getCustomer().getView().setImgData(null);
 		return appmBody;
+	}
+
+	
+	@Override
+	public Double getTotalSpendingOfAppointment(Appointment appmBody) throws Exception{
+		
+		Double total = 0.0;
+		
+		// Get summary spending of service
+		for(ServiceModel service : appmBody.getServicesGroup()){
+			total += service.getPrice1().getPrice();
+		}
+		
+		// Get summary spending of packages
+		/*for(PackageModel packageModel : appmBody.getPackagesGroup()){
+			total += packageModel.getPrice().getPrice();
+		}*/
+		
+		return total;	
 	}
 
 	// Get List services for appointment

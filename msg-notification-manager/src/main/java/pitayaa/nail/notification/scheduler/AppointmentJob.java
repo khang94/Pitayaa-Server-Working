@@ -18,7 +18,7 @@ import pitayaa.nail.domain.salon.Salon;
 import pitayaa.nail.notification.common.NotificationConstant;
 import pitayaa.nail.notification.common.NotificationHelper;
 import pitayaa.nail.notification.sms.config.SmsConstant;
-import pitayaa.nail.notification.sms.service.ISmsService;
+import pitayaa.nail.notification.sms.service.SmsService;
 import pitayaa.nail.notification.sms.service.SmsServiceImpl;
 
 public class AppointmentJob implements Job {
@@ -32,7 +32,7 @@ public class AppointmentJob implements Job {
 	NotificationHelper notificationHelper;
 
 	@Autowired
-	ISmsService smsService;
+	SmsService smsService;
 
 	public AppointmentJob() {
 		jobHelper = new JobHelper();
@@ -113,7 +113,7 @@ public class AppointmentJob implements Job {
 		
 		// Create Sms Frame for Send
 		ApplicationContext ctx = QuartJob.applicationContext;
-		ISmsService smsService = ctx.getBean(ISmsService.class);
+		SmsService smsService = ctx.getBean(SmsService.class);
 		SmsModel smsBody = smsService.initModelSms();
 		
 		smsBody = smsService.initAppointmentSms(smsBody);

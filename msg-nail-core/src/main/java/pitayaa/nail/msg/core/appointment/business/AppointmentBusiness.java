@@ -24,4 +24,7 @@ public interface AppointmentBusiness {
 
 	Appointment executePromotions(Promotion promotion, Appointment appmBody) throws Exception;
 
+	Double getTotalSpendingOfAppointment(Appointment appmBody) throws Exception;
+
+
 }

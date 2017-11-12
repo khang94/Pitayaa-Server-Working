@@ -17,4 +17,6 @@ public interface SettingPromotionService {
 
 	SettingPromotion update(SettingPromotion settingPromote, SettingPromotion settingUpdated);
 
+	Double convertRewardToCash(String salonId, Integer point);
+
 }

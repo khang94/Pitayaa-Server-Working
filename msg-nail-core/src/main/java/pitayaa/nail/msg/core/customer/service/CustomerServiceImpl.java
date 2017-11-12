@@ -200,7 +200,7 @@ public class CustomerServiceImpl implements CustomerService {
 	}
 
 	@Override
-	public List<?> findAllByQuery(QueryCriteria query) throws ClassNotFoundException {
+	public List<?> findAllByQuery(QueryCriteria query) throws Exception {
 		SearchCriteria sc = criteriaRepo.extractQuery(query.getQuery());
 		sc.setEntity(query.getObject());
 		return criteriaRepo.searchCriteria(sc);
@@ -208,7 +208,6 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Override
 	public Optional<Customer> login(String email, String password, String salonId) {
-		// TODO Auto-generated method stub
 		return Optional.ofNullable(customerRepo.findByEmailAndPassword(email, password, salonId));
 	}
 
@@ -216,43 +215,67 @@ public class CustomerServiceImpl implements CustomerService {
 	public Optional<Customer> findByQrcode(String qrcode, String salonId) {
 		return Optional.ofNullable(customerRepo.findByQrcode(qrcode, salonId));
 	}
+	
+	@Override
+	public Customer generateQrCode(Customer customerBody) throws Exception {
+		String qrCode = UUID.randomUUID().toString();
+		customerBody.setQrCode(qrCode);
+		
+		return customerBody;
+	}
+	
+	@Override 
+	public Customer generatePassword (Customer customerBody) throws Exception {
+		
+		// Encrypt password
+		if (customerBody.getContact().getEmail() != null && customerBody.getContact().getEmail().length() > 0) {
+			String encryptionPassword = EncryptionUtils.encodeMD5("123456", customerBody.getContact().getEmail());
+			customerBody.setPassword(encryptionPassword);
+		}
+		
+		return customerBody;
+	}
+	
+	@Override
+	public Customer findCustomerByIdOrPhoneNumber(Customer customerBody) throws Exception{
+		
+		Customer customer = null;
+		
+		if(customerBody.getUuid() == null){
+			String phoneNumber = customerBody.getContact().getMobilePhone().trim();
+			customer = customerRepo.findByPhoneNumber(phoneNumber,customerBody.getSalonId());
+		} else {
+			customer = customerRepo.findOne(customerBody.getUuid());
+		}
+		
+		return customer;
+	}
 
+	@Override
+	public Customer signInNew(Customer customerBody) throws Exception {
+
+		// Generate qr code for customer
+		this.generateQrCode(customerBody);
+		
+		// Generate password
+		this.generatePassword(customerBody);
+
+		// Save
+		customerBody = customerRepo.save(customerBody);
+
+		return customerBody;
+	}
+	
 	@Override
 	public Customer signIn(Customer customerBody) throws Exception {
 
-		// Get by phone
-		Customer customer = customerRepo.findByPhoneNumber(customerBody.getContact().getMobilePhone());
-		if (customer == null) {
+		// Save
+		customerBody = customerRepo.save(customerBody);
 
-			// Init default info
-			customer = customerServiceBusiness.initDefaultCustomer(customerBody);
-
-			// Generate qr code for customer
-			String qrCode = UUID.randomUUID().toString();
-			customerBody.setQrCode(qrCode);
-			LOGGER.info("Qr Code 1111[" + qrCode + "]");
-
-			// Encrypt password
-			if (customerBody.getContact().getEmail() != null && customerBody.getContact().getEmail().length() > 0) {
-				String encryptionPassword = EncryptionUtils.encodeMD5("123456", customerBody.getContact().getEmail());
-				customerBody.setPassword(encryptionPassword);
-			}
-
-			// Update address
-			if (customer.getAddress() == null || customer.getAddress().getAddress() == null) {
-				customer.getAddress().setAddress("NONE");
-			}
-
-			// Save
-			customer = customerRepo.save(customer);
-		} else {
-
-			// Update customer
-			customerBody.setUuid(customer.getUuid());
-			customer = customerRepo.save(customerBody);
-		}
-
-		return customer;
+		return customerBody;
 	}
+
+	
+	
 
 }

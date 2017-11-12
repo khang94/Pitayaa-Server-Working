@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import pitayaa.nail.domain.notification.scheduler.SmsQueue;
-import pitayaa.nail.msg.business.util.common.RestTemplateHelper;
+import pitayaa.nail.msg.business.util.common.RestTemplateHelperCommon;
 import pitayaa.nail.msg.core.properties.CoreProperties;
 
 @Service
@@ -28,7 +28,7 @@ public class IntegrationServiceImpl implements IntegrationService {
 	CoreProperties coreProperties;
 
 	@Autowired
-	RestTemplateHelper restTemplateHelper;
+	RestTemplateHelperCommon restTemplateHelper;
 
 	@Override
 	public List<SmsQueue> getReportSms(String salonId, String from, String to) throws Exception {

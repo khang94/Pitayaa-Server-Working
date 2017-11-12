@@ -16,13 +16,15 @@ import pitayaa.nail.domain.setting.sms.CustomerSummary;
 import pitayaa.nail.json.http.JsonHttp;
 import pitayaa.nail.msg.business.helper.TextHelper;
 import pitayaa.nail.msg.business.json.JsonHttpService;
+import pitayaa.nail.msg.business.util.common.ValidatePhoneNumber;
 import pitayaa.nail.notification.common.NotificationConstant;
 import pitayaa.nail.notification.common.NotificationHelper;
 import pitayaa.nail.notification.scheduler.JobHelper;
 import pitayaa.nail.notification.scheduler.TimeUtils;
 import pitayaa.nail.notification.scheduler.repository.SmsQueueRepository;
 import pitayaa.nail.notification.sms.config.SmsConstant;
-import pitayaa.nail.notification.sms.service.ISmsService;
+import pitayaa.nail.notification.sms.service.InteractionService;
+import pitayaa.nail.notification.sms.service.SmsService;
 
 @Service
 public class SmsQueueServiceImpl implements SmsQueueService {
@@ -31,13 +33,16 @@ public class SmsQueueServiceImpl implements SmsQueueService {
 	SmsQueueRepository queueRepo;
 
 	@Autowired
-	ISmsService smsService;
+	SmsService smsService;
 
 	@Autowired
 	NotificationHelper notificationHelper;
 
 	@Autowired
 	JsonHttpService httpService;
+	
+	@Autowired
+	InteractionService interactionService;
 	
 	@Autowired
 	JobHelper jobHelper;
@@ -132,6 +137,13 @@ public class SmsQueueServiceImpl implements SmsQueueService {
 
 		if (customers.size() > 0) {
 			for (CustomerSummary customerSummary : customers) {
+				
+				// Check whether customer belong to stop list
+				if(SmsConstant.RESPONSE_STOP.equalsIgnoreCase(customerSummary.getCustomerDetail().getRespond())){
+					LOGGER.info("Customer with Id [{}] has out of the list ." , customerSummary.getCustomerRefID());
+					continue;
+				}
+				
 				SmsModel smsBody = (SmsModel) notificationHelper.createModelStructure(new SmsModel());
 				smsBody.getHeader()
 						.setToPhone(TextHelper.formatPhoneNumber(customerSummary.getContact().getMobilePhone()));
@@ -143,6 +155,14 @@ public class SmsQueueServiceImpl implements SmsQueueService {
 				
 				// Fulfill sms body
 				smsBody = jobHelper.fulFillBodySmsPromo(smsBody, customerSummary , settingSms);
+				
+				// Validate Phone Number
+				smsBody.getHeader().setToPhone(ValidatePhoneNumber.appendCodeAreaToPhone(smsBody.getHeader().getToPhone()));
+				
+				// Build key deliver
+				smsBody = interactionService.buildKeyDeliver(smsBody);
+				
+				
 
 				listMessageDeliver.add(smsBody);
 			}

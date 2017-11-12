@@ -29,6 +29,8 @@ import pitayaa.nail.msg.core.account.repository.AccountLicenseRepository;
 import pitayaa.nail.msg.core.account.repository.AccountRepository;
 import pitayaa.nail.msg.core.category.repository.CategoryRepository;
 import pitayaa.nail.msg.core.common.HttpHelper;
+import pitayaa.nail.msg.core.hibernate.CriteriaRepository;
+import pitayaa.nail.msg.core.hibernate.SearchCriteria;
 import pitayaa.nail.msg.core.license.service.LicenseService;
 import pitayaa.nail.msg.core.salon.service.SalonService;
 import pitayaa.nail.msg.core.serviceEntity.repository.ServiceRepository;
@@ -86,6 +88,9 @@ public class AccountServiceImpl implements AccountService {
 
 	@Autowired
 	HttpHelper httpHelper;
+	
+	@Autowired
+	CriteriaRepository criteriaRepo;
 
 	@Override
 	public Account saveAccount(Account accountBody) {
@@ -191,6 +196,13 @@ public class AccountServiceImpl implements AccountService {
 		JsonAccount jsonAccount= accountBusiness.parseAccountToJson(findAccount);
 
 		return jsonAccount;
+	}
+	
+	@Override
+	public List<Account> findAllByQuery(String query , Pageable pageable) throws Exception {
+		SearchCriteria sc = criteriaRepo.extractQuery(query);
+		sc.setEntity("Account");
+		return (List<Account>) criteriaRepo.searchCriteriaPaging(sc , pageable);
 	}
 
 }

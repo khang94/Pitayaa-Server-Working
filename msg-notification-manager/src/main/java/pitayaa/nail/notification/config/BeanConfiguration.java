@@ -19,14 +19,16 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import pitayaa.nail.msg.business.util.common.RestTemplateHelper;
+import pitayaa.nail.msg.business.util.common.RestTemplateHelperCommon;
 import pitayaa.nail.notification.common.NotificationHelper;
 import pitayaa.nail.notification.promotion.business.PromotionJobBus;
 import pitayaa.nail.notification.promotion.business.PromotionJobBusImpl;
 import pitayaa.nail.notification.scheduler.JobHelper;
 import pitayaa.nail.notification.sms.api.nexmo.SendSmsNexmo;
 import pitayaa.nail.notification.sms.repository.SmsRepository;
-import pitayaa.nail.notification.sms.service.ISmsService;
+import pitayaa.nail.notification.sms.service.InteractionService;
+import pitayaa.nail.notification.sms.service.InteractionServiceImpl;
+import pitayaa.nail.notification.sms.service.SmsService;
 import pitayaa.nail.notification.sms.service.SmsServiceImpl;
 
 @Component
@@ -46,7 +48,12 @@ public class BeanConfiguration {
 	}
 
 	@Bean
-	public ISmsService smsService() {
+	public InteractionService interactionService() {
+		return new InteractionServiceImpl();
+	}
+
+	@Bean
+	public SmsService smsService() {
 		return new SmsServiceImpl();
 	}
 
@@ -56,10 +63,10 @@ public class BeanConfiguration {
 	}
 
 	@Bean
-	public JobHelper jobHelper(){
+	public JobHelper jobHelper() {
 		return new JobHelper();
 	}
-	
+
 	@Bean
 	public SendSmsNexmo sendSmsNexmo() {
 		return new SendSmsNexmo();
@@ -71,8 +78,8 @@ public class BeanConfiguration {
 	}
 
 	@Bean
-	public RestTemplateHelper restTemplateHelper() {
-		return new RestTemplateHelper();
+	public RestTemplateHelperCommon restTemplateHelper() {
+		return new RestTemplateHelperCommon();
 	}
 
 	@Resource

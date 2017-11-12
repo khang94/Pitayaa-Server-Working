@@ -8,7 +8,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Version;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
@@ -24,20 +23,24 @@ public class CustomerMembership {
 	@GeneratedValue(generator = "uuid-gen")
 	@Type(type = "pg-uuid")
 	private UUID uuid;
-	
+
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date registeredDate;
-	
+
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedDate;
-	
+
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date expiredDate;
 	private String status;
 	private String note;
 	private String memberType;
+	private Double lastSpending;
 	private Double spending;
 	private Integer point;
 	private Integer rating;
+	private Integer totalTimeVisit;
+	
+	private String membershipId;
 
 }

@@ -28,5 +28,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="src/main/resources/msg-sms-nexmo-1.0.0.jar"/>
+	<classpathentry kind="lib" path="/msg-business-core/target/msg-business-core-1.0.0.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
