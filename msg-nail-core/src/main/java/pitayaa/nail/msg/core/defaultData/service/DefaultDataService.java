@@ -2,6 +2,6 @@ package pitayaa.nail.msg.core.defaultData.service;
 
 public interface DefaultDataService {
 
-	void defaultDataForApp();
+	void defaultDataForApp() throws Exception;
 
 }

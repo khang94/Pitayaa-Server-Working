@@ -8,19 +8,18 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Version;
-
-import lombok.Data;
 
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
+import lombok.Data;
 import pitayaa.nail.domain.account.elements.AccountDetail;
 import pitayaa.nail.domain.account.elements.AccountLicense;
 import pitayaa.nail.domain.common.Address;
@@ -31,17 +30,17 @@ import pitayaa.nail.domain.salon.Salon;
 @Data
 @Entity
 @EntityListeners(ObjectHibernateListener.class)
-public class Account{
+public class Account {
 
 	@Id
 	@GenericGenerator(name = "uuid-gen", strategy = "uuid2")
 	@GeneratedValue(generator = "uuid-gen")
 	@Type(type = "pg-uuid")
 	private UUID uuid;
-	
+
 	@Embedded
 	private AccountDetail accountDetail;
-	
+
 	@Embedded
 	private Contact contact;
 
@@ -50,17 +49,18 @@ public class Account{
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date registeredDate;
-	
+
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updatedDate;
-	
+
 	private String username;
 	private String password;
 	private String confirmCode;
 
 	// Account License
-	@OneToOne(cascade = CascadeType.ALL)
-	private AccountLicense accountLicense;
+
+//	@OneToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+//	private AccountLicense accountLicense;
 
 	// Map with Salon
 	@OneToMany(cascade = CascadeType.ALL)

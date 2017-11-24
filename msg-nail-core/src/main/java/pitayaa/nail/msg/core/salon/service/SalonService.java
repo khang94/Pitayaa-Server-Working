@@ -17,5 +17,7 @@ public interface SalonService {
 	Salon update(Salon salonUpdate, Salon salonOld) throws Exception;
 
 	List<Salon> getAllSalon() throws Exception;
+	
+	void delete(Salon salon);
 
 }

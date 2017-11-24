@@ -21,6 +21,7 @@ import pitayaa.nail.json.account.JsonAccount;
 import pitayaa.nail.json.account.JsonAccountLogin;
 import pitayaa.nail.json.http.JsonHttp;
 import pitayaa.nail.msg.business.json.JsonHttpService;
+import pitayaa.nail.msg.business.util.security.EncryptionUtils;
 import pitayaa.nail.msg.core.account.repository.AccountRepository;
 import pitayaa.nail.msg.core.account.service.AccountService;
 import pitayaa.nail.msg.core.common.CoreHelper;
@@ -126,4 +127,50 @@ public class AccountController {
 		return new ResponseEntity<JsonAccountLogin>(jsonAccountLogin, HttpStatus.OK);
 	}
 
+	@RequestMapping(value = "accounts/{Id}", method = RequestMethod.PUT)
+	public @ResponseBody ResponseEntity<?> update(@PathVariable("Id") UUID uid ,@RequestBody Account account) throws Exception {
+		JsonHttp json = new JsonHttp();
+		try {
+			Account oldAccount = accountService.findAccount(uid);
+			if(oldAccount==null){
+				throw new Exception("Can't find this account");
+			}
+			
+			//check if update password
+			if(account.getPassword()!=null){
+				String encryptPass=EncryptionUtils.encodeMD5(account.getPassword(), account.getContact().getEmail());
+				account.setPassword(encryptPass);
+			}else{
+				account.setPassword(oldAccount.getPassword());
+			}
+			
+			account = accountService.saveAccount(account);
+			json = httpService.getResponseSuccess(account, "update account success");
+		} catch (Exception e) {
+			json = httpService.getResponseError("ERROR", e.getMessage());
+		}
+		return ResponseEntity.ok(json);
+	
+	}
+	
+	@RequestMapping(value = "accounts/{ID}", method = RequestMethod.DELETE)
+	public @ResponseBody ResponseEntity<?> delete(@PathVariable("ID") UUID id) throws Exception {
+
+		Account account = accountService.findAccount(id);
+		JsonHttp json = new JsonHttp();
+		
+		if(account==null){
+			json = httpService.getResponseError("Not found this account","");
+		}
+
+		try {
+			accountService.delete(account);
+			json = httpService.getResponseSuccess("ok", "success");
+			
+		} catch (Exception ex) {
+			json = httpService.getResponseError("Delete failed...." , ex.getMessage());
+		}
+		return ResponseEntity.ok(json);
+
+	}
 }

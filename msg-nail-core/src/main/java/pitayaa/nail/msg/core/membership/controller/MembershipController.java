@@ -89,7 +89,8 @@ public class MembershipController {
 	
 	@RequestMapping(value = "membership/{Id}", method = RequestMethod.POST)
 	public @ResponseBody ResponseEntity<?> operationWithRewards(@PathVariable("Id") UUID id,
-			@RequestParam("operation") String operation , @RequestParam("point") Integer point) throws Exception {
+			@RequestParam("operation") String operation , @RequestParam("point") Integer point,
+			@RequestParam(name = "customerId" , required = false , defaultValue = "") String customerId) throws Exception {
 
 		Optional<MembershipManagement> membership = membershipService.findOne(id);
 		if(!membership.isPresent()){
@@ -98,7 +99,7 @@ public class MembershipController {
 		
 		JsonHttp jsonHttp = new JsonHttp();
 		try {
-			jsonHttp = httpService.getResponseSuccess(membershipService.operationWithRewards(membership.get(), operation, point), "update data successfully....");
+			jsonHttp = httpService.getResponseSuccess(membershipService.operationWithRewards(membership.get(), operation, point , customerId), "update data successfully....");
 		} catch (Exception ex){
 			jsonHttp = httpService.getResponseError("ERROR", "get data failed....");
 		}

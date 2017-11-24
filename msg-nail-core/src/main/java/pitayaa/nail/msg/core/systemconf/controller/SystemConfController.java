@@ -45,7 +45,7 @@ public class SystemConfController {
 		return ResponseEntity.ok(systemConf);
 	}
 
-	@RequestMapping(value = "systemConf/{Id}", method = RequestMethod.PUT)
+	@RequestMapping(value = "systemconf/{Id}", method = RequestMethod.PUT)
 	public @ResponseBody ResponseEntity<?> updateSetting(
 			@PathVariable("Id") UUID uid, @RequestBody SystemConf systemConf)
 			throws Exception {

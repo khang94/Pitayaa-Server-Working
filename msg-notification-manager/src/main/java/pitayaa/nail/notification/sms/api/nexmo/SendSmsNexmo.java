@@ -42,11 +42,7 @@ public class SendSmsNexmo {
 		String messageSend = smsModel.getHeader().getMessage();
 
 		
-		if(!to.startsWith("1") && !to.startsWith("84") && !to.startsWith("9")){
-			to = "1" + to;
-		} else if (to.startsWith("123") || to.startsWith("9")){
-			to = "84" + to;
-		}
+
 		TextMessage message = new TextMessage(from, to, messageSend);
 
 		// Use the Nexmo client to submit the Text Message ...

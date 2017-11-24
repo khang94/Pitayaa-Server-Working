@@ -111,10 +111,9 @@ public class CustomerController {
 		if (!customer.isPresent()) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-
-		Resource<Customer> response = new Resource<Customer>(customer.get());
-		response.add(linkTo(methodOn(CustomerController.class).findOne(customer.get().getUuid())).withSelfRel());
-		return new ResponseEntity<>(customer.get(), HttpStatus.OK);
+		JsonHttp jsonHttp = httpService.getResponseSuccess(customer.get(), "Get customer data successfully....");
+		
+		return new ResponseEntity<>(jsonHttp, jsonHttp.getHttpCode());
 	}
 
 	@RequestMapping(value = "customers/{ID}", method = RequestMethod.DELETE)

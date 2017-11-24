@@ -13,12 +13,14 @@ import org.springframework.stereotype.Service;
 
 import pitayaa.nail.domain.customer.Customer;
 import pitayaa.nail.domain.hibernate.transaction.QueryCriteria;
+import pitayaa.nail.domain.membership.MembershipManagement;
 import pitayaa.nail.msg.business.customer.CustomerServiceBusiness;
 import pitayaa.nail.msg.business.util.security.EncryptionUtils;
 import pitayaa.nail.msg.core.common.CoreHelper;
 import pitayaa.nail.msg.core.customer.repository.CustomerRepository;
 import pitayaa.nail.msg.core.hibernate.CriteriaRepository;
 import pitayaa.nail.msg.core.hibernate.SearchCriteria;
+import pitayaa.nail.msg.core.membership.service.MembershipService;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
@@ -39,6 +41,9 @@ public class CustomerServiceImpl implements CustomerService {
 
 	@Autowired
 	CustomerServiceBusiness customerServiceBusiness;
+	
+	@Autowired
+	MembershipService membershipService;
 
 	@Override
 	public List<Customer> findAllCustomer(String salonId) {
@@ -63,32 +68,20 @@ public class CustomerServiceImpl implements CustomerService {
 		boolean isUploadImage = false;
 
 		// Get stream image
-		if (customerBody.getView().getImgData().length > 0) {
+		if (customerBody.getView().getImgData() != null && customerBody.getView().getImgData().length > 0) {
 			binaryImg = customerBody.getView().getImgData();
 			isUploadImage = true;
 		}
-
-		try {
-			String email = customerBody.getContact().getEmail().toLowerCase();
-			customerBody.getContact().setEmail(email);
-		} catch (Exception ex) {
-			ex.getMessage();
-		}
-
-		// Generate qr code for customer
-		String qrCode = UUID.randomUUID().toString();
-		customerBody.setQrCode(qrCode);
-
-		// Encrypt password
-		if (customerBody.getContact().getEmail() != null && customerBody.getContact().getEmail().length() > 0) {
-			String encryptionPassword = EncryptionUtils.encodeMD5("123456", customerBody.getContact().getEmail());
-			customerBody.setPassword(encryptionPassword);
-		}
-
+		
+		MembershipManagement membership = membershipService.createMembershipForNewCustomer(customerBody);
+		customerBody.getCustomerMembership().setMembershipId(membership.getUuid().toString());
+		
 		// Hide image
 		customerBody.getView().setImgData(null);
-
+		
+		// Save to database
 		customerBody = customerRepo.save(customerBody);
+
 
 		if (isUploadImage && customerBody.getSalonId() != null) {
 			viewService.buildViewByDate(customerBody, binaryImg);

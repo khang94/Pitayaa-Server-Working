@@ -13,7 +13,7 @@ import pitayaa.nail.json.account.JsonAccountLogin;
 public interface AccountService {
 
 	Account saveAccount(
-			pitayaa.nail.domain.account.Account accountBody);
+			Account accountBody);
 
 	JsonAccount registerAccount(
 			pitayaa.nail.domain.account.Account accountBody) throws Exception;
@@ -23,7 +23,10 @@ public interface AccountService {
 	JsonAccount loginProcess(JsonAccountLogin jsonAccountLogin) throws Exception;
 
 	Page<Account> findAll(Pageable pageable) throws Exception;
+	void delete(
+			Account account);
 
 	List<Account> findAllByQuery(String query, Pageable pageable) throws Exception;
+
 
 }

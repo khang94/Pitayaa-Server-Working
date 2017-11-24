@@ -20,7 +20,7 @@ public interface MembershipService {
 
 	Optional<MembershipManagement> findOne(UUID uid);
 
-	MembershipManagement operationWithRewards(MembershipManagement membershipData, String operation, Integer point)
+	MembershipManagement operationWithRewards(MembershipManagement membershipData, String operation, Integer point,String customerId)
 			throws Exception;
 
 	MembershipManagement makeTransaction(String operation, Integer point, Double cash,

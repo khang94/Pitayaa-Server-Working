@@ -97,4 +97,10 @@ public class SalonServiceImpl implements SalonService {
 		return salonList;
 	}
 
+	@Override
+	public void delete(Salon salon) {
+		salonRepo.delete(salon);
+		
+	}
+
 }

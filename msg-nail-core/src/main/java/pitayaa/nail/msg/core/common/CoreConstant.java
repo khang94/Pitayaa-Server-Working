@@ -98,4 +98,13 @@ public class CoreConstant {
 	/* Action REdeem point */
 	public static final String ADD_POINTS = "Add";
 	public static final String SUBTRACT_POINTS = "Subtract";
+	
+	/** Active or generate QR Code */
+	public static final String QR_CODE_GENERATE = "generate";
+	public static final String QR_CODE_ACTIVE = "active";
+	public static final String QR_CODE_RESET = "reset";
+	public static final String QR_CODE_USER_CUSTOMER = "CUSTOMER";
+	public static final String QR_CODE_USER_EMPLOYEE = "EMPLOYEE";
+	public static final String QR_CODE = "QR_CODE";
+	public static final String BARCODE = "BARCODE";
 }

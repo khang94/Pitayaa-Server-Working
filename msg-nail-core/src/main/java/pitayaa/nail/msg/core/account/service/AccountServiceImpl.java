@@ -204,5 +204,15 @@ public class AccountServiceImpl implements AccountService {
 		sc.setEntity("Account");
 		return (List<Account>) criteriaRepo.searchCriteriaPaging(sc , pageable);
 	}
+	
+	
+	
+
+	@Override
+	public void delete(Account account) {
+		// TODO Auto-generated method stub
+		 accountRepository.delete(account);
+	}
+
 
 }

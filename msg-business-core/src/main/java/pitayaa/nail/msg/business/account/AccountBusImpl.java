@@ -52,7 +52,7 @@ public class AccountBusImpl implements AccountBus {
 
 		// Add salon to account
 		account.setSalon(salonGroup);
-		account.setAccountLicense(accountLicense);
+//		account.setAccountLicense(accountLicense);
 
 		return account;
 	}

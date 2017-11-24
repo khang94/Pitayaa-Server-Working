@@ -110,7 +110,52 @@ public class CriteriaRepository {
 
 		return queryObject.getResultList();
 	}
+	
+	public int countAll(SearchCriteria criteria) throws Exception {
 
+		String query = this.buildQueryCount(criteria);
+		TypedQuery<?> queryObject = this.executeQuery(query, criteria);
+
+		Object object= queryObject.getSingleResult();
+		int count=0;
+		if(object!=null){
+			
+		}
+		return count;
+	}
+
+	private String buildQueryCount(SearchCriteria criteria) {
+
+		LOGGER.info("Prepare for building query !");
+		StringBuilder query = new StringBuilder();
+		query.append("Select count(*) as count from " + criteria.getEntity() + CriteriaConstant.SPACE
+				+ CriteriaConstant.CRITERIA);
+
+		if (criteria.getAttributes() == null) {
+			return query.toString();
+		}
+
+		if (criteria.getAttributes() != null & criteria.getAttributes().size() > 0) {
+			query.append(CriteriaConstant.WHERE);
+			boolean isFirstStatement = true;
+			for (SearchCriteriaAttribute sca : criteria.getAttributes()) {
+				if (!isFirstStatement) {
+					query.append(CriteriaConstant.AND);
+				}
+				if (sca.getOperation().equalsIgnoreCase(CriteriaConstant.COLON)) {
+					query.append(sca.getAttributePath() + CriteriaConstant.LIKE + CriteriaConstant.COLON
+							+ sca.getAttributeName());
+				} else {
+					query.append(sca.getAttributePath() + CriteriaConstant.SPACE + sca.getOperation()
+							+ CriteriaConstant.SPACE + CriteriaConstant.COLON + sca.getAttributeName());
+				}
+				isFirstStatement = false;
+			}
+			LOGGER.info("Query after building : " + query.toString());
+		}
+		return query.toString();
+	}
+	
 	private String buildQuery(SearchCriteria criteria) {
 
 		LOGGER.info("Prepare for building query !");
