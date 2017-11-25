@@ -98,12 +98,15 @@ public class PromotionJob implements Job {
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
 		});
 	}
 
-	public void executeNotify(List<Customer> customers, List<SettingSms> settingSms) throws ParseException {
+	public void executeNotify(List<Customer> customers, List<SettingSms> settingSms) throws ParseException,Exception {
 
 		// Filter customer
 		//HashMap<String, List<Customer>> customerList = this.filterCustomerByType(customers);
@@ -114,7 +117,12 @@ public class PromotionJob implements Job {
 					"Notify for customer type [" + setting.getKey() + "] in salon ID [" + setting.getSalonId() + "]");
 
 			// Notify to All Customer by Promotion
-			notifyToCustomer(setting);
+			try {
+				notifyToCustomer(setting);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			if (setting.getKey().equalsIgnoreCase(NotificationConstant.CUSTOMER_PROMOTION)) {
 			}
 
@@ -259,7 +267,7 @@ public class PromotionJob implements Job {
 		});
 	}
 
-	public void notifyToCustomer(SettingSms settingSms) {
+	public void notifyToCustomer(SettingSms settingSms) throws Exception{
 
 		List<CustomerSummary> customers = new ArrayList<CustomerSummary>();
 		
@@ -274,12 +282,23 @@ public class PromotionJob implements Job {
 				customers = jobHelper.loadCustomersByType(settingSms.getSalonId(), settingSms.getKey());
 			} else {
 				customers = settingSms.getCustomerGroups().getCustomers();
+				List<String> listIdCustomers = this.buildListId(customers);
+				customers = jobHelper.getLatestDataFromCustomer(listIdCustomers);
 			}
 		}
 
 		if (customers.size() > 0) {
 			this.deliverMessageToCustomer(customers, settingSms);
 		}
+	}
+	
+	private List<String> buildListId(List<CustomerSummary> customers){
+		List<String> listId = new ArrayList<String>();
+		for (CustomerSummary customerSummary : customers){
+			listId.add(customerSummary.getCustomerRefID());
+		}
+		
+		return listId;
 	}
 
 	public List<SettingSms> filterSettingSms(List<SettingSms> settingSms) {
