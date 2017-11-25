@@ -45,5 +45,9 @@ public class SalonLicense {
 	
 	private Boolean isPay;
 	
-	private String payType;
+	private int smsRemain;
+	
+	private int emailRemain;
+
+
 }

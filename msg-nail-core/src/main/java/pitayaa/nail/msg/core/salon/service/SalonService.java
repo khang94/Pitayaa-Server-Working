@@ -15,6 +15,9 @@ public interface SalonService {
 	Salon initModel() throws Exception;
 
 	Salon update(Salon salonUpdate, Salon salonOld) throws Exception;
+	
+	Salon extendLicense(UUID salonId,UUID licenseId,int type,int month) throws Exception;
+
 
 	List<Salon> getAllSalon() throws Exception;
 	

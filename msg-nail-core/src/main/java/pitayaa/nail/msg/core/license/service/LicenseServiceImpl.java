@@ -1,5 +1,7 @@
 package pitayaa.nail.msg.core.license.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -54,5 +56,16 @@ public class LicenseServiceImpl implements LicenseService {
 		}
 		
 		return check;
+	}
+
+	@Override
+	public List<License> findAll() {
+		// TODO Auto-generated method stub
+		Iterable<License> iLicense= licenseRepo.findAll();
+		List<License> licenses = new ArrayList<License>();
+		iLicense.forEach(salon ->{
+			licenses.add(salon);
+		});
+		return  licenses;
 	}
 }

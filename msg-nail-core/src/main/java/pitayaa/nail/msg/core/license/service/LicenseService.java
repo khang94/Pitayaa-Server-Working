@@ -1,5 +1,6 @@
 package pitayaa.nail.msg.core.license.service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -16,5 +17,7 @@ public interface LicenseService {
 	boolean deleteLicense(UUID uid);
 
 	Optional<License> findOne(UUID uid);
+	
+	List<License> findAll();
 
 }

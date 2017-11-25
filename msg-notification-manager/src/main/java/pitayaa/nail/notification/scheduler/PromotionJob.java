@@ -19,17 +19,17 @@ import pitayaa.nail.domain.appointment.elements.NotificationSignal;
 import pitayaa.nail.domain.customer.Customer;
 import pitayaa.nail.domain.notification.scheduler.SmsQueue;
 import pitayaa.nail.domain.notification.sms.SmsModel;
-import pitayaa.nail.domain.promotion.Promotion;
 import pitayaa.nail.domain.salon.Salon;
 import pitayaa.nail.domain.setting.SettingSms;
 import pitayaa.nail.domain.setting.sms.CustomerSummary;
 import pitayaa.nail.msg.business.helper.TextHelper;
 import pitayaa.nail.notification.common.NotificationConstant;
 import pitayaa.nail.notification.common.NotificationHelper;
-import pitayaa.nail.notification.common.SchedulerConstant;
 import pitayaa.nail.notification.promotion.business.PromotionJobBus;
 import pitayaa.nail.notification.promotion.business.PromotionJobBusImpl;
 import pitayaa.nail.notification.sms.config.SmsConstant;
+import pitayaa.nail.notification.sms.repository.SmsRepository;
+import pitayaa.nail.notification.sms.service.InteractionService;
 import pitayaa.nail.notification.sms.service.SmsService;
 import pitayaa.nail.notification.sms.service.SmsServiceImpl;
 
@@ -47,6 +47,9 @@ public class PromotionJob implements Job {
 
 	@Autowired
 	SmsService smsService;
+	
+	@Autowired
+	InteractionService interactionService;
 
 	@Autowired
 	PromotionJobBus promotionJobBus;
@@ -213,7 +216,8 @@ public class PromotionJob implements Job {
 			
 			// Check whether customer does not want to continue get message or not.
 			Boolean isCustomerBelongStopList = (SmsConstant.RESPONSE_STOP.equalsIgnoreCase(customer.getCustomerDetail().getRespond())) ? true : false;
-
+			
+			LOGGER.info("Customer belong to stop list [{}]", isCustomerBelongStopList);
 			if (isCorrectTime && !isCustomerBelongStopList) {
 				try {
 					// Build sms body
@@ -380,6 +384,12 @@ public class PromotionJob implements Job {
 			
 			// Fullfill with word binding
 			smsBody = jobHelper.fulFillBodySmsPromo(smsBody, customer , settingSms);
+			
+			// Build key deliver
+			if(interactionService == null){
+				interactionService = QuartJob.applicationContext.getBean(InteractionService.class);
+			}
+			smsBody = interactionService.buildKeyDeliver(smsBody);
 
 			LOGGER.info("Finish building SMS Body ....");
 		} catch (Exception ex) {

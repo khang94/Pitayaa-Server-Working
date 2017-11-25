@@ -793,6 +793,85 @@ public class JobHelper {
 		return response.getBody();
 	}
 	
+	public Customer processResponseForCustomer(String customerId, String responseFromCustomer) throws Exception {
+		
+		Map<String, String> headersMap = new HashMap<String, String>();
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		for (String header : headers.keySet()) {
+			headersMap.put(header, headers.getFirst(header));
+		}
+
+		String url = this.getValueProperties(NotificationConstant.CUSTOMER_URI_RESPONSE);
+
+		LOGGER.info("Get Customer by URL : [" + url + "] to send request !");
+		Map<String , String> pathVariables = new HashMap<String , String>();
+		pathVariables.put(NotificationConstant.ID_STRING, customerId);
+		
+		// urlParameters
+		Map<String, String> urlParameters = new HashMap<String, String>();
+		urlParameters.put("response", responseFromCustomer);
+		
+		// Build url
+		RestTemplateHelperCommon restTemplateHelperCommon = new RestTemplateHelperCommon();
+		url = restTemplateHelperCommon.buildUrlPathVariable(pathVariables, url);
+		url = restTemplateHelperCommon.buildUrlRequestParam(urlParameters, url);
+		
+		
+		// Execute Request By Rest Template
+		RestTemplate restTemplate = new RestTemplate();
+		ResponseEntity<Customer> response = restTemplate.exchange(url, HttpMethod.POST, null,
+				new ParameterizedTypeReference<Customer>() {
+				});
+		if (response.getStatusCode().is2xxSuccessful()) {
+			LOGGER.info("Get response successully from URL [" + url + "]");
+		}
+
+		return response.getBody();
+	}
+	
+	public List<CustomerSummary> getLatestDataFromCustomer(List<String> listIdCustomer) throws Exception {
+		
+		Map<String, String> headersMap = new HashMap<String, String>();
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		for (String header : headers.keySet()) {
+			headersMap.put(header, headers.getFirst(header));
+		}
+
+		String url = this.getValueProperties(NotificationConstant.CUSTOMER_URI_NOTIFY);
+
+		LOGGER.info("Get Customer by URL : [" + url + "] to send request !");
+		HttpEntity<List<String>> bodyRequest = new HttpEntity<>(listIdCustomer, headers);
+		
+		
+		// Execute Request By Rest Template
+		RestTemplate restTemplate = new RestTemplate();
+		ResponseEntity<List<Customer>> response = restTemplate.exchange(url, HttpMethod.POST, bodyRequest,
+				new ParameterizedTypeReference<List<Customer>>() {
+				});
+		if (response.getStatusCode().is2xxSuccessful()) {
+			LOGGER.info("Get response successully from URL [" + url + "]");
+		}
+		
+		List<Customer> customers = response.getBody();
+		List<CustomerSummary> customersSummary = new ArrayList<CustomerSummary>();
+
+		customers.stream().forEach(customer -> {
+			CustomerSummary customerSummary = new CustomerSummary();
+			customerSummary.setCustomerDetail(customer.getCustomerDetail());
+			customerSummary.setContact(customer.getContact());
+			customerSummary.setAddress(customer.getAddress());
+			customerSummary.setCustomerRefID(customer.getUuid().toString());
+			customerSummary.getCustomerDetail().setRespond(customer.getCustomerDetail().getRespond());
+			customersSummary.add(customerSummary);
+		});
+
+		return customersSummary;
+	}
+	
 	public Customer updateCustomerByUid(String uid , Customer customerBody) throws Exception {
 		
 		LOGGER.info("Update customer ID [{}] " , uid);

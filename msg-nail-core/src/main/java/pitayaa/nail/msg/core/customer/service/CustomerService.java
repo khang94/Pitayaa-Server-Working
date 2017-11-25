@@ -44,4 +44,8 @@ public interface CustomerService {
 	Customer findCustomerByIdOrPhoneNumber(Customer customerBody) throws Exception;
 
 	Customer signInNew(Customer customerBody) throws Exception;
+
+	Customer processResponseForCustomer(Customer customerBody, String response) throws Exception;
+
+	List<Customer> getCustomersByListId(List<String> listId) throws Exception;
 }

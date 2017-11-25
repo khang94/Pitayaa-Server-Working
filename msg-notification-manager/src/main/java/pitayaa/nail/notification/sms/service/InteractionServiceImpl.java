@@ -101,6 +101,10 @@ public class InteractionServiceImpl implements InteractionService {
 	public synchronized SmsModel buildKeyDeliver(SmsModel smsBody) throws Exception {
 		
 		List<String> lstKey = buildListKey(smsBody.getHeader().getMessage());
+		if(lstKey.isEmpty()){
+			return smsBody;
+		}
+		
 		List<KeyWordDeliverManagement> keyDelivers = keyDeliverRepository.findAllSmsKey(smsBody.getHeader().getToPhone());
 		
 		KeyWordDeliverManagement keyWordDeliver = null;

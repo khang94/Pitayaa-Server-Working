@@ -12,6 +12,7 @@ import pitayaa.nail.domain.account.Account;
 import pitayaa.nail.domain.category.Category;
 import pitayaa.nail.domain.license.License;
 import pitayaa.nail.domain.salon.Salon;
+import pitayaa.nail.domain.salon.elements.SalonDetail;
 import pitayaa.nail.domain.service.ServiceModel;
 import pitayaa.nail.domain.setting.SettingPromotion;
 import pitayaa.nail.domain.setting.SettingSms;
@@ -100,7 +101,7 @@ public class AccountServiceImpl implements AccountService {
 	}
 
 	@Override
-	public JsonAccount registerAccount(Account accountBody) throws Exception {
+	public Account registerAccount(Account accountBody) throws Exception {
 
 		// Get License Trial For Account
 		License licenseTrial = licenseService.getLicenseTrial();
@@ -112,6 +113,8 @@ public class AccountServiceImpl implements AccountService {
 
 		//Save salon
 		Salon salon = accountBody.getSalon().get(0);
+		SalonDetail salonDetail=salon.getSalonDetail();
+		salonDetail.setTotalBranch(0);
 		salon= salonService.save(salon);
 		
 		// save Setting promotion
@@ -155,9 +158,9 @@ public class AccountServiceImpl implements AccountService {
 		accountBody = accountRepository.save(accountBody);
 		
 		// Parse to json
-		JsonAccount jsonAccount = accountBusiness.parseAccountToJson(accountBody);
+//		JsonAccount jsonAccount = accountBusiness.parseAccountToJson(accountBody);
 		
-		return jsonAccount;
+		return accountBody;
 
 	}
 

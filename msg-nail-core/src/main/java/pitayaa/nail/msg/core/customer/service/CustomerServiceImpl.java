@@ -16,6 +16,7 @@ import pitayaa.nail.domain.hibernate.transaction.QueryCriteria;
 import pitayaa.nail.domain.membership.MembershipManagement;
 import pitayaa.nail.msg.business.customer.CustomerServiceBusiness;
 import pitayaa.nail.msg.business.util.security.EncryptionUtils;
+import pitayaa.nail.msg.core.common.CoreConstant;
 import pitayaa.nail.msg.core.common.CoreHelper;
 import pitayaa.nail.msg.core.customer.repository.CustomerRepository;
 import pitayaa.nail.msg.core.hibernate.CriteriaRepository;
@@ -266,6 +267,26 @@ public class CustomerServiceImpl implements CustomerService {
 		customerBody = customerRepo.save(customerBody);
 
 		return customerBody;
+	}
+	
+	@Override
+	public Customer processResponseForCustomer(Customer customerBody , String response) throws Exception {
+		
+		// Update response
+		customerBody.getCustomerDetail().setRespond(response);
+		
+		// Save
+		return customerRepo.save(customerBody);
+
+	}
+	
+	@Override
+	public List<Customer> getCustomersByListId(List<String> listId) throws Exception {
+		List<Customer> customers = new ArrayList<>();
+		for (String id : listId){
+			customers.add(customerRepo.findOne(UUID.fromString(id)));
+		}
+		return customers;
 	}
 
 	

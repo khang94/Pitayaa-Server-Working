@@ -83,7 +83,7 @@ public class AccountController {
 
 		JsonHttp jsonHttp = new JsonHttp();
 		try {
-			JsonAccount account = accountService.registerAccount(accountBody);
+			Account account = accountService.registerAccount(accountBody);
 			jsonHttp = httpService.getResponseSuccess(account, "Register this account successfully");
 		} catch (Exception e) {
 			jsonHttp = httpService.getResponseError("Register failed", e.getMessage());

@@ -3,6 +3,7 @@ package pitayaa.nail.msg.core.customer.controller;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -95,13 +96,50 @@ public class CustomerController {
 		if(CoreConstant.OPERATION_REFRESH.equalsIgnoreCase(operation)){
 			return new ResponseEntity<>(customer , HttpStatus.OK);
 		}
-		
-		
-		
-		
 
 		return new ResponseEntity<>(data, data.getHttpCode());
 	}
+	
+	@RequestMapping(value = "customers/{ID}/response", method = RequestMethod.POST)
+	public @ResponseBody ResponseEntity<?> createCustomer(
+			@PathVariable("ID") UUID id,
+			@RequestParam(name = "response", defaultValue = "") String response) throws Exception {
+
+		Optional<Customer> savedCustomer = customerService.findOne(id);
+		
+		if (!savedCustomer.isPresent()) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+
+		try {
+			data = httpService.getResponseSuccess(customerService.processResponseForCustomer(savedCustomer.get(), response), "Process response customer successfully...");
+		} catch (Exception e) {
+			data = httpService.getResponseError(e.getMessage(), "");
+		}
+
+
+		return new ResponseEntity<>(data, data.getHttpCode());
+	}
+	
+	@RequestMapping(value = "customers/notify", method = RequestMethod.POST)
+	public @ResponseBody ResponseEntity<?> createCustomer(
+			@RequestBody List<String> listIdOfCustomers) throws Exception {
+
+		List<Customer> customers = new ArrayList<>();
+
+		try {
+			customers = customerService.getCustomersByListId(listIdOfCustomers);
+		} catch (Exception e) {
+			data = httpService.getResponseError(e.getMessage(), "");
+		}
+
+
+		return new ResponseEntity<>(customers, HttpStatus.OK);
+	}
+	
+	
+	
+	
 
 	@RequestMapping(value = "customers/{ID}", method = RequestMethod.GET)
 	public @ResponseBody ResponseEntity<?> findOne(@PathVariable("ID") UUID id) throws Exception {

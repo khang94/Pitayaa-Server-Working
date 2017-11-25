@@ -109,9 +109,14 @@ public class SmsServiceImpl implements SmsService {
 		} else if (messageRespond.contains(SmsConstant.VALUE_DELIVER_CANCEL)){
 			getKeyResponse = SmsConstant.VALUE_DELIVER_CANCEL;
 		}
-		Customer customerBody = jobHelper.findCustomerByUUID(smsOriginal.getModuleId());
-		customerBody.getCustomerDetail().setRespond(getKeyResponse);
-		jobHelper.updateCustomerByUid(customerBody.getUuid().toString(), customerBody);
+		
+		try {
+			jobHelper.processResponseForCustomer(smsOriginal.getModuleId(), getKeyResponse);
+			LOGGER.info("Process response [{}] for customer Id [{}] successfully ",smsOriginal.getModuleId() , getKeyResponse);
+		} catch (Exception ex){
+			LOGGER.info("There is an error while processing repsonse from customer...[{}] ", ex.getMessage());
+		}
+
 	}
 
 	

@@ -1,5 +1,6 @@
 package pitayaa.nail.msg.core.license.controller;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import pitayaa.nail.domain.license.License;
+import pitayaa.nail.json.http.JsonHttp;
+import pitayaa.nail.msg.business.json.JsonHttpService;
 import pitayaa.nail.msg.core.common.CoreHelper;
 import pitayaa.nail.msg.core.license.service.LicenseService;
 
@@ -25,6 +28,9 @@ public class LicenseController {
 
 	@Autowired
 	private LicenseService licenseService;
+	
+	@Autowired
+	private JsonHttpService httpService;
 
 	@RequestMapping(value = "licenses/model", method = RequestMethod.GET)
 	public @ResponseBody ResponseEntity<?> initAccountModel() throws Exception {
@@ -34,6 +40,22 @@ public class LicenseController {
 
 		return ResponseEntity.ok(account);
 	}
+	
+	
+	@RequestMapping(value = "licenses", method = RequestMethod.GET)
+	public @ResponseBody ResponseEntity<?> getAll() throws Exception {
+		JsonHttp jsonHttp = new JsonHttp();	
+		
+		try {
+			List <License>licenses = licenseService.findAll();
+			jsonHttp = httpService.getResponseSuccess(licenses, "Get license success");
+		}catch (Exception ex){
+			jsonHttp = httpService.getResponseError("Get list failed...." , ex.getMessage());
+		}
+
+		return new ResponseEntity<>(jsonHttp , jsonHttp.getHttpCode());
+	}
+
 
 	@RequestMapping(value = "licenses", method = RequestMethod.POST)
 	public @ResponseBody ResponseEntity<?> createLicense(@RequestBody License licenseBody) throws Exception {

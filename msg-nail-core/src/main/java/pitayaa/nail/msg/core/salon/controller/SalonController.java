@@ -2,6 +2,7 @@ package pitayaa.nail.msg.core.salon.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -15,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import pitayaa.nail.domain.account.Account;
 import pitayaa.nail.domain.salon.Salon;
 import pitayaa.nail.json.http.JsonHttp;
 import pitayaa.nail.msg.business.json.JsonHttpService;
@@ -56,13 +56,24 @@ public class SalonController {
 	public @ResponseBody ResponseEntity<?> findOne(@PathVariable("Id") UUID uid,
 			@RequestBody Salon salonUpdate) throws Exception {
 
-		Optional<Salon> savedSalon = salonService.findOne(uid);
+		try {
+			Optional<Salon> savedSalon = salonService.findOne(uid);
 
-		if (!savedSalon.isPresent()) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			if (!savedSalon.isPresent()) {
+				data = httpService.getResponseError("Not found this salon", "");
+			}
+
+			Salon salon = salonService.save(salonUpdate);
+			data = httpService.getResponseSuccess(salon, "extend success");
+
+		} catch (Exception e) {
+			// TODO: handle exception
+			data = httpService.getResponseError("Error", e.getMessage());
+
 		}
-		Salon salon = salonService.save(salonUpdate);
-		return ResponseEntity.ok(salon);
+
+		return ResponseEntity.ok(data);
+
 	}
 
 	@RequestMapping(value = "salons", method = RequestMethod.POST)
@@ -80,18 +91,23 @@ public class SalonController {
 		return new ResponseEntity<>(salons, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "salons/extend", method = RequestMethod.POST)
+	@RequestMapping(value = "salons/extend/{ID}", method = RequestMethod.PUT)
 	public @ResponseBody ResponseEntity<?> extendLicense(
-			@PathVariable("ID") UUID uid, @RequestBody Salon salon)
+			@PathVariable("ID") UUID uid,@RequestBody   Map<String,Object>params)
 			throws Exception {
-		Optional<Salon> oldSalon = salonService.findOne(uid);
-		if (oldSalon.isPresent()) {
-			salon = salonService.update(salon, oldSalon.get());
-			data = httpService.getResponseSuccess(salon, "extend success");
-		} else {
-			data = httpService.getResponseError("cannot find salon", null);
-		}
+		UUID licenseId=UUID.fromString((String) params.get("licenseId"));
+		int month =(int) params.get("month");
+		int paymentType =(int) params.get("type");
+		
+		try {
+			
+			Salon salon= salonService.extendLicense(uid, licenseId, paymentType, month);
+			data = httpService.getResponseSuccess(salon, "success");
 
+		} catch (Exception ex) {
+			data = httpService.getResponseError("Extend failed....",
+					ex.getMessage());
+		}
 		return ResponseEntity.ok(data);
 	}
 

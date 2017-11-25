@@ -15,7 +15,7 @@ public interface AccountService {
 	Account saveAccount(
 			Account accountBody);
 
-	JsonAccount registerAccount(
+	Account registerAccount(
 			pitayaa.nail.domain.account.Account accountBody) throws Exception;
 
 	Account findAccount(UUID id);

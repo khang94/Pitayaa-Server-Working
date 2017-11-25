@@ -115,6 +115,7 @@ public class SmsQueueServiceImpl implements SmsQueueService {
 		if(NotificationConstant.CUSTOMER_PROMOTION.equalsIgnoreCase(settingSms.getKey())){
 			if(!NotificationConstant.CUSTOMER_ALL.equalsIgnoreCase(settingSms.getSendSmsToGroup())){
 				customerType = settingSms.getSendSmsToGroup();
+				customers = jobHelper.loadCustomersByType(settingSms.getSalonId(), customerType);
 			}		
 		} else if (NotificationConstant.CUSTOMER_APPOINTMENT_REMIND.equalsIgnoreCase(settingSms.getKey())){
 			
@@ -123,11 +124,21 @@ public class SmsQueueServiceImpl implements SmsQueueService {
 				customerType = settingSms.getKey();
 				customers = jobHelper.loadCustomersByType(settingSms.getSalonId(), customerType);
 			} else {
-				customers = settingSms.getCustomerGroups().getCustomers();
+				customers = this.getLatestDataFromCustomer(settingSms.getCustomerGroups().getCustomers());
 			}
 		}
 		
 		
+		return customers;
+	}
+	
+	private List<CustomerSummary> getLatestDataFromCustomer(List<CustomerSummary> customersSummary) throws Exception {
+		List<String> listId = new ArrayList<String>();
+		for (CustomerSummary customerSummary : customersSummary){
+			listId.add(customerSummary.getCustomerRefID());
+		}
+		
+		List<CustomerSummary> customers = jobHelper.getLatestDataFromCustomer(listId);
 		return customers;
 	}
 	
@@ -162,8 +173,6 @@ public class SmsQueueServiceImpl implements SmsQueueService {
 				// Build key deliver
 				smsBody = interactionService.buildKeyDeliver(smsBody);
 				
-				
-
 				listMessageDeliver.add(smsBody);
 			}
 		}

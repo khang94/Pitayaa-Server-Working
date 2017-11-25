@@ -107,4 +107,8 @@ public class CoreConstant {
 	public static final String QR_CODE_USER_EMPLOYEE = "EMPLOYEE";
 	public static final String QR_CODE = "QR_CODE";
 	public static final String BARCODE = "BARCODE";
+	
+	/** Response from customer */
+	public static final String RESPONSE_STOP = "STOP";
+	public static final String RESPONSE_UNSTOP = "UNSTOP";
 }

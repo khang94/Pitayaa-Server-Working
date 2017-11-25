@@ -2,7 +2,6 @@ package pitayaa.nail.notification.sms.service;
 
 import pitayaa.nail.domain.notification.sms.SmsModel;
 import pitayaa.nail.domain.notification.sms.SmsReceive;
-import pitayaa.nail.domain.notification.sms.elements.KeyWordDeliverManagement;
 
 public interface InteractionService {
 
