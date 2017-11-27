@@ -134,7 +134,8 @@ public class MembershipServiceImpl implements MembershipService {
 
 			// Get cash from reward
 			Double cashExchange = settingPromoService.convertRewardToCash(membershipData.getSalonId(), point);
-			Double cashTotal = cashExchange + membershipData.getRewardInformation().getTotalEquivalentCash();
+			//Double cashTotal = cashExchange + membershipData.getRewardInformation().getTotalEquivalentCash();
+			Double cashTotal = settingPromoService.convertRewardToCash(membershipData.getSalonId(), availableReward);
 
 			/// Update cash
 			membershipData.getRewardInformation().setTotalEquivalentCash(cashTotal);
@@ -143,6 +144,10 @@ public class MembershipServiceImpl implements MembershipService {
 			this.makeTransaction(operation, point, cashExchange, membershipData);
 
 		} else if (CoreConstant.SUBTRACT_POINTS.equalsIgnoreCase(operation)) {
+			
+			if(membershipData.getRewardInformation().getAvailableRewards() < point){
+				throw new Exception ("There is an error while substract points ");
+			}
 
 			// Update reward
 			Integer availableReward = membershipData.getRewardInformation().getAvailableRewards() - point;
@@ -153,7 +158,8 @@ public class MembershipServiceImpl implements MembershipService {
 
 			// Get cash from reward
 			Double cashExchange = settingPromoService.convertRewardToCash(membershipData.getSalonId(), point);
-			Double cashTotal = membershipData.getRewardInformation().getTotalEquivalentCash() - cashExchange;
+			//Double cashTotal = membershipData.getRewardInformation().getTotalEquivalentCash() - cashExchange;
+			Double cashTotal = settingPromoService.convertRewardToCash(membershipData.getSalonId(), availableReward);
 
 			/// Update cash
 			membershipData.getRewardInformation().setTotalEquivalentCash(cashTotal);
