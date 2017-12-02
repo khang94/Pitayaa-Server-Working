@@ -60,7 +60,7 @@ public class AppointmentBusinessImpl implements AppointmentBusiness {
 	 * @param customer
 	 * @return
 	 */
-	private Customer updateCustomerPoint(Customer customer){
+	private Customer updateCustomerPoint(Customer customer , String salonId){
 		
 		// Get promotion setting
 		SettingPromotion settingPromotion = settingPromotionService.getSettingPromoteBySalonId(customer.getSalonId());
@@ -84,7 +84,7 @@ public class AppointmentBusinessImpl implements AppointmentBusiness {
 		}
 		
 		// Get history of customer
-		List<Appointment> appointments = appointmentRepo.findAllTurnCustomer(customer.getContact().getMobilePhone());
+		List<Appointment> appointments = appointmentRepo.findAllTurnCustomer(customer.getContact().getMobilePhone(), salonId);
 		
 		// Increase point for customers
 		Integer pointAdd = currentPoint + loyalPoint;
@@ -176,7 +176,7 @@ public class AppointmentBusinessImpl implements AppointmentBusiness {
 		customerSaved = customerService.findCustomerByIdOrPhoneNumber(customerInfo);
 		
 		// Update point
-		customerInfo = this.updateCustomerPoint(customerInfo);
+		customerInfo = this.updateCustomerPoint(customerInfo , appmBody.getSalonId());
 		
 		if (customerSaved != null){
 			membershipService.updateMembershipForReturnCustomer(customerInfo);

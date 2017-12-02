@@ -162,6 +162,9 @@ public class CustomerController {
 		if (!customer.isPresent()) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
+		
+		customerService.delete(customer.get());
+		
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 

@@ -26,7 +26,7 @@ public interface AppointmentRepository extends
 	@Query("Select appm from Appointment appm where appm.salonId= :salonId and appm.createdDate between :from and :to")
 	List<Appointment> findAllAppmByByConditions(@Param("salonId") String salonId , @Param("from") Date from,@Param("to") Date to);
 	
-	@Query("Select appm from Appointment appm where appm.customer.contact.mobilePhone = :mobilePhone")
-	List<Appointment> findAllTurnCustomer(@Param("mobilePhone") String mobilePhone);
+	@Query("Select appm from Appointment appm where appm.customer.contact.mobilePhone = :mobilePhone and appm.salonId = :salonId")
+	List<Appointment> findAllTurnCustomer(@Param("mobilePhone") String mobilePhone, @Param("salonId")String salonId);
 
 }
